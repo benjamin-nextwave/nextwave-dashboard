@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-07)
 ## Current Position
 
 Phase: 1 of 4 (Foundation & App Shell)
-Plan: 1 of 4 in current phase
+Plan: 2 of 4 in current phase
 Status: In progress
-Last activity: 2026-02-07 -- Completed 01-01-PLAN.md (project scaffold, types, Supabase client)
+Last activity: 2026-02-07 -- Completed 01-02-PLAN.md (date utilities, TodayProvider, theme system)
 
-Progress: [█░░░░░░░░░] 10%
+Progress: [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 10 min
-- Total execution time: 0.17 hours
+- Total plans completed: 2
+- Average duration: 6.5 min
+- Total execution time: 0.22 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-foundation-app-shell | 1/4 | 10 min | 10 min |
+| 01-foundation-app-shell | 2/4 | 13 min | 6.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 10 min
-- Trend: baseline
+- Last 5 plans: 10 min, 3 min
+- Trend: improving
 
 *Updated after each plan completion*
 
@@ -47,6 +47,9 @@ Recent decisions affecting current work:
 - [01-01]: shadcn/ui initialized with Neutral base color and OKLCH color format (Tailwind v4 default)
 - [01-01]: Supabase singleton pattern (no @supabase/ssr) -- no auth means no cookie management needed
 - [01-01]: Manual database types matching SQL schema -- can replace with auto-generated later
+- [01-02]: dates.ts is a pure utility (no 'use client') -- works from both server and client components
+- [01-02]: TodayProvider uses dual detection (60s interval + visibilitychange) for robust midnight/sleep handling
+- [01-02]: ThemeToggle uses CSS-based dark: class icon swap for smooth transitions and hydration safety
 
 ### Pending Todos
 
@@ -58,6 +61,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-07T20:28:54Z
-Stopped at: Completed 01-01-PLAN.md
+Last session: 2026-02-07T20:38:00Z
+Stopped at: Completed 01-02-PLAN.md
 Resume file: None
