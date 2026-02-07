@@ -1,7 +1,8 @@
 export default function DashboardPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center">
-      <h1 className="text-2xl font-bold">NextWave Dashboard</h1>
+    <main className="p-6">
+      <h1 className="text-2xl font-bold">Dashboard</h1>
+      <p className="text-muted-foreground mt-2">Dagoverzicht wordt hier gebouwd in Fase 4.</p>
     </main>
   )
 }
