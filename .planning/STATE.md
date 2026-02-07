@@ -5,32 +5,33 @@
 See: .planning/PROJECT.md (updated 2026-02-07)
 
 **Core value:** Every task deadline stays current -- no task ever shows a past date. The daily dashboard always reflects what needs attention today.
-**Current focus:** Phase 1 complete. Ready for Phase 2: Company & Task Data Layer
+**Current focus:** Phase 2 in progress: Company Management & Default Tasks
 
 ## Current Position
 
-Phase: 1 of 4 (Foundation & App Shell) -- COMPLETE
-Plan: 4 of 4 in current phase
-Status: Phase complete
-Last activity: 2026-02-07 -- Completed 01-04-PLAN.md (navigation, page shells, layout assembly)
+Phase: 2 of 4 (Company Management & Default Tasks)
+Plan: 1 of 4 in current phase
+Status: In progress
+Last activity: 2026-02-07 -- Completed 02-01-PLAN.md (default task generation logic, TDD)
 
-Progress: [████░░░░░░] 40%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
-- Average duration: 5 min
-- Total execution time: 0.33 hours
+- Total plans completed: 5
+- Average duration: 4.4 min
+- Total execution time: 0.37 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation-app-shell | 4/4 | 20 min | 5 min |
+| 02-company-management-default-tasks | 1/4 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 10 min, 3 min, 5 min, 2 min
+- Last 5 plans: 3 min, 5 min, 2 min, 2 min
 - Trend: stable/improving
 
 *Updated after each plan completion*
@@ -56,6 +57,9 @@ Recent decisions affecting current work:
 - [01-04]: Exact pathname match for active link detection (not startsWith) to avoid false matches on /
 - [01-04]: Provider nesting order: ThemeProvider > TodayProvider > Navigation + children
 - [01-04]: Semantic Tailwind color classes throughout (text-foreground, text-muted-foreground, border-border, bg-background)
+- [02-01]: Parse warmupStartDate with 'T00:00:00' suffix to avoid timezone offset issues
+- [02-01]: Zero-based day offsets (0-5) for intuitive "days after start" counting
+- [02-01]: DefaultTaskDefinition type exported for reuse in UI components
 
 ### Pending Todos
 
@@ -67,6 +71,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-07T20:44:24Z
-Stopped at: Completed 01-04-PLAN.md -- Phase 1 complete
+Last session: 2026-02-07T21:27:36Z
+Stopped at: Completed 02-01-PLAN.md -- Default task generation logic (TDD)
 Resume file: None

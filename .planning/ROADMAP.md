@@ -49,7 +49,7 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Default task generation logic (TDD)
+- [x] 02-01-PLAN.md — Default task generation logic (TDD)
 - [ ] 02-02-PLAN.md — shadcn/ui component install and Supabase data access layer
 - [ ] 02-03-PLAN.md — Company overview page with card grid and creation dialog
 - [ ] 02-04-PLAN.md — Company detail page with 4 sections, auto-save, and back navigation
@@ -89,6 +89,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & App Shell | 0/4 | Planning complete | - |
-| 2. Company Management & Default Tasks | 0/4 | Planning complete | - |
+| 2. Company Management & Default Tasks | 1/4 | In progress | - |
 | 3. Gantt Chart & Task Management | 0/TBD | Not started | - |
 | 4. Homepage & Daily Overview | 0/TBD | Not started | - |
