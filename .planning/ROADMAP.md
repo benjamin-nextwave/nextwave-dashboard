@@ -29,11 +29,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Dates displayed anywhere in the app use Dutch formatting (e.g., "Maandag 10 februari 2025"), weeks start on Monday, and all date computation uses Europe/Amsterdam timezone
   4. The Supabase database contains `companies` and `tasks` tables with proper foreign key relationships and cascade deletes, queryable from the running application
   5. The overdue-rolling utility correctly computes effective_deadline as max(deadline, today) and calculates days_overdue for incomplete tasks with past deadlines
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
+- [ ] 01-01-PLAN.md — Scaffold Next.js 16 project with shadcn/ui, database types, and Supabase client
+- [ ] 01-02-PLAN.md — Date utilities with Dutch locale/Amsterdam timezone and dark/light theme system
+- [ ] 01-03-PLAN.md — Overdue-rolling computation (TDD)
+- [ ] 01-04-PLAN.md — Navigation, page shells, and root layout assembly with providers
 
 ### Phase 2: Company Management & Default Tasks
 **Goal**: Users can create, view, edit, and manage companies with all client profile fields, and every new company automatically receives 6 correctly-configured default tasks
@@ -84,7 +86,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & App Shell | 0/TBD | Not started | - |
+| 1. Foundation & App Shell | 0/4 | Planning complete | - |
 | 2. Company Management & Default Tasks | 0/TBD | Not started | - |
 | 3. Gantt Chart & Task Management | 0/TBD | Not started | - |
 | 4. Homepage & Daily Overview | 0/TBD | Not started | - |
