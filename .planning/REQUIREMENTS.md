@@ -1,7 +1,7 @@
 # Requirements: NextWave Client Management Dashboard
 
 **Defined:** 2026-02-07
-**Core Value:** Every task deadline stays current — no task ever shows a past date. The daily dashboard always reflects what needs attention today.
+**Core Value:** Every task deadline stays current -- no task ever shows a past date. The daily dashboard always reflects what needs attention today.
 
 ## v1 Requirements
 
@@ -17,12 +17,12 @@
 ### Default Tasks
 
 - [ ] **DTSK-01**: When a company is created, 6 default tasks are auto-generated starting from warmup_start_date, each 1 day apart
-- [ ] **DTSK-02**: Default task 1 (day 1): "Create email templates" — date not editable
-- [ ] **DTSK-03**: Default task 2 (day 2): "Have an onboarding call" — date IS editable
-- [ ] **DTSK-04**: Default task 3 (day 3): "Buy custom domains and mailboxes, place in warmup tool" — date not editable
-- [ ] **DTSK-05**: Default task 4 (day 4): "Create an RLM" — date not editable
-- [ ] **DTSK-06**: Default task 5 (day 5): "Create follow-up mails" — date not editable
-- [ ] **DTSK-07**: Default task 6 (day 6): "Create a dashboard" — date not editable
+- [ ] **DTSK-02**: Default task 1 (day 1): "Create email templates" -- date not editable
+- [ ] **DTSK-03**: Default task 2 (day 2): "Have an onboarding call" -- date IS editable
+- [ ] **DTSK-04**: Default task 3 (day 3): "Buy custom domains and mailboxes, place in warmup tool" -- date not editable
+- [ ] **DTSK-05**: Default task 4 (day 4): "Create an RLM" -- date not editable
+- [ ] **DTSK-06**: Default task 5 (day 5): "Create follow-up mails" -- date not editable
+- [ ] **DTSK-07**: Default task 6 (day 6): "Create a dashboard" -- date not editable
 - [ ] **DTSK-08**: All default tasks can be marked as completed but only "onboarding call" has an editable date
 
 ### Homepage
@@ -105,57 +105,57 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUN-01 | — | Pending |
-| FOUN-02 | — | Pending |
-| FOUN-03 | — | Pending |
-| FOUN-04 | — | Pending |
-| FOUN-05 | — | Pending |
-| FOUN-06 | — | Pending |
-| DTSK-01 | — | Pending |
-| DTSK-02 | — | Pending |
-| DTSK-03 | — | Pending |
-| DTSK-04 | — | Pending |
-| DTSK-05 | — | Pending |
-| DTSK-06 | — | Pending |
-| DTSK-07 | — | Pending |
-| DTSK-08 | — | Pending |
-| HOME-01 | — | Pending |
-| HOME-02 | — | Pending |
-| HOME-03 | — | Pending |
-| HOME-04 | — | Pending |
-| HOME-05 | — | Pending |
-| HOME-06 | — | Pending |
-| HOME-07 | — | Pending |
-| GANT-01 | — | Pending |
-| GANT-02 | — | Pending |
-| GANT-03 | — | Pending |
-| GANT-04 | — | Pending |
-| GANT-05 | — | Pending |
-| GANT-06 | — | Pending |
-| GANT-07 | — | Pending |
-| GANT-08 | — | Pending |
-| GANT-09 | — | Pending |
-| COMP-01 | — | Pending |
-| COMP-02 | — | Pending |
-| COMP-03 | — | Pending |
-| COMP-04 | — | Pending |
-| COMP-05 | — | Pending |
-| COMP-06 | — | Pending |
-| COMP-07 | — | Pending |
-| COMP-08 | — | Pending |
-| UIST-01 | — | Pending |
-| UIST-02 | — | Pending |
-| UIST-03 | — | Pending |
-| UIST-04 | — | Pending |
-| UIST-05 | — | Pending |
-| UIST-06 | — | Pending |
-| UIST-07 | — | Pending |
+| FOUN-01 | Phase 1 | Pending |
+| FOUN-02 | Phase 1 | Pending |
+| FOUN-03 | Phase 1 | Pending |
+| FOUN-04 | Phase 1 | Pending |
+| FOUN-05 | Phase 1 | Pending |
+| FOUN-06 | Phase 1 | Pending |
+| DTSK-01 | Phase 2 | Pending |
+| DTSK-02 | Phase 2 | Pending |
+| DTSK-03 | Phase 2 | Pending |
+| DTSK-04 | Phase 2 | Pending |
+| DTSK-05 | Phase 2 | Pending |
+| DTSK-06 | Phase 2 | Pending |
+| DTSK-07 | Phase 2 | Pending |
+| DTSK-08 | Phase 2 | Pending |
+| HOME-01 | Phase 4 | Pending |
+| HOME-02 | Phase 4 | Pending |
+| HOME-03 | Phase 4 | Pending |
+| HOME-04 | Phase 4 | Pending |
+| HOME-05 | Phase 4 | Pending |
+| HOME-06 | Phase 4 | Pending |
+| HOME-07 | Phase 4 | Pending |
+| GANT-01 | Phase 3 | Pending |
+| GANT-02 | Phase 3 | Pending |
+| GANT-03 | Phase 3 | Pending |
+| GANT-04 | Phase 3 | Pending |
+| GANT-05 | Phase 3 | Pending |
+| GANT-06 | Phase 3 | Pending |
+| GANT-07 | Phase 3 | Pending |
+| GANT-08 | Phase 3 | Pending |
+| GANT-09 | Phase 3 | Pending |
+| COMP-01 | Phase 2 | Pending |
+| COMP-02 | Phase 2 | Pending |
+| COMP-03 | Phase 2 | Pending |
+| COMP-04 | Phase 2 | Pending |
+| COMP-05 | Phase 2 | Pending |
+| COMP-06 | Phase 2 | Pending |
+| COMP-07 | Phase 2 | Pending |
+| COMP-08 | Phase 2 | Pending |
+| UIST-01 | Phase 1 | Pending |
+| UIST-02 | Phase 1 | Pending |
+| UIST-03 | Phase 1 | Pending |
+| UIST-04 | Phase 3 | Pending |
+| UIST-05 | Phase 3 | Pending |
+| UIST-06 | Phase 1 | Pending |
+| UIST-07 | Phase 1 | Pending |
 
 **Coverage:**
-- v1 requirements: 43 total
-- Mapped to phases: 0
-- Unmapped: 43 ⚠️
+- v1 requirements: 45 total
+- Mapped to phases: 45
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-07*
-*Last updated: 2026-02-07 after initial definition*
+*Last updated: 2026-02-07 after roadmap creation*
