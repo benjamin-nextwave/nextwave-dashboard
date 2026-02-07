@@ -38,20 +38,60 @@ export type CompanyWithTasks = Company & {
   tasks: Task[]
 }
 
+// Fields that are optional on insert (nullable or have defaults)
+type CompanyInsert = {
+  name: string
+  warmup_start_date?: string | null
+  go_live_date?: string | null
+  status?: Company['status']
+  contact_person?: string | null
+  email?: string | null
+  phone?: string | null
+  client_notes?: string | null
+  personality_score?: number | null
+  mail_variant_1?: string | null
+  mail_variant_2?: string | null
+  mail_variant_3?: string | null
+  feedback_mailvarianten?: string | null
+  toekomstige_wensen?: string | null
+  extra_notes?: string | null
+}
+
 // Supabase Database type for typed client
+// Must include Views, Functions, and Relationships to satisfy supabase-js v2 GenericSchema
 export type Database = {
   public: {
     Tables: {
       companies: {
         Row: Company
-        Insert: Omit<Company, 'id' | 'created_at' | 'updated_at'>
+        Insert: CompanyInsert
         Update: Partial<Omit<Company, 'id' | 'created_at' | 'updated_at'>>
+        Relationships: [
+          {
+            foreignKeyName: 'tasks_company_id_fkey'
+            columns: ['id']
+            isOneToOne: false
+            referencedRelation: 'tasks'
+            referencedColumns: ['company_id']
+          },
+        ]
       }
       tasks: {
         Row: Task
         Insert: Omit<Task, 'id' | 'created_at'>
         Update: Partial<Omit<Task, 'id' | 'created_at'>>
+        Relationships: [
+          {
+            foreignKeyName: 'tasks_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
       }
     }
+    Views: Record<string, never>
+    Functions: Record<string, never>
   }
 }
