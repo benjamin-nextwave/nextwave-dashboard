@@ -46,11 +46,13 @@ Plans:
   2. Creating a company automatically generates 6 default tasks starting from warmup_start_date (1 day apart), with correct titles, and only the "onboarding call" task has an editable deadline
   3. A company detail page shows all four sections (Basisgegevens, Klantprofiel, Mailvarianten, Feedback & Planning) with editable fields that auto-save on blur with a visible save indicator, plus a manual save button
   4. The back button on the detail page returns to the companies overview
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
+- [ ] 02-01-PLAN.md — Default task generation logic (TDD)
+- [ ] 02-02-PLAN.md — shadcn/ui component install and Supabase data access layer
+- [ ] 02-03-PLAN.md — Company overview page with card grid and creation dialog
+- [ ] 02-04-PLAN.md — Company detail page with 4 sections, auto-save, and back navigation
 
 ### Phase 3: Gantt Chart & Task Management
 **Goal**: Users can visualize all company warmup timelines on a horizontal Gantt chart, see task markers at their deadline positions, and create/edit/complete/delete tasks directly from the Gantt view
@@ -87,6 +89,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & App Shell | 0/4 | Planning complete | - |
-| 2. Company Management & Default Tasks | 0/TBD | Not started | - |
+| 2. Company Management & Default Tasks | 0/4 | Planning complete | - |
 | 3. Gantt Chart & Task Management | 0/TBD | Not started | - |
 | 4. Homepage & Daily Overview | 0/TBD | Not started | - |
