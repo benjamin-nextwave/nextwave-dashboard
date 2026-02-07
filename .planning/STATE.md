@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-07)
 ## Current Position
 
 Phase: 1 of 4 (Foundation & App Shell)
-Plan: 2 of 4 in current phase
+Plan: 3 of 4 in current phase
 Status: In progress
-Last activity: 2026-02-07 -- Completed 01-02-PLAN.md (date utilities, TodayProvider, theme system)
+Last activity: 2026-02-07 -- Completed 01-03-PLAN.md (overdue-rolling computation with TDD)
 
-Progress: [██░░░░░░░░] 20%
+Progress: [███░░░░░░░] 30%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 6.5 min
-- Total execution time: 0.22 hours
+- Total plans completed: 3
+- Average duration: 6 min
+- Total execution time: 0.30 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-foundation-app-shell | 2/4 | 13 min | 6.5 min |
+| 01-foundation-app-shell | 3/4 | 18 min | 6 min |
 
 **Recent Trend:**
-- Last 5 plans: 10 min, 3 min
-- Trend: improving
+- Last 5 plans: 10 min, 3 min, 5 min
+- Trend: stable
 
 *Updated after each plan completion*
 
@@ -50,6 +50,9 @@ Recent decisions affecting current work:
 - [01-02]: dates.ts is a pure utility (no 'use client') -- works from both server and client components
 - [01-02]: TodayProvider uses dual detection (60s interval + visibilitychange) for robust midnight/sleep handling
 - [01-02]: ThemeToggle uses CSS-based dark: class icon swap for smooth transitions and hydration safety
+- [01-03]: ISO string comparison for overdue detection -- lexicographic compare works for ISO date strings
+- [01-03]: Pure function design -- computeOverdue takes explicit today parameter for testability
+- [01-03]: Vitest as test runner -- zero-config TypeScript support, fast execution
 
 ### Pending Todos
 
@@ -61,6 +64,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-07T20:38:00Z
-Stopped at: Completed 01-02-PLAN.md
+Last session: 2026-02-07T20:39:55Z
+Stopped at: Completed 01-03-PLAN.md
 Resume file: None
