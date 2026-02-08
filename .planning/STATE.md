@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-07)
 
 **Core value:** Every task deadline stays current -- no task ever shows a past date. The daily dashboard always reflects what needs attention today.
-**Current focus:** Phase 4: Homepage & Daily Overview (in progress)
+**Current focus:** All phases complete.
 
 ## Current Position
 
 Phase: 4 of 4 (Homepage & Daily Overview)
-Plan: 2 of 3 in current phase (04-01 and 04-02 complete, 04-03 remaining)
-Status: In progress
-Last activity: 2026-02-08 -- Completed 04-01-PLAN.md (Homepage data layer TDD)
+Plan: 3 of 3 in current phase (all complete)
+Status: Project complete
+Last activity: 2026-02-08 -- Completed 04-03-PLAN.md (Homepage assembly)
 
-Progress: [█████████████░] 93%
+Progress: [██████████████] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13
-- Average duration: 3.7 min
-- Total execution time: 0.82 hours
+- Total plans completed: 14
+- Average duration: 3.5 min
+- Total execution time: 0.85 hours
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [█████████████░] 93%
 | 01-foundation-app-shell | 4/4 | 20 min | 5 min |
 | 02-company-management-default-tasks | 4/4 | 16 min | 4 min |
 | 03-gantt-chart-task-management | 3/3 | 9 min | 3 min |
-| 04-homepage-daily-overview | 2/3 | 8 min | 4 min |
+| 04-homepage-daily-overview | 3/3 | 10 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 3 min, 3 min, 3 min, 3 min, 5 min
+- Last 5 plans: 3 min, 3 min, 3 min, 5 min, 2 min
 - Trend: stable
 
 *Updated after each plan completion*
@@ -77,6 +77,8 @@ Recent decisions affecting current work:
 - [04-01]: Single effectiveDeadline === today condition handles all filter cases (no redundant OR)
 - [04-02]: Inline props interface for presentational components (no cross-plan type imports) enabling parallel plan execution
 - [04-02]: SVG donut chart with -rotate-90 for 12 o'clock start, stroke-dasharray/dashoffset for progress
+- [04-03]: Simplified OverlayState to only 'none' | 'editTask' (homepage has no create or company-tasks dialogs)
+- [04-03]: Computed completedCount inline via tasks.filter() rather than separate state
 
 ### Pending Todos
 
@@ -88,6 +90,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-08T01:41:53Z
-Stopped at: Completed 04-01-PLAN.md (Homepage data layer TDD)
+Last session: 2026-02-08T01:47:30Z
+Stopped at: Completed 04-03-PLAN.md (Homepage assembly) -- PROJECT COMPLETE
 Resume file: None
