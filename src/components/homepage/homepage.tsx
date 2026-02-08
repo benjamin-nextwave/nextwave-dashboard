@@ -18,6 +18,7 @@ import { TodayTaskList } from '@/components/homepage/today-task-list'
 import { TodayMeetings } from '@/components/homepage/today-meetings'
 import { HomepageTaskCreateDialog } from '@/components/homepage/task-create-dialog'
 import { TaskEditDialog } from '@/components/gantt/task-edit-dialog'
+import { useRecurringTasks } from '@/hooks/use-recurring-tasks'
 import type { Task, MeetingWithCompany } from '@/types/database'
 
 type OverlayState =
@@ -40,6 +41,9 @@ export function Homepage() {
     setTasks(sorted)
     setLoading(false)
   }, [today])
+
+  // Auto-generate recurring tasks for current month, then refresh
+  useRecurringTasks(loadData)
 
   const loadMeetings = useCallback(async () => {
     try {

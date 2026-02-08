@@ -10,6 +10,7 @@ import { GanttTimeline } from '@/components/gantt/gantt-timeline'
 import { TaskEditDialog } from '@/components/gantt/task-edit-dialog'
 import { TaskCreateDialog } from '@/components/gantt/task-create-dialog'
 import { CompanyTasksDialog } from '@/components/gantt/company-tasks-dialog'
+import { useRecurringTasks } from '@/hooks/use-recurring-tasks'
 import type { CompanyWithTasks, Task } from '@/types/database'
 
 type OverlayState =
@@ -25,13 +26,18 @@ export function GanttPage() {
   const [loading, setLoading] = useState(true)
   const [overlay, setOverlay] = useState<OverlayState>({ type: 'none' })
 
-  useEffect(() => {
-    ;(async () => {
-      const data = await getCompaniesWithTasks()
-      setCompanies(data)
-      setLoading(false)
-    })()
+  const loadCompanies = useCallback(async () => {
+    const data = await getCompaniesWithTasks()
+    setCompanies(data)
+    setLoading(false)
   }, [])
+
+  useEffect(() => {
+    loadCompanies()
+  }, [loadCompanies])
+
+  // Auto-generate recurring tasks for current month, then refresh
+  useRecurringTasks(loadCompanies)
 
   const refreshData = useCallback(async () => {
     const data = await getCompaniesWithTasks()

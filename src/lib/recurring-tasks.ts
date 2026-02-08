@@ -1,4 +1,5 @@
-import type { Company } from '@/types/database'
+import { supabase } from '@/lib/supabase'
+import type { Company, Task } from '@/types/database'
 
 /**
  * Adjusts a date to avoid weekends: Saturday→Friday, Sunday→Monday.
@@ -104,4 +105,88 @@ export function generateMonthlyTasks(
   })
 
   return tasks
+}
+
+// ── Auto-generation on page load ────────────────────────────────────────
+
+/** Module-level flag so we only run once per browser session. */
+let _ensuredForKey = ''
+
+/**
+ * Ensures recurring tasks (rapport + scrape) exist for the current month.
+ * Checks existing tasks by title prefix + deadline month to avoid duplicates.
+ * Designed to be called on homepage/gantt load — runs at most once per month per session.
+ */
+export async function ensureRecurringTasks(todayISO: string): Promise<void> {
+  const date = new Date(todayISO + 'T00:00:00')
+  const month = date.getMonth() // 0-indexed
+  const year = date.getFullYear()
+  const sessionKey = `${year}-${month}`
+
+  // Skip if already checked this month in this session
+  if (_ensuredForKey === sessionKey) return
+  _ensuredForKey = sessionKey
+
+  // Fetch all companies
+  const { data: companies, error: compErr } = await supabase
+    .from('companies')
+    .select('*')
+
+  if (compErr) throw compErr
+  const allCompanies = (companies ?? []) as Company[]
+
+  // Only companies that have at least one recurring date configured
+  const configured = allCompanies.filter(
+    (c) => c.rapport_date || c.scrape_date_1 || c.scrape_date_2 || c.scrape_date_3
+  )
+  if (configured.length === 0) return
+
+  // Compute first and last day of month for deadline range query
+  const firstOfMonth = `${year}-${String(month + 1).padStart(2, '0')}-01`
+  const lastDay = new Date(year, month + 1, 0).getDate()
+  const lastOfMonth = `${year}-${String(month + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`
+
+  // Fetch existing tasks in this month whose titles start with "Rapport " or "Scrape "
+  const { data: existing, error: taskErr } = await supabase
+    .from('tasks')
+    .select('title, company_id, deadline')
+    .gte('deadline', firstOfMonth)
+    .lte('deadline', lastOfMonth)
+
+  if (taskErr) throw taskErr
+  const existingTasks = (existing ?? []) as Pick<Task, 'title' | 'company_id' | 'deadline'>[]
+
+  // Build a set of "companyId::title" for fast duplicate checking
+  const existingSet = new Set(
+    existingTasks.map((t) => `${t.company_id}::${t.title}`)
+  )
+
+  // Generate missing tasks
+  const toInsert: Omit<Task, 'id' | 'created_at'>[] = []
+
+  for (const company of configured) {
+    const planned = generateMonthlyTasks(company, month, year, allCompanies)
+    for (const task of planned) {
+      const key = `${company.id}::${task.title}`
+      if (!existingSet.has(key)) {
+        toInsert.push({
+          company_id: company.id,
+          title: task.title,
+          deadline: task.deadline,
+          is_completed: false,
+          is_urgent: false,
+          is_date_editable: true,
+          notes: null,
+        })
+      }
+    }
+  }
+
+  if (toInsert.length === 0) return
+
+  const { error: insertErr } = await supabase
+    .from('tasks')
+    .insert(toInsert)
+
+  if (insertErr) throw insertErr
 }
