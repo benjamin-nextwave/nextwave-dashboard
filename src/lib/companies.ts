@@ -88,6 +88,22 @@ export async function updateCompany(
  * Fetches all companies with their full task objects, sorted by name.
  * Each company's tasks are sorted by deadline ascending.
  */
+/**
+ * Deletes a company by ID (tasks are cascade-deleted by the database).
+ */
+export async function deleteCompany(id: string): Promise<void> {
+  const { error } = await supabase
+    .from('companies')
+    .delete()
+    .eq('id', id)
+
+  if (error) throw error
+}
+
+/**
+ * Fetches all companies with their full task objects, sorted by name.
+ * Each company's tasks are sorted by deadline ascending.
+ */
 export async function getCompaniesWithTasks(): Promise<CompanyWithTasks[]> {
   const { data, error } = await supabase
     .from('companies')

@@ -51,6 +51,7 @@ export function CompanyGrid() {
               name={company.name}
               goLiveDate={company.go_live_date}
               openTaskCount={company.open_task_count}
+              onDeleted={refreshCompanies}
             />
           ))}
         </div>

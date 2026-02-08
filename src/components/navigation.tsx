@@ -9,6 +9,7 @@ const navItems = [
   { href: '/', label: 'Dashboard' },
   { href: '/gantt', label: 'Gantt' },
   { href: '/bedrijven', label: 'Bedrijven' },
+  { href: '/kalender', label: 'Kalender' },
 ]
 
 export function Navigation() {

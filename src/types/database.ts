@@ -34,6 +34,22 @@ export type Task = {
   created_at: string
 }
 
+export type Meeting = {
+  id: string
+  company_id: string
+  title: string
+  meeting_date: string
+  meeting_time: string
+  meeting_link: string | null
+  notes: string | null
+  is_completed: boolean
+  created_at: string
+}
+
+export type MeetingWithCompany = Meeting & {
+  company_name: string
+}
+
 export type CompanyWithTasks = Company & {
   tasks: Task[]
 }
@@ -83,6 +99,20 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: 'tasks_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      meetings: {
+        Row: Meeting
+        Insert: Omit<Meeting, 'id' | 'created_at'>
+        Update: Partial<Omit<Meeting, 'id' | 'created_at'>>
+        Relationships: [
+          {
+            foreignKeyName: 'meetings_company_id_fkey'
             columns: ['company_id']
             isOneToOne: false
             referencedRelation: 'companies'

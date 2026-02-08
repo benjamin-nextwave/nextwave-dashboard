@@ -8,11 +8,13 @@ import {
   sortTodayTasks,
   type TodayTask,
 } from '@/lib/homepage'
+import { getMeetingsForToday } from '@/lib/meetings'
 import { DailyHeader } from '@/components/homepage/daily-header'
 import { ProgressDonut } from '@/components/homepage/progress-donut'
 import { TodayTaskList } from '@/components/homepage/today-task-list'
+import { TodayMeetings } from '@/components/homepage/today-meetings'
 import { TaskEditDialog } from '@/components/gantt/task-edit-dialog'
-import type { Task } from '@/types/database'
+import type { Task, MeetingWithCompany } from '@/types/database'
 
 type OverlayState =
   | { type: 'none' }
@@ -21,7 +23,9 @@ type OverlayState =
 export function Homepage() {
   const today = useToday()
   const [tasks, setTasks] = useState<TodayTask[]>([])
+  const [meetings, setMeetings] = useState<MeetingWithCompany[]>([])
   const [loading, setLoading] = useState(true)
+  const [meetingsLoading, setMeetingsLoading] = useState(true)
   const [overlay, setOverlay] = useState<OverlayState>({ type: 'none' })
 
   const loadData = useCallback(async () => {
@@ -32,9 +36,21 @@ export function Homepage() {
     setLoading(false)
   }, [today])
 
+  const loadMeetings = useCallback(async () => {
+    try {
+      const data = await getMeetingsForToday(today)
+      setMeetings(data)
+    } catch (error) {
+      console.error('Failed to fetch today meetings:', error)
+    } finally {
+      setMeetingsLoading(false)
+    }
+  }, [today])
+
   useEffect(() => {
     loadData()
-  }, [loadData])
+    loadMeetings()
+  }, [loadData, loadMeetings])
 
   const refreshData = useCallback(async () => {
     await loadData()
@@ -62,6 +78,8 @@ export function Homepage() {
       ) : (
         <TodayTaskList tasks={tasks} onTaskClick={onTaskClick} />
       )}
+
+      <TodayMeetings meetings={meetings} loading={meetingsLoading} />
 
       <TaskEditDialog
         task={overlay.type === 'editTask' ? overlay.task : null}

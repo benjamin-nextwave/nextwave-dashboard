@@ -1,10 +1,19 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Save } from 'lucide-react'
+import { ArrowLeft, Save, Trash2 } from 'lucide-react'
 import type { Company } from '@/types/database'
-import { getCompanyById, updateCompany } from '@/lib/companies'
+import { getCompanyById, updateCompany, deleteCompany } from '@/lib/companies'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog'
 import { useAutoSave } from '@/hooks/use-auto-save'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -19,8 +28,11 @@ interface CompanyDetailPageProps {
 }
 
 export function CompanyDetailPage({ companyId }: CompanyDetailPageProps) {
+  const router = useRouter()
   const [company, setCompany] = useState<Company | null>(null)
   const [loading, setLoading] = useState(true)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   const saveFn = useCallback(
     async (updates: Record<string, unknown>) => {
@@ -70,6 +82,17 @@ export function CompanyDetailPage({ companyId }: CompanyDetailPageProps) {
     } = company
     saveAll(fields as Record<string, unknown>)
   }, [company, saveAll])
+
+  const handleDelete = useCallback(async () => {
+    setDeleting(true)
+    try {
+      await deleteCompany(companyId)
+      router.push('/bedrijven')
+    } catch (error) {
+      console.error('Failed to delete company:', error)
+      setDeleting(false)
+    }
+  }, [companyId, router])
 
   if (loading) {
     return (
@@ -153,6 +176,38 @@ export function CompanyDetailPage({ companyId }: CompanyDetailPageProps) {
         onFieldChange={onFieldChange}
         onFieldBlur={onFieldBlur}
       />
+
+      <Separator />
+
+      {/* Delete company */}
+      <div className="flex justify-end">
+        <Button
+          variant="destructive"
+          onClick={() => setShowDeleteConfirm(true)}
+        >
+          <Trash2 className="size-4" />
+          Bedrijf verwijderen
+        </Button>
+      </div>
+
+      <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Bedrijf verwijderen</DialogTitle>
+            <DialogDescription>
+              Weet je zeker dat je <strong>{company.name}</strong> wilt verwijderen? Alle taken worden ook verwijderd.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowDeleteConfirm(false)} disabled={deleting}>
+              Annuleren
+            </Button>
+            <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+              {deleting ? 'Verwijderen...' : 'Verwijderen'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
