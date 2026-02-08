@@ -1,6 +1,12 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { computeOverdue } from '../overdue'
-import type { Task } from '@/types/database'
+import type { Task } from '../../types/database'
+
+// Mock supabase to avoid env var validation during import
+vi.mock('../supabase', () => ({
+  supabase: {},
+}))
+
 import type { TaskWithCompany, TodayTask } from '../homepage'
 import { filterTodayTasks, sortTodayTasks } from '../homepage'
 
