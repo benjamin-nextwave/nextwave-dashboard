@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-07)
 ## Current Position
 
 Phase: 4 of 4 (Homepage & Daily Overview)
-Plan: 2 of 3 in current phase
+Plan: 2 of 3 in current phase (04-01 and 04-02 complete, 04-03 remaining)
 Status: In progress
-Last activity: 2026-02-08 -- Completed 04-02-PLAN.md (Homepage presentational components)
+Last activity: 2026-02-08 -- Completed 04-01-PLAN.md (Homepage data layer TDD)
 
-Progress: [████████████░] 93%
+Progress: [█████████████░] 93%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
+- Total plans completed: 13
 - Average duration: 3.7 min
-- Total execution time: 0.74 hours
+- Total execution time: 0.82 hours
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [████████████░] 93%
 | 01-foundation-app-shell | 4/4 | 20 min | 5 min |
 | 02-company-management-default-tasks | 4/4 | 16 min | 4 min |
 | 03-gantt-chart-task-management | 3/3 | 9 min | 3 min |
-| 04-homepage-daily-overview | 1/3 | 3 min | 3 min |
+| 04-homepage-daily-overview | 2/3 | 8 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 2 min, 3 min, 3 min, 3 min, 3 min
+- Last 5 plans: 3 min, 3 min, 3 min, 3 min, 5 min
 - Trend: stable
 
 *Updated after each plan completion*
@@ -72,6 +72,9 @@ Recent decisions affecting current work:
 - [03-02]: React Fragment for GanttCompanyRow (renders grid cells directly into parent grid)
 - [03-02]: Overlay state machine defined in GanttPage, dialogs wired in Plan 03
 - [03-03]: Null-prop dialog open pattern (prop null = closed, non-null = open) for overlay state machine integration
+- [04-01]: Relative imports in homepage.ts for vitest path resolution (no @/ alias vitest config needed)
+- [04-01]: vi.mock for supabase module to prevent env var validation during test import
+- [04-01]: Single effectiveDeadline === today condition handles all filter cases (no redundant OR)
 - [04-02]: Inline props interface for presentational components (no cross-plan type imports) enabling parallel plan execution
 - [04-02]: SVG donut chart with -rotate-90 for 12 o'clock start, stroke-dasharray/dashoffset for progress
 
@@ -85,6 +88,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-08T01:40:10Z
-Stopped at: Completed 04-02-PLAN.md (Homepage presentational components)
+Last session: 2026-02-08T01:41:53Z
+Stopped at: Completed 04-01-PLAN.md (Homepage data layer TDD)
 Resume file: None
