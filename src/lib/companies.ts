@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase'
-import type { Company } from '@/types/database'
+import type { Company, CompanyWithTasks } from '@/types/database'
 
 /**
  * Fetches all companies with their incomplete (open) task count.
@@ -82,4 +82,24 @@ export async function updateCompany(
   if (error) throw error
 
   return data as Company
+}
+
+/**
+ * Fetches all companies with their full task objects, sorted by name.
+ * Each company's tasks are sorted by deadline ascending.
+ */
+export async function getCompaniesWithTasks(): Promise<CompanyWithTasks[]> {
+  const { data, error } = await supabase
+    .from('companies')
+    .select('*, tasks(*)')
+    .order('name', { ascending: true })
+
+  if (error) throw error
+
+  return (data ?? []).map((company) => ({
+    ...company,
+    tasks: ((company as unknown as CompanyWithTasks).tasks ?? []).sort(
+      (a, b) => a.deadline.localeCompare(b.deadline)
+    ),
+  })) as CompanyWithTasks[]
 }
