@@ -40,11 +40,11 @@ export function GanttTimeline({
   }
 
   return (
-    <div ref={scrollRef} className="overflow-x-auto border rounded-lg">
+    <div ref={scrollRef} className="border rounded-lg">
       <div
         className="grid"
         style={{
-          gridTemplateColumns: `200px repeat(${days.length}, 48px)`,
+          gridTemplateColumns: `180px repeat(${days.length}, 1fr)`,
         }}
       >
         {/* Header row */}

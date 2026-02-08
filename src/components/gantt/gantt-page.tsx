@@ -39,7 +39,7 @@ export function GanttPage() {
   }, [])
 
   const days = useMemo(
-    () => getTimelineRange(anchorDate, 14),
+    () => getTimelineRange(anchorDate, 7),
     [anchorDate]
   )
 

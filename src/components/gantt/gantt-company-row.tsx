@@ -63,7 +63,7 @@ export function GanttCompanyRow({
           <div
             key={day}
             className={cn(
-              'relative border-b border-r h-12 flex items-center justify-center gap-0.5 flex-wrap',
+              'relative border-b border-r h-16 flex items-center justify-center gap-0.5 flex-wrap',
               inWarmup && 'bg-blue-100/40 dark:bg-blue-900/20 border-yellow-400/60',
               goLive && 'bg-red-500/20 dark:bg-red-900/30 border-red-500 border-2',
               isToday && !inWarmup && !goLive && 'bg-blue-50 dark:bg-blue-950/30'

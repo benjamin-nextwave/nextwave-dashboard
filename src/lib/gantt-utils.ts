@@ -10,17 +10,16 @@ import { nl } from 'date-fns/locale/nl'
 
 /**
  * Generate array of 'yyyy-MM-dd' strings for a timeline window
- * starting from Monday of anchorDate's week.
+ * starting from the anchor date.
  */
 export function getTimelineRange(
   anchorDate: string,
-  dayCount: number = 14
+  dayCount: number = 7
 ): string[] {
   const anchor = parseISO(anchorDate)
-  const weekStart = startOfWeek(anchor, { weekStartsOn: 1 })
-  const end = addDays(weekStart, dayCount - 1)
+  const end = addDays(anchor, dayCount - 1)
 
-  return eachDayOfInterval({ start: weekStart, end }).map((d) =>
+  return eachDayOfInterval({ start: anchor, end }).map((d) =>
     format(d, 'yyyy-MM-dd')
   )
 }
