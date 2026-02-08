@@ -5,33 +5,33 @@
 See: .planning/PROJECT.md (updated 2026-02-07)
 
 **Core value:** Every task deadline stays current -- no task ever shows a past date. The daily dashboard always reflects what needs attention today.
-**Current focus:** Phase 2 in progress: Company Management & Default Tasks (3/4 plans complete, 1 remaining)
+**Current focus:** Phase 2 complete: Company Management & Default Tasks. Ready for Phase 3.
 
 ## Current Position
 
 Phase: 2 of 4 (Company Management & Default Tasks)
-Plan: 3 of 4 in current phase
-Status: In progress
-Last activity: 2026-02-08 -- Completed 02-03-PLAN.md (company overview page with card grid and creation dialog)
+Plan: 4 of 4 in current phase
+Status: Phase complete
+Last activity: 2026-02-08 -- Completed 02-04-PLAN.md (company detail page with auto-save)
 
-Progress: [███████░░░] 70%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
+- Total plans completed: 8
 - Average duration: 4.3 min
-- Total execution time: 0.5 hours
+- Total execution time: 0.57 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation-app-shell | 4/4 | 20 min | 5 min |
-| 02-company-management-default-tasks | 3/4 | 11 min | 3.7 min |
+| 02-company-management-default-tasks | 4/4 | 16 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 2 min, 2 min, 4 min, 5 min
+- Last 5 plans: 2 min, 4 min, 5 min, 5 min
 - Trend: stable
 
 *Updated after each plan completion*
@@ -60,6 +60,11 @@ Recent decisions affecting current work:
 - [02-03]: force-dynamic on /bedrijven page to prevent SSR prerender failure when Supabase env vars missing at build time
 - [02-03]: CompanyGrid as client boundary with server component page wrapper
 - [02-03]: Sequential company creation flow: createCompany -> generateDefaultTasks -> insertDefaultTasks
+- [02-04]: useAutoSave hook without 'use client' (hooks consumed by client components don't need directive)
+- [02-04]: Field-level partial update on blur to prevent auto-save race conditions
+- [02-04]: PersonalitySelector triggers save immediately on click (no separate blur event)
+- [02-04]: Date fields kept as YYYY-MM-DD strings throughout (never Date objects)
+- [02-04]: Back navigation via Link (deterministic) not router.back() (history-dependent)
 
 ### Pending Todos
 
@@ -71,6 +76,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-08T00:03:26Z
-Stopped at: Completed 02-03-PLAN.md -- company overview page with card grid and creation dialog
+Last session: 2026-02-08T00:03:13Z
+Stopped at: Completed 02-04-PLAN.md -- company detail page with auto-save
 Resume file: None
