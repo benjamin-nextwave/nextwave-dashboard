@@ -11,7 +11,7 @@ export async function getCompaniesWithOpenTaskCounts(): Promise<
   const { data, error } = await supabase
     .from('companies')
     .select('*, tasks(id, is_completed)')
-    .order('created_at', { ascending: false })
+    .order('name', { ascending: true })
 
   if (error) throw error
 

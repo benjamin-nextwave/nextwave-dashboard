@@ -1,8 +1,11 @@
 'use client'
 
+import { useState } from 'react'
+import { Copy, ExternalLink } from 'lucide-react'
 import type { Company } from '@/types/database'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 interface SectionBasisgegevensProps {
   company: Company
@@ -15,6 +18,15 @@ export function SectionBasisgegevens({
   onFieldChange,
   onFieldBlur,
 }: SectionBasisgegevensProps) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopyEmail = () => {
+    if (!company.email) return
+    navigator.clipboard.writeText(company.email)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
   return (
     <div>
       <h2 className="text-lg font-semibold">Basisgegevens</h2>
@@ -65,15 +77,30 @@ export function SectionBasisgegevens({
 
           <div className="space-y-2">
             <Label htmlFor="email">E-mail klant</Label>
-            <Input
-              id="email"
-              type="email"
-              value={company.email ?? ''}
-              onChange={(e) =>
-                onFieldChange('email', e.target.value || null)
-              }
-              onBlur={(e) => onFieldBlur('email', e.target.value || null)}
-            />
+            <div className="flex gap-2">
+              <Input
+                id="email"
+                type="email"
+                value={company.email ?? ''}
+                onChange={(e) =>
+                  onFieldChange('email', e.target.value || null)
+                }
+                onBlur={(e) => onFieldBlur('email', e.target.value || null)}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="shrink-0"
+                onClick={handleCopyEmail}
+                disabled={!company.email}
+              >
+                <Copy className="size-4" />
+              </Button>
+            </div>
+            {copied && (
+              <p className="text-xs text-green-600">Gekopieerd!</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -87,6 +114,35 @@ export function SectionBasisgegevens({
               }
               onBlur={(e) => onFieldBlur('phone', e.target.value || null)}
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="google_drive_url">Google Drive link</Label>
+            <div className="flex gap-2">
+              <Input
+                id="google_drive_url"
+                type="url"
+                placeholder="https://drive.google.com/..."
+                value={company.google_drive_url ?? ''}
+                onChange={(e) =>
+                  onFieldChange('google_drive_url', e.target.value || null)
+                }
+                onBlur={(e) =>
+                  onFieldBlur('google_drive_url', e.target.value || null)
+                }
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="shrink-0"
+                disabled={!company.google_drive_url}
+                onClick={() => window.open(company.google_drive_url!, '_blank')}
+              >
+                <ExternalLink className="size-4" />
+                Openen
+              </Button>
+            </div>
           </div>
         </div>
       </div>

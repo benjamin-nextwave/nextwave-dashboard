@@ -2,6 +2,14 @@
 
 import { cn } from '@/lib/utils'
 
+const SCORE_EMOJIS: Record<number, string> = {
+  1: '\u{1F621}',
+  2: '\u{1F615}',
+  3: '\u{1F610}',
+  4: '\u{1F642}',
+  5: '\u{1F60A}',
+}
+
 interface PersonalitySelectorProps {
   value: number | null
   onChange: (score: number) => void
@@ -19,13 +27,13 @@ export function PersonalitySelector({
           type="button"
           onClick={() => onChange(score)}
           className={cn(
-            'size-9 rounded-full border-2 text-sm font-medium transition-colors',
+            'size-9 rounded-full border-2 text-lg transition-colors',
             value === score
-              ? 'bg-primary text-primary-foreground border-primary'
-              : 'border-border hover:border-primary/50 text-muted-foreground'
+              ? 'bg-primary/10 border-primary'
+              : 'border-border hover:border-primary/50'
           )}
         >
-          {score}
+          {SCORE_EMOJIS[score]}
         </button>
       ))}
     </div>

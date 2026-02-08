@@ -22,6 +22,8 @@ import { SectionBasisgegevens } from './section-basisgegevens'
 import { SectionKlantprofiel } from './section-klantprofiel'
 import { SectionMailvarianten } from './section-mailvarianten'
 import { SectionFeedback } from './section-feedback'
+import { SectionRecurringTasks } from './section-recurring-tasks'
+import { SectionWarmupProgress } from './section-warmup-progress'
 
 interface CompanyDetailPageProps {
   companyId: string
@@ -176,6 +178,20 @@ export function CompanyDetailPage({ companyId }: CompanyDetailPageProps) {
         onFieldChange={onFieldChange}
         onFieldBlur={onFieldBlur}
       />
+
+      <Separator />
+
+      {/* Section: Terugkerende taken */}
+      <SectionRecurringTasks
+        company={company}
+        onFieldChange={onFieldChange}
+        onFieldBlur={onFieldBlur}
+      />
+
+      <Separator />
+
+      {/* Section: Warmup Voortgang */}
+      <SectionWarmupProgress company={company} />
 
       <Separator />
 

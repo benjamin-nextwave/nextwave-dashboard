@@ -18,6 +18,11 @@ export type Company = {
   feedback_mailvarianten: string | null
   toekomstige_wensen: string | null
   extra_notes: string | null
+  google_drive_url: string | null
+  rapport_date: number | null
+  scrape_date_1: number | null
+  scrape_date_2: number | null
+  scrape_date_3: number | null
   created_at: string
   updated_at: string
 }
@@ -71,6 +76,11 @@ type CompanyInsert = {
   feedback_mailvarianten?: string | null
   toekomstige_wensen?: string | null
   extra_notes?: string | null
+  google_drive_url?: string | null
+  rapport_date?: number | null
+  scrape_date_1?: number | null
+  scrape_date_2?: number | null
+  scrape_date_3?: number | null
 }
 
 // Supabase Database type for typed client
