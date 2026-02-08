@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+import { Plus } from 'lucide-react'
 import { useToday } from '@/lib/today-provider'
 import {
   getTodayTasksWithCompany,
@@ -9,16 +10,19 @@ import {
   type TodayTask,
 } from '@/lib/homepage'
 import { getMeetingsForToday } from '@/lib/meetings'
+import { Button } from '@/components/ui/button'
 import { DailyHeader } from '@/components/homepage/daily-header'
 import { ProgressDonut } from '@/components/homepage/progress-donut'
 import { TodayTaskList } from '@/components/homepage/today-task-list'
 import { TodayMeetings } from '@/components/homepage/today-meetings'
+import { HomepageTaskCreateDialog } from '@/components/homepage/task-create-dialog'
 import { TaskEditDialog } from '@/components/gantt/task-edit-dialog'
 import type { Task, MeetingWithCompany } from '@/types/database'
 
 type OverlayState =
   | { type: 'none' }
   | { type: 'editTask'; task: Task }
+  | { type: 'createTask' }
 
 export function Homepage() {
   const today = useToday()
@@ -70,7 +74,13 @@ export function Homepage() {
     <div className="space-y-6">
       <div className="flex items-start justify-between">
         <DailyHeader />
-        <ProgressDonut completed={completedCount} total={tasks.length} />
+        <div className="flex items-center gap-3">
+          <Button onClick={() => setOverlay({ type: 'createTask' })}>
+            <Plus className="size-4" />
+            Nieuwe taak
+          </Button>
+          <ProgressDonut completed={completedCount} total={tasks.length} />
+        </div>
       </div>
 
       {loading ? (
@@ -85,6 +95,12 @@ export function Homepage() {
         task={overlay.type === 'editTask' ? overlay.task : null}
         onClose={onCloseOverlay}
         onSaved={refreshData}
+      />
+
+      <HomepageTaskCreateDialog
+        open={overlay.type === 'createTask'}
+        onClose={onCloseOverlay}
+        onCreated={refreshData}
       />
     </div>
   )
