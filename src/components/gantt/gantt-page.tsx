@@ -7,6 +7,9 @@ import { getCompaniesWithTasks } from '@/lib/companies'
 import { getTimelineRange } from '@/lib/gantt-utils'
 import { GanttHeader } from '@/components/gantt/gantt-header'
 import { GanttTimeline } from '@/components/gantt/gantt-timeline'
+import { TaskEditDialog } from '@/components/gantt/task-edit-dialog'
+import { TaskCreateDialog } from '@/components/gantt/task-create-dialog'
+import { CompanyTasksDialog } from '@/components/gantt/company-tasks-dialog'
 import type { CompanyWithTasks, Task } from '@/types/database'
 
 type OverlayState =
@@ -67,11 +70,6 @@ export function GanttPage() {
     setOverlay({ type: 'none' })
   }, [])
 
-  // overlay, refreshData, and onCloseOverlay will be used by dialogs in Plan 03
-  void overlay
-  void refreshData
-  void onCloseOverlay
-
   return (
     <div className="space-y-4">
       <GanttHeader
@@ -92,6 +90,23 @@ export function GanttPage() {
           onAddTask={onAddTask}
         />
       )}
+
+      <TaskEditDialog
+        task={overlay.type === 'editTask' ? overlay.task : null}
+        onClose={onCloseOverlay}
+        onSaved={refreshData}
+      />
+      <TaskCreateDialog
+        companyId={overlay.type === 'createTask' ? overlay.companyId : null}
+        onClose={onCloseOverlay}
+        onCreated={refreshData}
+      />
+      <CompanyTasksDialog
+        company={overlay.type === 'companyTasks' ? overlay.company : null}
+        today={today}
+        onClose={onCloseOverlay}
+        onEditTask={(task) => setOverlay({ type: 'editTask', task })}
+      />
     </div>
   )
 }
