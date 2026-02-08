@@ -1,7 +1,8 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { Plus } from 'lucide-react'
+import Link from 'next/link'
+import { Plus, PartyPopper } from 'lucide-react'
 import { useToday } from '@/lib/today-provider'
 import {
   getTodayTasksWithCompany,
@@ -69,6 +70,7 @@ export function Homepage() {
   }, [])
 
   const completedCount = tasks.filter((t) => t.task.is_completed).length
+  const allCompleted = tasks.length > 0 && completedCount === tasks.length
 
   return (
     <div className="space-y-6">
@@ -79,7 +81,17 @@ export function Homepage() {
             <Plus className="size-4" />
             Nieuwe taak
           </Button>
-          <ProgressDonut completed={completedCount} total={tasks.length} />
+          {allCompleted ? (
+            <Link
+              href="/ontspanning"
+              className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 px-4 py-2.5 text-sm font-medium text-white shadow-lg animate-pulse hover:shadow-xl hover:scale-105 transition-all"
+            >
+              <PartyPopper className="size-4" />
+              Het tikken kan elders genoten worden
+            </Link>
+          ) : (
+            <ProgressDonut completed={completedCount} total={tasks.length} />
+          )}
         </div>
       </div>
 
