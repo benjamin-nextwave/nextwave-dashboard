@@ -80,6 +80,12 @@ Plans:
   2. The task list displays all tasks with effective deadline of today (including overdue tasks rolled forward), each showing company name, task title, and a red overdue badge (-1, -2 etc.) when applicable
   3. Completed tasks appear with strikethrough and green checkmark; tasks are sorted with urgent first, then most overdue first, then alphabetical
   4. Clicking a task on the homepage opens the same edit overlay used in the Gantt view, allowing edits without leaving the homepage
+**Plans**: 3 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — Homepage data layer with TDD: task fetch, filter, and sort logic
+- [ ] 04-02-PLAN.md — Presentational UI components: DailyHeader, ProgressDonut, TodayTaskRow
+- [ ] 04-03-PLAN.md — Page assembly: wire data layer + UI components + TaskEditDialog overlay
 
 ## Progress
 
@@ -91,4 +97,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | 1. Foundation & App Shell | 4/4 | ✓ Complete | 2026-02-07 |
 | 2. Company Management & Default Tasks | 4/4 | ✓ Complete | 2026-02-08 |
 | 3. Gantt Chart & Task Management | 3/3 | Complete | 2026-02-08 |
-| 4. Homepage & Daily Overview | 0/TBD | Not started | - |
+| 4. Homepage & Daily Overview | 0/3 | Not started | - |
