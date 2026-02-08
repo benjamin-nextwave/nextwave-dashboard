@@ -1,8 +1,11 @@
-export default function GanttPage() {
+import { GanttPage } from '@/components/gantt/gantt-page'
+
+export const dynamic = 'force-dynamic'
+
+export default function GanttRoute() {
   return (
     <main className="p-6">
-      <h1 className="text-2xl font-bold">Gantt</h1>
-      <p className="text-muted-foreground mt-2">Gantt-weergave wordt hier gebouwd in Fase 3.</p>
+      <GanttPage />
     </main>
   )
 }
