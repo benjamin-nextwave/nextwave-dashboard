@@ -32,10 +32,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 4 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Scaffold Next.js 16 project with shadcn/ui, database types, and Supabase client
-- [ ] 01-02-PLAN.md — Date utilities with Dutch locale/Amsterdam timezone and dark/light theme system
-- [ ] 01-03-PLAN.md — Overdue-rolling computation (TDD)
-- [ ] 01-04-PLAN.md — Navigation, page shells, and root layout assembly with providers
+- [x] 01-01-PLAN.md — Scaffold Next.js 16 project with shadcn/ui, database types, and Supabase client
+- [x] 01-02-PLAN.md — Date utilities with Dutch locale/Amsterdam timezone and dark/light theme system
+- [x] 01-03-PLAN.md — Overdue-rolling computation (TDD)
+- [x] 01-04-PLAN.md — Navigation, page shells, and root layout assembly with providers
 
 ### Phase 2: Company Management & Default Tasks
 **Goal**: Users can create, view, edit, and manage companies with all client profile fields, and every new company automatically receives 6 correctly-configured default tasks
@@ -64,12 +64,12 @@ Plans:
   3. Clicking a task marker opens an edit overlay with editable title, urgency toggle, notes, completion checkbox, save/cancel, and delete with confirmation; clicking a company name opens an overlay listing all its tasks
   4. The "+ Nieuwe taak" button on each company row creates a new task with title and deadline fields, and the task immediately appears on the Gantt timeline
   5. Arrow buttons and horizontal scroll navigate the timeline, and a "Vandaag" button jumps back to the current date view (default view shows 14 days starting from current week)
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
-- [ ] 03-03: TBD
+- [ ] 03-01-PLAN.md — shadcn/ui components, task CRUD data access, and gantt-utils timeline utilities
+- [ ] 03-02-PLAN.md — Gantt chart CSS Grid layout with sticky sidebar, company rows, warmup bars, task markers, and timeline navigation
+- [ ] 03-03-PLAN.md — Task edit, task create, and company tasks dialog overlays wired into Gantt page
 
 ### Phase 4: Homepage & Daily Overview
 **Goal**: Users open the dashboard and immediately see what needs attention today -- a Dutch date header, a progress donut, and a sorted list of today's tasks with overdue badges
@@ -90,5 +90,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 |-------|----------------|--------|-----------|
 | 1. Foundation & App Shell | 4/4 | ✓ Complete | 2026-02-07 |
 | 2. Company Management & Default Tasks | 4/4 | ✓ Complete | 2026-02-08 |
-| 3. Gantt Chart & Task Management | 0/TBD | Not started | - |
+| 3. Gantt Chart & Task Management | 0/3 | In progress | - |
 | 4. Homepage & Daily Overview | 0/TBD | Not started | - |
