@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-07)
 
 **Core value:** Every task deadline stays current -- no task ever shows a past date. The daily dashboard always reflects what needs attention today.
-**Current focus:** Phase 2 complete. Ready for Phase 3: Gantt Chart & Task Management
+**Current focus:** Phase 3: Gantt Chart & Task Management -- Plan 1 complete, data foundation ready
 
 ## Current Position
 
-Phase: 2 of 4 (Company Management & Default Tasks) -- COMPLETE
-Plan: 4 of 4 in current phase
-Status: Phase complete, verified (8/8 must-haves)
-Last activity: 2026-02-08 -- Completed 02-04-PLAN.md (company detail page with auto-save)
+Phase: 3 of 4 (Gantt Chart & Task Management)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-02-08 -- Completed 03-01-PLAN.md (data foundation & utilities)
 
-Progress: [████████░░] 80%
+Progress: [█████████░] 90%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
-- Average duration: 4.3 min
-- Total execution time: 0.57 hours
+- Total plans completed: 9
+- Average duration: 4.1 min
+- Total execution time: 0.62 hours
 
 **By Phase:**
 
@@ -29,10 +29,11 @@ Progress: [████████░░] 80%
 |-------|-------|-------|----------|
 | 01-foundation-app-shell | 4/4 | 20 min | 5 min |
 | 02-company-management-default-tasks | 4/4 | 16 min | 4 min |
+| 03-gantt-chart-task-management | 1/3 | 3 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 2 min, 4 min, 5 min, 5 min
-- Trend: stable
+- Last 5 plans: 4 min, 5 min, 5 min, 2 min, 3 min
+- Trend: stable/improving
 
 *Updated after each plan completion*
 
@@ -65,6 +66,8 @@ Recent decisions affecting current work:
 - [02-04]: PersonalitySelector triggers save immediately on click (no separate blur event)
 - [02-04]: Date fields kept as YYYY-MM-DD strings throughout (never Date objects)
 - [02-04]: Back navigation via Link (deterministic) not router.back() (history-dependent)
+- [03-01]: CompanyWithTasks type assertion via intermediate unknown cast for Supabase embedded relations
+- [03-01]: gantt-utils as pure module (no 'use client') -- consistent with dates.ts pattern
 
 ### Pending Todos
 
@@ -76,6 +79,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-08T01:10:00Z
-Stopped at: Phase 2 complete -- all 4 plans executed, verified 8/8 must-haves
+Last session: 2026-02-08T00:41:00Z
+Stopped at: Completed 03-01-PLAN.md (data foundation & utilities)
 Resume file: None
