@@ -1,6 +1,6 @@
 import { Plus } from 'lucide-react'
 import { computeOverdue } from '@/lib/overdue'
-import { isDateInRange } from '@/lib/gantt-utils'
+import { isDateInWarmup, isGoLiveDate } from '@/lib/gantt-utils'
 import { cn } from '@/lib/utils'
 import { TaskMarker } from '@/components/gantt/task-marker'
 import type { CompanyWithTasks, Task } from '@/types/database'
@@ -45,11 +45,8 @@ export function GanttCompanyRow({
 
       {/* Day cells */}
       {days.map((day) => {
-        const isInWarmup = isDateInRange(
-          day,
-          company.warmup_start_date,
-          company.go_live_date
-        )
+        const inWarmup = isDateInWarmup(day, company.warmup_start_date)
+        const goLive = isGoLiveDate(day, company.go_live_date)
         const isToday = day === today
 
         // Find tasks whose effective deadline falls on this day
@@ -67,8 +64,9 @@ export function GanttCompanyRow({
             key={day}
             className={cn(
               'relative border-b border-r h-12 flex items-center justify-center gap-0.5 flex-wrap',
-              isInWarmup && 'bg-blue-100/40 dark:bg-blue-900/20',
-              isToday && 'bg-blue-50 dark:bg-blue-950/30'
+              inWarmup && 'bg-blue-100/40 dark:bg-blue-900/20 border-yellow-400 border-2',
+              goLive && 'bg-red-500/20 dark:bg-red-900/30 border-red-500 border-2',
+              isToday && !inWarmup && !goLive && 'bg-blue-50 dark:bg-blue-950/30'
             )}
           >
             {tasksForDay.map((task) => (

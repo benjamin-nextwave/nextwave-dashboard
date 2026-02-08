@@ -33,17 +33,27 @@ export function getColumnIndex(dateStr: string, rangeStart: string): number {
 }
 
 /**
- * Check if a date falls within a start/end interval (inclusive).
+ * Check if a date falls within the warmup period (always 14 days from start).
  * Uses string comparison (yyyy-MM-dd format).
  */
-export function isDateInRange(
+export function isDateInWarmup(
   date: string,
-  start: string | null,
-  end: string | null
+  warmupStart: string | null
 ): boolean {
-  if (!start) return false
-  if (!end) return date >= start // Ongoing warmup with no go-live set
-  return date >= start && date <= end
+  if (!warmupStart) return false
+  const end = format(addDays(parseISO(warmupStart), 13), 'yyyy-MM-dd')
+  return date >= warmupStart && date <= end
+}
+
+/**
+ * Check if a date is the go-live date.
+ */
+export function isGoLiveDate(
+  date: string,
+  goLiveDate: string | null
+): boolean {
+  if (!goLiveDate) return false
+  return date === goLiveDate
 }
 
 /**

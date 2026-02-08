@@ -8,6 +8,7 @@ interface TodayTaskRowProps {
   companyName: string
   title: string
   isCompleted: boolean
+  isUrgent: boolean
   isOverdue: boolean
   daysOverdue: number
   onClick: () => void
@@ -17,6 +18,7 @@ export function TodayTaskRow({
   companyName,
   title,
   isCompleted,
+  isUrgent,
   isOverdue,
   daysOverdue,
   onClick,
@@ -33,14 +35,21 @@ export function TodayTaskRow({
         )}
         <div className="min-w-0">
           <p className="text-xs text-muted-foreground">{companyName}</p>
-          <p
-            className={cn(
-              'text-sm text-foreground',
-              isCompleted && 'text-muted-foreground line-through'
+          <div className="flex items-center gap-2">
+            <p
+              className={cn(
+                'text-sm text-foreground',
+                isCompleted && 'text-muted-foreground line-through'
+              )}
+            >
+              {title}
+            </p>
+            {isUrgent && !isCompleted && (
+              <Badge className="bg-orange-500 text-white hover:bg-orange-500 text-xs px-1.5 py-0">
+                Urgent
+              </Badge>
             )}
-          >
-            {title}
-          </p>
+          </div>
         </div>
       </div>
       {isOverdue && (

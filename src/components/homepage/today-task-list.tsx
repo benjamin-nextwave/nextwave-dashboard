@@ -26,6 +26,7 @@ export function TodayTaskList({ tasks, onTaskClick }: TodayTaskListProps) {
           companyName={todayTask.companyName}
           title={todayTask.task.title}
           isCompleted={todayTask.task.is_completed}
+          isUrgent={todayTask.task.is_urgent}
           isOverdue={todayTask.overdue.isOverdue}
           daysOverdue={todayTask.overdue.daysOverdue}
           onClick={() => onTaskClick(todayTask.task)}
