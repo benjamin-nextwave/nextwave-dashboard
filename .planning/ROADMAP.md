@@ -12,8 +12,8 @@ This roadmap delivers a personal client management dashboard for a cold email ag
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation & App Shell** - Database, Supabase client, date utilities, overdue logic, dark mode, navigation, and global styling
-- [ ] **Phase 2: Company Management & Default Tasks** - Company CRUD with detail pages, auto-save, and automatic default task generation on company creation
+- [x] **Phase 1: Foundation & App Shell** - Database, Supabase client, date utilities, overdue logic, dark mode, navigation, and global styling
+- [x] **Phase 2: Company Management & Default Tasks** - Company CRUD with detail pages, auto-save, and automatic default task generation on company creation
 - [ ] **Phase 3: Gantt Chart & Task Management** - Custom Gantt timeline with company warmup bars, task markers, task CRUD via overlays, and timeline navigation
 - [ ] **Phase 4: Homepage & Daily Overview** - Today's task list with overdue-rolling display, progress donut chart, and task interaction
 
@@ -52,7 +52,7 @@ Plans:
 - [x] 02-01-PLAN.md — Default task generation logic (TDD)
 - [x] 02-02-PLAN.md — shadcn/ui component install and Supabase data access layer
 - [x] 02-03-PLAN.md — Company overview page with card grid and creation dialog
-- [ ] 02-04-PLAN.md — Company detail page with 4 sections, auto-save, and back navigation
+- [x] 02-04-PLAN.md — Company detail page with 4 sections, auto-save, and back navigation
 
 ### Phase 3: Gantt Chart & Task Management
 **Goal**: Users can visualize all company warmup timelines on a horizontal Gantt chart, see task markers at their deadline positions, and create/edit/complete/delete tasks directly from the Gantt view
@@ -88,7 +88,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & App Shell | 0/4 | Planning complete | - |
-| 2. Company Management & Default Tasks | 3/4 | In progress | - |
+| 1. Foundation & App Shell | 4/4 | ✓ Complete | 2026-02-07 |
+| 2. Company Management & Default Tasks | 4/4 | ✓ Complete | 2026-02-08 |
 | 3. Gantt Chart & Task Management | 0/TBD | Not started | - |
 | 4. Homepage & Daily Overview | 0/TBD | Not started | - |
