@@ -68,7 +68,7 @@ Plans:
 
 Plans:
 - [x] 03-01-PLAN.md — shadcn/ui components, task CRUD data access, and gantt-utils timeline utilities
-- [ ] 03-02-PLAN.md — Gantt chart CSS Grid layout with sticky sidebar, company rows, warmup bars, task markers, and timeline navigation
+- [x] 03-02-PLAN.md — Gantt chart CSS Grid layout with sticky sidebar, company rows, warmup bars, task markers, and timeline navigation
 - [ ] 03-03-PLAN.md — Task edit, task create, and company tasks dialog overlays wired into Gantt page
 
 ### Phase 4: Homepage & Daily Overview
@@ -90,5 +90,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 |-------|----------------|--------|-----------|
 | 1. Foundation & App Shell | 4/4 | ✓ Complete | 2026-02-07 |
 | 2. Company Management & Default Tasks | 4/4 | ✓ Complete | 2026-02-08 |
-| 3. Gantt Chart & Task Management | 1/3 | In progress | - |
+| 3. Gantt Chart & Task Management | 2/3 | In progress | - |
 | 4. Homepage & Daily Overview | 0/TBD | Not started | - |

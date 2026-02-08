@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-07)
 
 **Core value:** Every task deadline stays current -- no task ever shows a past date. The daily dashboard always reflects what needs attention today.
-**Current focus:** Phase 3: Gantt Chart & Task Management -- Plan 1 complete, data foundation ready
+**Current focus:** Phase 3: Gantt Chart & Task Management -- Plan 2 complete, Gantt chart visually rendered
 
 ## Current Position
 
 Phase: 3 of 4 (Gantt Chart & Task Management)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-02-08 -- Completed 03-01-PLAN.md (data foundation & utilities)
+Last activity: 2026-02-08 -- Completed 03-02-PLAN.md (Gantt chart CSS Grid layout)
 
-Progress: [█████████░] 90%
+Progress: [██████████░] 91%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
-- Average duration: 4.1 min
-- Total execution time: 0.62 hours
+- Total plans completed: 10
+- Average duration: 3.9 min
+- Total execution time: 0.67 hours
 
 **By Phase:**
 
@@ -29,10 +29,10 @@ Progress: [█████████░] 90%
 |-------|-------|-------|----------|
 | 01-foundation-app-shell | 4/4 | 20 min | 5 min |
 | 02-company-management-default-tasks | 4/4 | 16 min | 4 min |
-| 03-gantt-chart-task-management | 1/3 | 3 min | 3 min |
+| 03-gantt-chart-task-management | 2/3 | 6 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 4 min, 5 min, 5 min, 2 min, 3 min
+- Last 5 plans: 5 min, 5 min, 2 min, 3 min, 3 min
 - Trend: stable/improving
 
 *Updated after each plan completion*
@@ -68,6 +68,8 @@ Recent decisions affecting current work:
 - [02-04]: Back navigation via Link (deterministic) not router.back() (history-dependent)
 - [03-01]: CompanyWithTasks type assertion via intermediate unknown cast for Supabase embedded relations
 - [03-01]: gantt-utils as pure module (no 'use client') -- consistent with dates.ts pattern
+- [03-02]: React Fragment for GanttCompanyRow (renders grid cells directly into parent grid)
+- [03-02]: Overlay state machine defined in GanttPage, dialogs deferred to Plan 03
 
 ### Pending Todos
 
@@ -79,6 +81,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-08T00:41:00Z
-Stopped at: Completed 03-01-PLAN.md (data foundation & utilities)
+Last session: 2026-02-08T00:48:00Z
+Stopped at: Completed 03-02-PLAN.md (Gantt chart CSS Grid layout)
 Resume file: None
