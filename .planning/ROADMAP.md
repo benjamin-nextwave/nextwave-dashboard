@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & App Shell** - Database, Supabase client, date utilities, overdue logic, dark mode, navigation, and global styling
 - [x] **Phase 2: Company Management & Default Tasks** - Company CRUD with detail pages, auto-save, and automatic default task generation on company creation
-- [ ] **Phase 3: Gantt Chart & Task Management** - Custom Gantt timeline with company warmup bars, task markers, task CRUD via overlays, and timeline navigation
+- [x] **Phase 3: Gantt Chart & Task Management** - Custom Gantt timeline with company warmup bars, task markers, task CRUD via overlays, and timeline navigation
 - [ ] **Phase 4: Homepage & Daily Overview** - Today's task list with overdue-rolling display, progress donut chart, and task interaction
 
 ## Phase Details
@@ -69,7 +69,7 @@ Plans:
 Plans:
 - [x] 03-01-PLAN.md — shadcn/ui components, task CRUD data access, and gantt-utils timeline utilities
 - [x] 03-02-PLAN.md — Gantt chart CSS Grid layout with sticky sidebar, company rows, warmup bars, task markers, and timeline navigation
-- [ ] 03-03-PLAN.md — Task edit, task create, and company tasks dialog overlays wired into Gantt page
+- [x] 03-03-PLAN.md — Task edit, task create, and company tasks dialog overlays wired into Gantt page
 
 ### Phase 4: Homepage & Daily Overview
 **Goal**: Users open the dashboard and immediately see what needs attention today -- a Dutch date header, a progress donut, and a sorted list of today's tasks with overdue badges
@@ -90,5 +90,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 |-------|----------------|--------|-----------|
 | 1. Foundation & App Shell | 4/4 | ✓ Complete | 2026-02-07 |
 | 2. Company Management & Default Tasks | 4/4 | ✓ Complete | 2026-02-08 |
-| 3. Gantt Chart & Task Management | 2/3 | In progress | - |
+| 3. Gantt Chart & Task Management | 3/3 | Complete | 2026-02-08 |
 | 4. Homepage & Daily Overview | 0/TBD | Not started | - |

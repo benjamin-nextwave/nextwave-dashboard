@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-07)
 
 **Core value:** Every task deadline stays current -- no task ever shows a past date. The daily dashboard always reflects what needs attention today.
-**Current focus:** Phase 3: Gantt Chart & Task Management -- Plan 2 complete, Gantt chart visually rendered
+**Current focus:** Phase 3 COMPLETE. Ready for Phase 4: Homepage & Daily Overview
 
 ## Current Position
 
-Phase: 3 of 4 (Gantt Chart & Task Management)
-Plan: 2 of 3 in current phase
-Status: In progress
-Last activity: 2026-02-08 -- Completed 03-02-PLAN.md (Gantt chart CSS Grid layout)
+Phase: 3 of 4 (Gantt Chart & Task Management) -- COMPLETE
+Plan: 3 of 3 in current phase -- COMPLETE
+Status: Phase 3 complete, ready for Phase 4
+Last activity: 2026-02-08 -- Completed 03-03-PLAN.md (Task dialog overlays)
 
-Progress: [██████████░] 91%
+Progress: [███████████░] 92%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
-- Average duration: 3.9 min
-- Total execution time: 0.67 hours
+- Total plans completed: 11
+- Average duration: 3.7 min
+- Total execution time: 0.69 hours
 
 **By Phase:**
 
@@ -29,10 +29,10 @@ Progress: [██████████░] 91%
 |-------|-------|-------|----------|
 | 01-foundation-app-shell | 4/4 | 20 min | 5 min |
 | 02-company-management-default-tasks | 4/4 | 16 min | 4 min |
-| 03-gantt-chart-task-management | 2/3 | 6 min | 3 min |
+| 03-gantt-chart-task-management | 3/3 | 9 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 5 min, 5 min, 2 min, 3 min, 3 min
+- Last 5 plans: 5 min, 2 min, 3 min, 3 min, 3 min
 - Trend: stable/improving
 
 *Updated after each plan completion*
@@ -69,7 +69,8 @@ Recent decisions affecting current work:
 - [03-01]: CompanyWithTasks type assertion via intermediate unknown cast for Supabase embedded relations
 - [03-01]: gantt-utils as pure module (no 'use client') -- consistent with dates.ts pattern
 - [03-02]: React Fragment for GanttCompanyRow (renders grid cells directly into parent grid)
-- [03-02]: Overlay state machine defined in GanttPage, dialogs deferred to Plan 03
+- [03-02]: Overlay state machine defined in GanttPage, dialogs wired in Plan 03
+- [03-03]: Null-prop dialog open pattern (prop null = closed, non-null = open) for overlay state machine integration
 
 ### Pending Todos
 
@@ -81,6 +82,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-08T00:48:00Z
-Stopped at: Completed 03-02-PLAN.md (Gantt chart CSS Grid layout)
+Last session: 2026-02-08T00:55:00Z
+Stopped at: Completed 03-03-PLAN.md (Task dialog overlays) -- Phase 3 COMPLETE
 Resume file: None
