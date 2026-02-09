@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button'
 import { DailyHeader } from '@/components/homepage/daily-header'
 import { ProgressDonut } from '@/components/homepage/progress-donut'
 import { PriorityAlerts } from '@/components/homepage/priority-alerts'
+import { TaskFilters, isWarmupTask } from '@/components/homepage/task-filters'
 import { TodayTaskList } from '@/components/homepage/today-task-list'
 import { TodayMeetings } from '@/components/homepage/today-meetings'
 import { HomepageTaskCreateDialog } from '@/components/homepage/task-create-dialog'
@@ -35,6 +36,8 @@ export function Homepage() {
   const [loading, setLoading] = useState(true)
   const [meetingsLoading, setMeetingsLoading] = useState(true)
   const [overlay, setOverlay] = useState<OverlayState>({ type: 'none' })
+  const [companyFilter, setCompanyFilter] = useState('')
+  const [warmupOnly, setWarmupOnly] = useState(false)
 
   const loadData = useCallback(async () => {
     const raw = await getTodayTasksWithCompany(today)
@@ -94,6 +97,14 @@ export function Homepage() {
   const completedCount = importantTasks.filter((t) => t.task.is_completed).length
   const allCompleted = importantTasks.length > 0 && completedCount === importantTasks.length
 
+  const filteredTasks = tasks.filter((t) => {
+    if (companyFilter && t.task.company_id !== companyFilter) return false
+    if (warmupOnly && !isWarmupTask(t.task.title)) return false
+    return true
+  })
+
+  const hasActiveFilter = companyFilter !== '' || warmupOnly
+
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between">
@@ -121,10 +132,25 @@ export function Homepage() {
 
       <TodayMeetings meetings={meetings} loading={meetingsLoading} />
 
+      {!loading && tasks.length > 0 && (
+        <TaskFilters
+          tasks={tasks}
+          companyFilter={companyFilter}
+          warmupOnly={warmupOnly}
+          onCompanyFilterChange={setCompanyFilter}
+          onWarmupOnlyChange={setWarmupOnly}
+          onClearFilters={() => { setCompanyFilter(''); setWarmupOnly(false) }}
+        />
+      )}
+
       {loading ? (
         <p className="text-muted-foreground">Laden...</p>
       ) : (
-        <TodayTaskList tasks={tasks} onTaskClick={onTaskClick} onMarkNotImportant={onMarkNotImportant} />
+        <TodayTaskList
+          tasks={hasActiveFilter ? filteredTasks : tasks}
+          onTaskClick={onTaskClick}
+          onMarkNotImportant={onMarkNotImportant}
+        />
       )}
 
       <TaskEditDialog
