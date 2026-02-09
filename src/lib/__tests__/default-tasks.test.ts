@@ -140,6 +140,7 @@ describe('generateDefaultTasks', () => {
         is_completed: false,
         is_urgent: false,
         is_date_editable: false,
+        is_not_important: false,
         notes: null,
       },
       {
@@ -149,6 +150,7 @@ describe('generateDefaultTasks', () => {
         is_completed: false,
         is_urgent: false,
         is_date_editable: true,
+        is_not_important: false,
         notes: null,
       },
       {
@@ -158,6 +160,7 @@ describe('generateDefaultTasks', () => {
         is_completed: false,
         is_urgent: false,
         is_date_editable: false,
+        is_not_important: false,
         notes: null,
       },
       {
@@ -167,6 +170,7 @@ describe('generateDefaultTasks', () => {
         is_completed: false,
         is_urgent: false,
         is_date_editable: false,
+        is_not_important: false,
         notes: null,
       },
       {
@@ -176,6 +180,7 @@ describe('generateDefaultTasks', () => {
         is_completed: false,
         is_urgent: false,
         is_date_editable: false,
+        is_not_important: false,
         notes: null,
       },
       {
@@ -185,6 +190,7 @@ describe('generateDefaultTasks', () => {
         is_completed: false,
         is_urgent: false,
         is_date_editable: false,
+        is_not_important: false,
         notes: null,
       },
     ])

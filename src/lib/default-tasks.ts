@@ -42,6 +42,7 @@ export function generateDefaultTasks(
     is_completed: false,
     is_urgent: false,
     is_date_editable: definition.is_date_editable,
+    is_not_important: false,
     notes: null,
   }))
 }

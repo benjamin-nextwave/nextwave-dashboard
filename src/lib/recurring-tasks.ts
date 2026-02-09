@@ -176,6 +176,7 @@ export async function ensureRecurringTasks(todayISO: string): Promise<void> {
           is_completed: false,
           is_urgent: false,
           is_date_editable: true,
+          is_not_important: false,
           notes: null,
         })
       }

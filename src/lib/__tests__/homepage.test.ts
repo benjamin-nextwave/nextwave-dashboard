@@ -19,6 +19,7 @@ function makeTask(overrides: Partial<Task> & { title: string; deadline: string }
     is_completed: overrides.is_completed ?? false,
     is_urgent: overrides.is_urgent ?? false,
     is_date_editable: overrides.is_date_editable ?? true,
+    is_not_important: overrides.is_not_important ?? false,
     company_id: overrides.company_id ?? 'company-1',
     notes: overrides.notes ?? null,
     created_at: overrides.created_at ?? '2025-01-01T00:00:00Z',

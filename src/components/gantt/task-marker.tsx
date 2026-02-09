@@ -13,9 +13,11 @@ export function TaskMarker({ task, today, onClick }: TaskMarkerProps) {
 
   const colorClass = task.is_completed
     ? 'bg-green-500 border-green-600'
-    : task.is_urgent
-      ? 'bg-orange-500 border-orange-600'
-      : 'bg-red-500 border-red-600'
+    : task.is_not_important
+      ? 'bg-purple-500 border-purple-600'
+      : task.is_urgent
+        ? 'bg-orange-500 border-orange-600'
+        : 'bg-red-500 border-red-600'
 
   return (
     <button

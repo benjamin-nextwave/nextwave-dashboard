@@ -20,6 +20,7 @@ import { TodayMeetings } from '@/components/homepage/today-meetings'
 import { HomepageTaskCreateDialog } from '@/components/homepage/task-create-dialog'
 import { TaskEditDialog } from '@/components/gantt/task-edit-dialog'
 import { useRecurringTasks } from '@/hooks/use-recurring-tasks'
+import { updateTask } from '@/lib/tasks'
 import type { Task, MeetingWithCompany } from '@/types/database'
 
 type OverlayState =
@@ -74,8 +75,24 @@ export function Homepage() {
     setOverlay({ type: 'none' })
   }, [])
 
-  const completedCount = tasks.filter((t) => t.task.is_completed).length
-  const allCompleted = tasks.length > 0 && completedCount === tasks.length
+  const onMarkNotImportant = useCallback(async (taskId: string) => {
+    try {
+      await updateTask(taskId, { is_not_important: true })
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.task.id === taskId
+            ? { ...t, task: { ...t.task, is_not_important: true } }
+            : t
+        )
+      )
+    } catch (error) {
+      console.error('Failed to mark task as not important:', error)
+    }
+  }, [])
+
+  const importantTasks = tasks.filter((t) => !t.task.is_not_important)
+  const completedCount = importantTasks.filter((t) => t.task.is_completed).length
+  const allCompleted = importantTasks.length > 0 && completedCount === importantTasks.length
 
   return (
     <div className="space-y-6">
@@ -95,7 +112,7 @@ export function Homepage() {
               Het tikken kan elders genoten worden
             </Link>
           ) : (
-            <ProgressDonut completed={completedCount} total={tasks.length} />
+            <ProgressDonut completed={completedCount} total={importantTasks.length} />
           )}
         </div>
       </div>
@@ -105,7 +122,7 @@ export function Homepage() {
       {loading ? (
         <p className="text-muted-foreground">Laden...</p>
       ) : (
-        <TodayTaskList tasks={tasks} onTaskClick={onTaskClick} />
+        <TodayTaskList tasks={tasks} onTaskClick={onTaskClick} onMarkNotImportant={onMarkNotImportant} />
       )}
 
       <TodayMeetings meetings={meetings} loading={meetingsLoading} />

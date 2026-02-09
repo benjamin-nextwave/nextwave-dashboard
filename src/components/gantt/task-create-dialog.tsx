@@ -47,6 +47,7 @@ export function TaskCreateDialog({
         is_completed: false,
         is_urgent: false,
         is_date_editable: true,
+        is_not_important: false,
         notes: null,
       })
       onCreated()

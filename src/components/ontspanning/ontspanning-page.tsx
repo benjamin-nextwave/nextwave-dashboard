@@ -77,11 +77,12 @@ export function OntspanningPage() {
     try {
       const raw = await getTodayTasksWithCompany(today)
       const filtered = filterTodayTasks(raw, today)
-      if (filtered.length === 0) {
+      const important = filtered.filter((t) => !t.task.is_not_important)
+      if (important.length === 0) {
         router.replace('/')
         return
       }
-      const allDone = filtered.every((t) => t.task.is_completed)
+      const allDone = important.every((t) => t.task.is_completed)
       if (!allDone) {
         router.replace('/')
         return
