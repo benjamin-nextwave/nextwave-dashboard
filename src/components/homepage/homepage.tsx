@@ -14,6 +14,7 @@ import { getMeetingsForToday } from '@/lib/meetings'
 import { Button } from '@/components/ui/button'
 import { DailyHeader } from '@/components/homepage/daily-header'
 import { ProgressDonut } from '@/components/homepage/progress-donut'
+import { PriorityAlerts } from '@/components/homepage/priority-alerts'
 import { TodayTaskList } from '@/components/homepage/today-task-list'
 import { TodayMeetings } from '@/components/homepage/today-meetings'
 import { HomepageTaskCreateDialog } from '@/components/homepage/task-create-dialog'
@@ -98,6 +99,8 @@ export function Homepage() {
           )}
         </div>
       </div>
+
+      <PriorityAlerts />
 
       {loading ? (
         <p className="text-muted-foreground">Laden...</p>
