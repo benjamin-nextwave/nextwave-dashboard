@@ -119,13 +119,13 @@ export function Homepage() {
 
       <PriorityAlerts />
 
+      <TodayMeetings meetings={meetings} loading={meetingsLoading} />
+
       {loading ? (
         <p className="text-muted-foreground">Laden...</p>
       ) : (
         <TodayTaskList tasks={tasks} onTaskClick={onTaskClick} onMarkNotImportant={onMarkNotImportant} />
       )}
-
-      <TodayMeetings meetings={meetings} loading={meetingsLoading} />
 
       <TaskEditDialog
         task={overlay.type === 'editTask' ? overlay.task : null}
