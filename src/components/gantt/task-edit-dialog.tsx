@@ -89,81 +89,87 @@ export function TaskEditDialog({ task, onClose, onSaved }: TaskEditDialogProps) 
         if (!open) onClose()
       }}
     >
-      <DialogContent className="max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Taak bewerken</DialogTitle>
-        </DialogHeader>
+      <DialogContent className="sm:max-w-3xl max-h-[85vh] overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 overflow-hidden">
+          {/* Left: Task editing */}
+          <div className="flex flex-col overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Taak bewerken</DialogTitle>
+            </DialogHeader>
 
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="task-title">Titel</Label>
-            <Input
-              id="task-title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
+            <div className="space-y-4 mt-4">
+              <div className="space-y-2">
+                <Label htmlFor="task-title">Titel</Label>
+                <Input
+                  id="task-title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="task-completed"
+                  checked={isCompleted}
+                  onCheckedChange={(checked) => setIsCompleted(checked === true)}
+                />
+                <Label htmlFor="task-completed">Afgerond</Label>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="task-urgent"
+                  checked={isUrgent}
+                  onCheckedChange={setIsUrgent}
+                />
+                <Label htmlFor="task-urgent">Urgent</Label>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="task-notes">Notities</Label>
+                <Textarea
+                  id="task-notes"
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  rows={3}
+                />
+              </div>
+
+              {task && (
+                <p className="text-sm text-muted-foreground">
+                  Deadline: {formatShortDate(task.deadline)}
+                </p>
+              )}
+            </div>
+
+            <DialogFooter className="sm:justify-between mt-4">
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleDelete}
+                disabled={saving}
+              >
+                <Trash2 />
+                {confirmDelete ? 'Bevestig verwijderen' : 'Verwijderen'}
+              </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={onClose} disabled={saving}>
+                  Annuleren
+                </Button>
+                <Button onClick={handleSave} disabled={saving || !title.trim()}>
+                  Opslaan
+                </Button>
+              </div>
+            </DialogFooter>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Checkbox
-              id="task-completed"
-              checked={isCompleted}
-              onCheckedChange={(checked) => setIsCompleted(checked === true)}
-            />
-            <Label htmlFor="task-completed">Afgerond</Label>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Switch
-              id="task-urgent"
-              checked={isUrgent}
-              onCheckedChange={setIsUrgent}
-            />
-            <Label htmlFor="task-urgent">Urgent</Label>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="task-notes">Notities</Label>
-            <Textarea
-              id="task-notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={3}
-            />
-          </div>
-
+          {/* Right: Company notes */}
           {task && (
-            <p className="text-sm text-muted-foreground">
-              Deadline: {formatShortDate(task.deadline)}
-            </p>
-          )}
-
-          {task && (
-            <div className="border-t pt-4">
+            <div className="border-l pl-6 overflow-y-auto max-h-[70vh]">
               <CompanyNotesSection companyId={task.company_id} />
             </div>
           )}
         </div>
-
-        <DialogFooter className="sm:justify-between">
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={handleDelete}
-            disabled={saving}
-          >
-            <Trash2 />
-            {confirmDelete ? 'Bevestig verwijderen' : 'Verwijderen'}
-          </Button>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={onClose} disabled={saving}>
-              Annuleren
-            </Button>
-            <Button onClick={handleSave} disabled={saving || !title.trim()}>
-              Opslaan
-            </Button>
-          </div>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   )
