@@ -52,6 +52,14 @@ export type Meeting = {
   created_at: string
 }
 
+export type CompanyNote = {
+  id: string
+  company_id: string
+  content: string
+  priority: 'green' | 'orange' | 'red'
+  created_at: string
+}
+
 export type MeetingWithCompany = Meeting & {
   company_name: string
 }
@@ -124,6 +132,20 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: 'meetings_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      company_notes: {
+        Row: CompanyNote
+        Insert: Omit<CompanyNote, 'id' | 'created_at'>
+        Update: Partial<Omit<CompanyNote, 'id' | 'created_at'>>
+        Relationships: [
+          {
+            foreignKeyName: 'company_notes_company_id_fkey'
             columns: ['company_id']
             isOneToOne: false
             referencedRelation: 'companies'

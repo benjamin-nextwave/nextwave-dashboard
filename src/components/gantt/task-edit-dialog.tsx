@@ -17,6 +17,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Switch } from '@/components/ui/switch'
 import { updateTask, deleteTask } from '@/lib/tasks'
 import { formatShortDate } from '@/lib/dates'
+import { CompanyNotesSection } from '@/components/gantt/company-notes-section'
 import type { Task } from '@/types/database'
 
 interface TaskEditDialogProps {
@@ -88,7 +89,7 @@ export function TaskEditDialog({ task, onClose, onSaved }: TaskEditDialogProps) 
         if (!open) onClose()
       }}
     >
-      <DialogContent>
+      <DialogContent className="max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Taak bewerken</DialogTitle>
         </DialogHeader>
@@ -135,6 +136,12 @@ export function TaskEditDialog({ task, onClose, onSaved }: TaskEditDialogProps) 
             <p className="text-sm text-muted-foreground">
               Deadline: {formatShortDate(task.deadline)}
             </p>
+          )}
+
+          {task && (
+            <div className="border-t pt-4">
+              <CompanyNotesSection companyId={task.company_id} />
+            </div>
           )}
         </div>
 

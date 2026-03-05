@@ -9,6 +9,7 @@ import {
 import { computeOverdue } from '@/lib/overdue'
 import { formatShortDate } from '@/lib/dates'
 import { cn } from '@/lib/utils'
+import { CompanyNotesSection } from '@/components/gantt/company-notes-section'
 import type { CompanyWithTasks, Task } from '@/types/database'
 
 interface CompanyTasksDialogProps {
@@ -35,7 +36,7 @@ export function CompanyTasksDialog({
         if (!open) onClose()
       }}
     >
-      <DialogContent>
+      <DialogContent className="max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Taken - {company?.name}</DialogTitle>
         </DialogHeader>
@@ -91,6 +92,12 @@ export function CompanyTasksDialog({
                 </button>
               )
             })}
+          </div>
+        )}
+
+        {company && (
+          <div className="border-t pt-4">
+            <CompanyNotesSection companyId={company.id} />
           </div>
         )}
       </DialogContent>
