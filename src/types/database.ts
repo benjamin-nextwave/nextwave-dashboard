@@ -69,6 +69,7 @@ export type MailTask = {
   completed_at: string | null
   is_auto_generated: boolean
   urgency: 1 | 2 | 3
+  reason: string | null
   has_been_snoozed: boolean
   created_at: string
 }

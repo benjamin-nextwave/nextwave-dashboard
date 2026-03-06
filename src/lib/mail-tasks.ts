@@ -62,7 +62,8 @@ export async function getMailTasksDue(
 export async function createMailTask(
   companyId: string,
   deadline: string,
-  urgency: 1 | 2 | 3 = 2
+  urgency: 1 | 2 | 3 = 2,
+  reason: string | null = null
 ): Promise<MailTask> {
   const { data, error } = await supabase
     .from('mail_tasks')
@@ -73,6 +74,7 @@ export async function createMailTask(
       completed_at: null,
       is_auto_generated: false,
       urgency,
+      reason,
       has_been_snoozed: false,
     })
     .select()
@@ -89,10 +91,10 @@ export async function completeMailTask(
   id: string,
   today: string
 ): Promise<void> {
-  // Get the task first to know company_id and urgency
+  // Get the task first to know company_id, urgency, and reason
   const { data: task, error: fetchErr } = await supabase
     .from('mail_tasks')
-    .select('company_id, urgency')
+    .select('company_id, urgency, reason')
     .eq('id', id)
     .single()
 
@@ -114,12 +116,13 @@ export async function completeMailTask(
   const { error: insertErr } = await supabase
     .from('mail_tasks')
     .insert({
-      company_id: (task as { company_id: string; urgency: number }).company_id,
+      company_id: (task as { company_id: string; urgency: number; reason: string | null }).company_id,
       deadline: nextDeadline,
       is_completed: false,
       completed_at: null,
       is_auto_generated: true,
-      urgency: (task as { company_id: string; urgency: number }).urgency as 1 | 2 | 3,
+      urgency: (task as { company_id: string; urgency: number; reason: string | null }).urgency as 1 | 2 | 3,
+      reason: null,
       has_been_snoozed: false,
     })
 
@@ -157,6 +160,21 @@ export async function updateMailTaskUrgency(
   const { error } = await supabase
     .from('mail_tasks')
     .update({ urgency })
+    .eq('id', id)
+
+  if (error) throw error
+}
+
+/**
+ * Update reason of a mail task.
+ */
+export async function updateMailTaskReason(
+  id: string,
+  reason: string | null
+): Promise<void> {
+  const { error } = await supabase
+    .from('mail_tasks')
+    .update({ reason })
     .eq('id', id)
 
   if (error) throw error

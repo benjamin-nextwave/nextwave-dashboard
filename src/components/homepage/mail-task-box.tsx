@@ -4,14 +4,15 @@ import { useCallback, useEffect, useState } from 'react'
 import {
   Mail,
   Check,
-  Clock,
   ChevronRight,
   Trash2,
   Plus,
+  HelpCircle,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import {
   Dialog,
@@ -26,6 +27,7 @@ import {
   completeMailTask,
   snoozeMailTask,
   updateMailTaskUrgency,
+  updateMailTaskReason,
   createMailTask,
   deleteMailTask,
 } from '@/lib/mail-tasks'
@@ -47,11 +49,11 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
   const [tasks, setTasks] = useState<MailTaskWithCompany[]>([])
   const [loading, setLoading] = useState(true)
   const [showCreate, setShowCreate] = useState(false)
+  const [editingTask, setEditingTask] = useState<MailTaskWithCompany | null>(null)
 
   const loadTasks = useCallback(async () => {
     try {
       const data = await getMailTasksDue(today)
-      // Sort by urgency (high first), then deadline
       data.sort((a, b) => {
         if (a.urgency !== b.urgency) return b.urgency - a.urgency
         return a.deadline.localeCompare(b.deadline)
@@ -68,7 +70,8 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
     loadTasks()
   }, [loadTasks])
 
-  async function handleComplete(taskId: string) {
+  async function handleComplete(e: React.MouseEvent, taskId: string) {
+    e.stopPropagation()
     try {
       await completeMailTask(taskId, today)
       await loadTasks()
@@ -78,7 +81,8 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
     }
   }
 
-  async function handleSnooze(taskId: string, deadline: string) {
+  async function handleSnooze(e: React.MouseEvent, taskId: string, deadline: string) {
+    e.stopPropagation()
     try {
       await snoozeMailTask(taskId, deadline)
       await loadTasks()
@@ -87,7 +91,8 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
     }
   }
 
-  async function handleUrgencyChange(taskId: string, urgency: 1 | 2 | 3) {
+  async function handleUrgencyChange(e: React.MouseEvent, taskId: string, urgency: 1 | 2 | 3) {
+    e.stopPropagation()
     try {
       await updateMailTaskUrgency(taskId, urgency)
       setTasks((prev) =>
@@ -103,13 +108,19 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
     }
   }
 
-  async function handleDelete(taskId: string) {
+  async function handleDelete(e: React.MouseEvent, taskId: string) {
+    e.stopPropagation()
     try {
       await deleteMailTask(taskId)
       setTasks((prev) => prev.filter((t) => t.id !== taskId))
     } catch (error) {
       console.error('Failed to delete mail task:', error)
     }
+  }
+
+  async function handleReasonSaved() {
+    setEditingTask(null)
+    await loadTasks()
   }
 
   async function handleCreated() {
@@ -163,9 +174,11 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
         ) : (
           <div className="space-y-2">
             {tasks.map((task) => (
-              <div
+              <button
                 key={task.id}
-                className="flex items-center justify-between gap-2 rounded-md border border-blue-200 bg-white p-3 dark:border-blue-700 dark:bg-blue-950/50"
+                type="button"
+                className="w-full text-left flex items-center justify-between gap-2 rounded-md border border-blue-200 bg-white p-3 dark:border-blue-700 dark:bg-blue-950/50 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
+                onClick={() => setEditingTask(task)}
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
@@ -186,71 +199,82 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
                     >
                       {task.is_auto_generated ? 'Auto' : 'Handmatig'}
                     </Badge>
+                    {!task.reason && (
+                      <Badge
+                        variant="outline"
+                        className="text-[10px] px-1 py-0 shrink-0 border-amber-400 text-amber-600 dark:text-amber-400"
+                        title="Geen reden opgegeven"
+                      >
+                        <HelpCircle className="size-3" />
+                      </Badge>
+                    )}
                   </div>
-                  <div className="flex items-center gap-2 mt-0.5">
+                  <div className="flex items-center gap-3 mt-0.5">
                     <span className="text-xs text-muted-foreground">
                       Laatste contact: {formatLastContact(task.last_completed_at)}
                     </span>
+                    {task.reason && (
+                      <span className="text-xs text-blue-600 dark:text-blue-400 truncate">
+                        {task.reason}
+                      </span>
+                    )}
                   </div>
                 </div>
 
                 <div className="flex items-center gap-1 shrink-0">
-                  {/* Urgency selector */}
                   <div className="flex gap-0.5 mr-1">
                     {([1, 2, 3] as const).map((u) => (
-                      <button
+                      <span
                         key={u}
-                        type="button"
+                        role="button"
+                        tabIndex={0}
                         className={cn(
-                          'size-5 rounded-full text-[9px] font-bold transition-all',
+                          'size-5 rounded-full text-[9px] font-bold transition-all inline-flex items-center justify-center',
                           task.urgency === u
                             ? urgencyConfig[u].class
                             : 'bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400 hover:opacity-80'
                         )}
-                        onClick={() => handleUrgencyChange(task.id, u)}
+                        onClick={(e) => handleUrgencyChange(e, task.id, u)}
                         title={urgencyConfig[u].label}
                       >
                         {u}
-                      </button>
+                      </span>
                     ))}
                   </div>
 
-                  {/* Snooze: only for auto tasks, max once */}
                   {task.is_auto_generated && !task.has_been_snoozed && (
                     <Button
                       variant="ghost"
                       size="sm"
                       className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
-                      onClick={() => handleSnooze(task.id, task.deadline)}
+                      onClick={(e) => handleSnooze(e, task.id, task.deadline)}
                       title="1 dag uitstellen"
                     >
                       <ChevronRight className="size-4" />
                     </Button>
                   )}
 
-                  {/* Complete */}
                   <Button
                     variant="ghost"
                     size="sm"
                     className="h-7 w-7 p-0 text-green-600 hover:text-green-800 hover:bg-green-100"
-                    onClick={() => handleComplete(task.id)}
+                    onClick={(e) => handleComplete(e, task.id)}
                     title="Afgerond"
                   >
                     <Check className="size-4" />
                   </Button>
 
-                  {/* Delete */}
                   <Button
                     variant="ghost"
                     size="sm"
                     className="h-7 w-7 p-0 text-muted-foreground hover:text-red-600"
-                    onClick={() => handleDelete(task.id)}
+                    onClick={(e) => handleDelete(e, task.id)}
                     title="Verwijderen"
                   >
                     <Trash2 className="size-3.5" />
                   </Button>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         )}
@@ -262,11 +286,118 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
         onClose={() => setShowCreate(false)}
         onCreated={handleCreated}
       />
+
+      <MailTaskReasonDialog
+        task={editingTask}
+        onClose={() => setEditingTask(null)}
+        onSaved={handleReasonSaved}
+      />
     </>
   )
 }
 
-/* ── Inline create dialog ── */
+/* ── Reason edit dialog ── */
+
+function MailTaskReasonDialog({
+  task,
+  onClose,
+  onSaved,
+}: {
+  task: MailTaskWithCompany | null
+  onClose: () => void
+  onSaved: () => void
+}) {
+  const [reason, setReason] = useState('')
+  const [noReason, setNoReason] = useState(false)
+  const [saving, setSaving] = useState(false)
+
+  useEffect(() => {
+    if (task) {
+      if (task.reason === '?') {
+        setReason('')
+        setNoReason(true)
+      } else {
+        setReason(task.reason ?? '')
+        setNoReason(false)
+      }
+    }
+  }, [task])
+
+  async function handleSave() {
+    if (!task) return
+    setSaving(true)
+    try {
+      const value = noReason ? '?' : (reason.trim() || null)
+      await updateMailTaskReason(task.id, value)
+      onSaved()
+    } catch (error) {
+      console.error('Failed to update reason:', error)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <Dialog open={!!task} onOpenChange={(o) => { if (!o) onClose() }}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Reden voor mail - {task?.company_name}</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            Geef een reden op voor deze mail, of klik op het vraagteken als er geen specifieke reden is.
+          </p>
+
+          <div className="space-y-3">
+            <div className="flex items-start gap-3">
+              <div className="flex-1">
+                <Textarea
+                  placeholder="Reden voor de mail..."
+                  value={reason}
+                  onChange={(e) => {
+                    setReason(e.target.value)
+                    if (e.target.value) setNoReason(false)
+                  }}
+                  disabled={noReason}
+                  rows={3}
+                  className={cn(noReason && 'opacity-50')}
+                />
+              </div>
+              <button
+                type="button"
+                className={cn(
+                  'flex items-center justify-center size-12 rounded-lg border-2 transition-all shrink-0 mt-0.5',
+                  noReason
+                    ? 'border-amber-400 bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:border-amber-500'
+                    : 'border-gray-200 text-gray-400 hover:border-amber-300 hover:text-amber-500 dark:border-gray-700'
+                )}
+                onClick={() => {
+                  setNoReason(!noReason)
+                  if (!noReason) setReason('')
+                }}
+                title="Geen reden"
+              >
+                <HelpCircle className="size-6" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose} disabled={saving}>
+            Annuleren
+          </Button>
+          <Button onClick={handleSave} disabled={saving}>
+            Opslaan
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+/* ── Create dialog ── */
 
 function MailTaskCreateDialog({
   open,
@@ -283,6 +414,8 @@ function MailTaskCreateDialog({
   const [selectedCompanyId, setSelectedCompanyId] = useState('')
   const [deadline, setDeadline] = useState(today)
   const [urgency, setUrgency] = useState<1 | 2 | 3>(2)
+  const [reason, setReason] = useState('')
+  const [noReason, setNoReason] = useState(false)
   const [saving, setSaving] = useState(false)
   const [loadingCompanies, setLoadingCompanies] = useState(false)
 
@@ -291,6 +424,8 @@ function MailTaskCreateDialog({
       setSelectedCompanyId('')
       setDeadline(today)
       setUrgency(2)
+      setReason('')
+      setNoReason(false)
       setLoadingCompanies(true)
       getCompaniesForSelect()
         .then(setCompanies)
@@ -303,7 +438,8 @@ function MailTaskCreateDialog({
     if (!selectedCompanyId || !deadline) return
     setSaving(true)
     try {
-      await createMailTask(selectedCompanyId, deadline, urgency)
+      const reasonValue = noReason ? '?' : (reason.trim() || null)
+      await createMailTask(selectedCompanyId, deadline, urgency, reasonValue)
       onCreated()
     } catch (error) {
       console.error('Failed to create mail task:', error)
@@ -365,6 +501,41 @@ function MailTaskCreateDialog({
                   {urgencyConfig[u].label}
                 </button>
               ))}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Reden voor mail</Label>
+            <div className="flex items-start gap-3">
+              <div className="flex-1">
+                <Textarea
+                  placeholder="Reden voor de mail..."
+                  value={reason}
+                  onChange={(e) => {
+                    setReason(e.target.value)
+                    if (e.target.value) setNoReason(false)
+                  }}
+                  disabled={noReason}
+                  rows={2}
+                  className={cn(noReason && 'opacity-50')}
+                />
+              </div>
+              <button
+                type="button"
+                className={cn(
+                  'flex items-center justify-center size-10 rounded-lg border-2 transition-all shrink-0 mt-0.5',
+                  noReason
+                    ? 'border-amber-400 bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:border-amber-500'
+                    : 'border-gray-200 text-gray-400 hover:border-amber-300 hover:text-amber-500 dark:border-gray-700'
+                )}
+                onClick={() => {
+                  setNoReason(!noReason)
+                  if (!noReason) setReason('')
+                }}
+                title="Geen reden"
+              >
+                <HelpCircle className="size-5" />
+              </button>
             </div>
           </div>
         </div>
