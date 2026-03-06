@@ -39,12 +39,25 @@ export function OnboardingOverview() {
     )
   }
 
-  const activeCompanies = companies.filter((c) => !c.onboarding_completed)
-  const completedCompanies = companies.filter((c) => c.onboarding_completed)
+  const [search, setSearch] = useState('')
+
+  const filtered = companies.filter((c) =>
+    c.name.toLowerCase().includes(search.toLowerCase())
+  )
+  const activeCompanies = filtered.filter((c) => !c.onboarding_completed)
+  const completedCompanies = filtered.filter((c) => c.onboarding_completed)
 
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Onboarding</h1>
+
+      <input
+        type="text"
+        placeholder="Zoek bedrijf..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="w-full rounded-xl border bg-background px-5 py-3 text-lg"
+      />
 
       {loading ? (
         <p className="text-muted-foreground text-lg">Laden...</p>

@@ -50,7 +50,7 @@ export function TaskBlock({ task, visibility, onComplete, onUpdateLinks }: Props
     <div
       data-active={isActive}
       className={cn(
-        'flex-shrink-0 w-[400px] rounded-2xl border-2 p-6 snap-center transition-all duration-500',
+        'flex-shrink-0 w-[400px] rounded-2xl border-2 p-6 snap-center transition-all duration-500 overflow-hidden',
         visibility === 'full' && 'border-blue-400 bg-card shadow-xl scale-100 opacity-100',
         visibility === 'completed' && 'border-green-300 bg-green-50/50 dark:bg-green-950/20 scale-95 opacity-80',
         visibility === 'dimmed' && 'border-muted bg-muted/30 scale-95 opacity-50 pointer-events-none',
@@ -97,22 +97,20 @@ export function TaskBlock({ task, visibility, onComplete, onUpdateLinks }: Props
       {/* Add link form - only for active tasks */}
       {isActive && (
         <div className="space-y-2 mb-6">
-          <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Label"
-              value={newLabel}
-              onChange={(e) => setNewLabel(e.target.value)}
-              className="flex-1 rounded-lg border bg-background px-3 py-2 text-base"
-            />
-            <input
-              type="url"
-              placeholder="URL"
-              value={newUrl}
-              onChange={(e) => setNewUrl(e.target.value)}
-              className="flex-1 rounded-lg border bg-background px-3 py-2 text-base"
-            />
-          </div>
+          <input
+            type="text"
+            placeholder="Label"
+            value={newLabel}
+            onChange={(e) => setNewLabel(e.target.value)}
+            className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
+          />
+          <input
+            type="url"
+            placeholder="URL"
+            value={newUrl}
+            onChange={(e) => setNewUrl(e.target.value)}
+            className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
+          />
           <button
             onClick={handleAddLink}
             disabled={!newLabel.trim() || !newUrl.trim()}
