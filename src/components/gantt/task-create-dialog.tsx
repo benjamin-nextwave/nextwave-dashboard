@@ -26,6 +26,7 @@ export function TaskCreateDialog({
 }: TaskCreateDialogProps) {
   const [title, setTitle] = useState('')
   const [deadline, setDeadline] = useState('')
+  const [durationMinutes, setDurationMinutes] = useState('')
   const [saving, setSaving] = useState(false)
 
   // Reset fields when dialog opens
@@ -33,6 +34,7 @@ export function TaskCreateDialog({
     if (companyId) {
       setTitle('')
       setDeadline('')
+      setDurationMinutes('')
     }
   }, [companyId])
 
@@ -48,6 +50,7 @@ export function TaskCreateDialog({
         is_urgent: false,
         is_date_editable: true,
         is_not_important: false,
+        duration_minutes: durationMinutes ? parseInt(durationMinutes, 10) : null,
         notes: null,
       })
       onCreated()
@@ -89,6 +92,18 @@ export function TaskCreateDialog({
               type="date"
               value={deadline}
               onChange={(e) => setDeadline(e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="new-task-duration">Duur (minuten)</Label>
+            <Input
+              id="new-task-duration"
+              type="number"
+              min="0"
+              placeholder="bijv. 30"
+              value={durationMinutes}
+              onChange={(e) => setDurationMinutes(e.target.value)}
             />
           </div>
         </div>

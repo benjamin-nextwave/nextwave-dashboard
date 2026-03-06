@@ -36,6 +36,7 @@ export type Task = {
   is_urgent: boolean
   is_date_editable: boolean
   is_not_important: boolean
+  duration_minutes: number | null
   notes: string | null
   created_at: string
 }

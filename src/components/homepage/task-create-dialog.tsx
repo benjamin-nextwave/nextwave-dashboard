@@ -29,6 +29,7 @@ export function HomepageTaskCreateDialog({
   const [selectedCompanyId, setSelectedCompanyId] = useState('')
   const [title, setTitle] = useState('')
   const [deadline, setDeadline] = useState('')
+  const [durationMinutes, setDurationMinutes] = useState('')
   const [saving, setSaving] = useState(false)
   const [loadingCompanies, setLoadingCompanies] = useState(false)
 
@@ -37,6 +38,7 @@ export function HomepageTaskCreateDialog({
       setSelectedCompanyId('')
       setTitle('')
       setDeadline('')
+      setDurationMinutes('')
       setLoadingCompanies(true)
       getCompaniesForSelect()
         .then(setCompanies)
@@ -57,6 +59,7 @@ export function HomepageTaskCreateDialog({
         is_urgent: false,
         is_date_editable: true,
         is_not_important: false,
+        duration_minutes: durationMinutes ? parseInt(durationMinutes, 10) : null,
         notes: null,
       })
       onCreated()
@@ -114,6 +117,18 @@ export function HomepageTaskCreateDialog({
               type="date"
               value={deadline}
               onChange={(e) => setDeadline(e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="homepage-task-duration">Duur (minuten)</Label>
+            <Input
+              id="homepage-task-duration"
+              type="number"
+              min="0"
+              placeholder="bijv. 30"
+              value={durationMinutes}
+              onChange={(e) => setDurationMinutes(e.target.value)}
             />
           </div>
         </div>

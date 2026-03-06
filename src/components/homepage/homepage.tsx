@@ -103,12 +103,16 @@ export function Homepage() {
     return true
   })
 
+  const totalMinutesRemaining = importantTasks
+    .filter((t) => !t.task.is_completed)
+    .reduce((sum, t) => sum + (t.task.duration_minutes ?? 0), 0)
+
   const hasActiveFilter = companyFilter !== '' || warmupOnly
 
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between">
-        <DailyHeader />
+        <DailyHeader totalMinutesRemaining={totalMinutesRemaining} />
         <div className="flex items-center gap-3">
           <Button onClick={() => setOverlay({ type: 'createTask' })}>
             <Plus className="size-4" />

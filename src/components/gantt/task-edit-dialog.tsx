@@ -31,6 +31,7 @@ export function TaskEditDialog({ task, onClose, onSaved }: TaskEditDialogProps) 
   const [isCompleted, setIsCompleted] = useState(false)
   const [isUrgent, setIsUrgent] = useState(false)
   const [notes, setNotes] = useState('')
+  const [durationMinutes, setDurationMinutes] = useState('')
   const [saving, setSaving] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
@@ -41,6 +42,7 @@ export function TaskEditDialog({ task, onClose, onSaved }: TaskEditDialogProps) 
       setIsCompleted(task.is_completed)
       setIsUrgent(task.is_urgent)
       setNotes(task.notes ?? '')
+      setDurationMinutes(task.duration_minutes != null ? String(task.duration_minutes) : '')
       setConfirmDelete(false)
     }
   }, [task])
@@ -54,6 +56,7 @@ export function TaskEditDialog({ task, onClose, onSaved }: TaskEditDialogProps) 
         is_completed: isCompleted,
         is_urgent: isUrgent,
         notes: notes || null,
+        duration_minutes: durationMinutes ? parseInt(durationMinutes, 10) : null,
       })
       onSaved()
       onClose()
@@ -123,6 +126,18 @@ export function TaskEditDialog({ task, onClose, onSaved }: TaskEditDialogProps) 
                   onCheckedChange={setIsUrgent}
                 />
                 <Label htmlFor="task-urgent">Urgent</Label>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="task-duration">Duur (minuten)</Label>
+                <Input
+                  id="task-duration"
+                  type="number"
+                  min="0"
+                  placeholder="bijv. 30"
+                  value={durationMinutes}
+                  onChange={(e) => setDurationMinutes(e.target.value)}
+                />
               </div>
 
               <div className="space-y-2">

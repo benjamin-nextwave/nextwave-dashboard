@@ -18,3 +18,6 @@ CREATE POLICY "Allow all for anon" ON company_notes
   FOR ALL
   USING (true)
   WITH CHECK (true);
+
+-- Add duration_minutes to tasks table
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS duration_minutes INTEGER DEFAULT NULL;
