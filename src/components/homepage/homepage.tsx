@@ -18,6 +18,7 @@ import { PriorityAlerts } from '@/components/homepage/priority-alerts'
 import { TaskFilters, isWarmupTask } from '@/components/homepage/task-filters'
 import { TodayTaskList } from '@/components/homepage/today-task-list'
 import { TodayMeetings } from '@/components/homepage/today-meetings'
+import { MailTaskBox } from '@/components/homepage/mail-task-box'
 import { HomepageTaskCreateDialog } from '@/components/homepage/task-create-dialog'
 import { TaskEditDialog } from '@/components/gantt/task-edit-dialog'
 import { useRecurringTasks } from '@/hooks/use-recurring-tasks'
@@ -131,6 +132,8 @@ export function Homepage() {
           )}
         </div>
       </div>
+
+      <MailTaskBox today={today} />
 
       <PriorityAlerts />
 

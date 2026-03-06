@@ -61,6 +61,23 @@ export type CompanyNote = {
   created_at: string
 }
 
+export type MailTask = {
+  id: string
+  company_id: string
+  deadline: string
+  is_completed: boolean
+  completed_at: string | null
+  is_auto_generated: boolean
+  urgency: 1 | 2 | 3
+  has_been_snoozed: boolean
+  created_at: string
+}
+
+export type MailTaskWithCompany = MailTask & {
+  company_name: string
+  last_completed_at: string | null
+}
+
 export type MeetingWithCompany = Meeting & {
   company_name: string
 }
@@ -133,6 +150,20 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: 'meetings_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      mail_tasks: {
+        Row: MailTask
+        Insert: Omit<MailTask, 'id' | 'created_at'>
+        Update: Partial<Omit<MailTask, 'id' | 'created_at'>>
+        Relationships: [
+          {
+            foreignKeyName: 'mail_tasks_company_id_fkey'
             columns: ['company_id']
             isOneToOne: false
             referencedRelation: 'companies'
