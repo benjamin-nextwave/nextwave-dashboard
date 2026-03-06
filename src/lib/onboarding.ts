@@ -29,7 +29,10 @@ export async function fetchCompaniesForOnboarding(): Promise<Company[]> {
     .order('name')
 
   if (error) throw error
-  return (data || []) as Company[]
+  return ((data || []) as Company[]).map((c) => ({
+    ...c,
+    onboarding_completed: c.onboarding_completed ?? false,
+  }))
 }
 
 export async function fetchOnboardingTasks(clientId: string): Promise<OnboardingTask[]> {
@@ -41,7 +44,16 @@ export async function fetchOnboardingTasks(clientId: string): Promise<Onboarding
     .order('iteration')
 
   if (error) throw error
-  return (data || []) as OnboardingTask[]
+  return ((data || []) as OnboardingTask[]).map(parseTask)
+}
+
+function parseTask(task: OnboardingTask): OnboardingTask {
+  let links = task.links
+  if (typeof links === 'string') {
+    try { links = JSON.parse(links) } catch { links = [] }
+  }
+  if (!Array.isArray(links)) links = []
+  return { ...task, links }
 }
 
 export async function initializeOnboarding(clientId: string): Promise<OnboardingTask[]> {
