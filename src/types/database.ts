@@ -23,6 +23,7 @@ export type Company = {
   scrape_date_1: number | null
   scrape_date_2: number | null
   scrape_date_3: number | null
+  onboarding_completed: boolean
   created_at: string
   updated_at: string
 }
@@ -74,6 +75,20 @@ export type MailTask = {
   created_at: string
 }
 
+export type OnboardingTask = {
+  id: string
+  client_id: string
+  task_number: number
+  task_type: string
+  status: 'locked' | 'active' | 'completed'
+  links: { label: string; url: string }[]
+  is_optional: boolean
+  parent_task_number: number | null
+  iteration: number
+  created_at: string
+  updated_at: string
+}
+
 export type MailTaskWithCompany = MailTask & {
   company_name: string
   last_completed_at: string | null
@@ -105,6 +120,7 @@ type CompanyInsert = {
   toekomstige_wensen?: string | null
   extra_notes?: string | null
   google_drive_url?: string | null
+  onboarding_completed?: boolean
   rapport_date?: number | null
   scrape_date_1?: number | null
   scrape_date_2?: number | null
@@ -180,6 +196,20 @@ export type Database = {
           {
             foreignKeyName: 'company_notes_company_id_fkey'
             columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      onboarding_tasks: {
+        Row: OnboardingTask
+        Insert: Omit<OnboardingTask, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<OnboardingTask, 'id' | 'created_at' | 'updated_at'>>
+        Relationships: [
+          {
+            foreignKeyName: 'onboarding_tasks_client_id_fkey'
+            columns: ['client_id']
             isOneToOne: false
             referencedRelation: 'companies'
             referencedColumns: ['id']

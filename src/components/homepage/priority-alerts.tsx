@@ -28,13 +28,13 @@ export function PriorityAlerts() {
     const { data: domainTasks } = await supabase
       .from('tasks')
       .select('company_id, is_completed, companies(name)')
-      .eq('title', DOMAIN_TASK_TITLE)
+      .eq('title', DOMAIN_TASK_TITLE) as { data: { company_id: string; is_completed: boolean; companies: { name: string } | null }[] | null }
 
     if (domainTasks) {
       const pending = domainTasks
         .filter((t) => !t.is_completed)
         .map((t) => ({
-          companyName: (t.companies as unknown as { name: string } | null)?.name ?? 'Onbekend',
+          companyName: t.companies?.name ?? 'Onbekend',
         }))
       setDomainStatus({
         pending,
