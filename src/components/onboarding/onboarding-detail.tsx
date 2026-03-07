@@ -150,6 +150,7 @@ export function OnboardingDetail({ company, onBack }: Props) {
             <TaskBlock
               key={task.id}
               task={task}
+              companyName={company.name}
               visibility={visibility}
               startDate={startDate}
               onComplete={handleComplete}

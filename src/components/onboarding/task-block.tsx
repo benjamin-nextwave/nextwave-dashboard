@@ -3,10 +3,13 @@
 import { useState } from 'react'
 import type { OnboardingTask } from '@/types/database'
 import { getTaskLabel, getTargetDay, getTargetDate, getScheduleStatus } from '@/lib/onboarding'
+import { createTask } from '@/lib/tasks'
+import { getTodayISO } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 
 type Props = {
   task: OnboardingTask
+  companyName: string
   visibility: 'full' | 'dimmed' | 'faded' | 'completed'
   startDate: string | null
   onComplete: (task: OnboardingTask, choice?: 'approved' | 'feedback' | 'rlm' | 'no-rlm') => Promise<void>
@@ -16,10 +19,11 @@ type Props = {
 const CHOICE_TASKS = [4, 6, 9] // Goedgekeurd / Feedback
 const RLM_CHOICE_TASK = 7 // RLM / Geen RLM
 
-export function TaskBlock({ task, visibility, startDate, onComplete, onUpdateLinks }: Props) {
+export function TaskBlock({ task, companyName, visibility, startDate, onComplete, onUpdateLinks }: Props) {
   const [newLabel, setNewLabel] = useState('')
   const [newUrl, setNewUrl] = useState('')
   const [saving, setSaving] = useState(false)
+  const [addedToTasks, setAddedToTasks] = useState(false)
 
   const isActive = task.status === 'active'
   const targetDay = getTargetDay(task.task_number)
@@ -136,6 +140,42 @@ export function TaskBlock({ task, visibility, startDate, onComplete, onUpdateLin
             className="w-full rounded-lg border border-dashed border-muted-foreground/30 py-2 text-sm text-muted-foreground hover:border-foreground hover:text-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
             + Link toevoegen
+          </button>
+        </div>
+      )}
+
+      {/* Add to today's tasks button */}
+      {isActive && !saving && (
+        <div className="mb-3">
+          <button
+            onClick={async () => {
+              try {
+                await createTask({
+                  company_id: task.client_id,
+                  title: `[Onboarding] ${getTaskLabel(task)}`,
+                  deadline: getTodayISO(),
+                  is_completed: false,
+                  is_urgent: false,
+                  is_date_editable: true,
+                  is_not_important: false,
+                  duration_minutes: null,
+                  notes: `Onboarding taak voor ${companyName}`,
+                })
+                setAddedToTasks(true)
+              } catch (err) {
+                console.error('Failed to add to tasks:', err)
+              }
+            }}
+            disabled={addedToTasks}
+            className={cn(
+              'w-full rounded-xl py-2.5 text-sm font-medium transition-colors',
+              addedToTasks
+                ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                : 'border border-dashed border-muted-foreground/40 text-muted-foreground hover:border-foreground hover:text-foreground'
+            )}
+            style={!addedToTasks ? { fontFamily: 'var(--font-medieval)' } : { fontFamily: 'var(--font-medieval)' }}
+          >
+            {addedToTasks ? '✓ Toegevoegd aan dagorders' : '📋 Voeg aan taken toe'}
           </button>
         </div>
       )}
