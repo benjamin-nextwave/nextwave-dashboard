@@ -10,6 +10,7 @@ export function OnboardingOverview() {
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
+  const [hideCompleted, setHideCompleted] = useState(false)
 
   const loadCompanies = useCallback(async () => {
     try {
@@ -50,13 +51,23 @@ export function OnboardingOverview() {
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Onboarding</h1>
 
-      <input
-        type="text"
-        placeholder="Zoek bedrijf..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="w-full rounded-xl border bg-background px-5 py-3 text-lg"
-      />
+      <div className="flex gap-4">
+        <input
+          type="text"
+          placeholder="Zoek bedrijf..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="flex-1 rounded-xl border bg-background px-5 py-3 text-lg"
+        />
+        {completedCompanies.length > 0 && (
+          <button
+            onClick={() => setHideCompleted(!hideCompleted)}
+            className="rounded-xl border px-5 py-3 text-lg transition-colors hover:bg-muted"
+          >
+            {hideCompleted ? 'Toon afgeronde' : 'Verberg afgeronde'}
+          </button>
+        )}
+      </div>
 
       {loading ? (
         <p className="text-muted-foreground text-lg">Laden...</p>
@@ -75,7 +86,7 @@ export function OnboardingOverview() {
             </button>
           ))}
 
-          {completedCompanies.map((company) => (
+          {!hideCompleted && completedCompanies.map((company) => (
             <button
               key={company.id}
               onClick={() => setSelectedCompany(company)}
