@@ -18,18 +18,32 @@ export function getTargetDay(taskNumber: number): number {
   return TASK_DEFINITIONS.find((d) => d.number === taskNumber)?.targetDay ?? 0
 }
 
-export function getScheduleStatus(task: OnboardingTask, startDate: string): { onTrack: boolean; daysOff: number } {
-  const start = new Date(startDate)
-  const now = new Date()
-  const daysPassed = Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1
-  const target = getTargetDay(task.task_number)
+export function getOnboardingStartDate(tasks: OnboardingTask[]): string | null {
+  const task1 = tasks.find((t) => t.task_number === 1 && t.iteration === 1)
+  if (!task1 || task1.status !== 'completed') return null
+  return task1.updated_at
+}
 
-  if (task.status === 'completed') {
-    return { onTrack: true, daysOff: 0 }
+export function getScheduleStatus(task: OnboardingTask, startDate: string | null): { onTrack: boolean; daysOff: number; notStarted: boolean } {
+  if (task.task_number === 1) {
+    return { onTrack: task.status === 'completed', daysOff: 0, notStarted: false }
   }
 
+  if (!startDate) {
+    return { onTrack: true, daysOff: 0, notStarted: true }
+  }
+
+  if (task.status === 'completed') {
+    return { onTrack: true, daysOff: 0, notStarted: false }
+  }
+
+  const start = new Date(startDate)
+  const now = new Date()
+  const daysPassed = Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))
+  const target = getTargetDay(task.task_number) - 1 // -1 because day 1 = completion of task 1 = day 0
   const diff = daysPassed - target
-  return { onTrack: diff <= 0, daysOff: diff }
+
+  return { onTrack: diff <= 0, daysOff: diff, notStarted: false }
 }
 
 export function getTaskLabel(task: OnboardingTask): string {

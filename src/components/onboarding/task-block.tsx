@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 type Props = {
   task: OnboardingTask
   visibility: 'full' | 'dimmed' | 'faded' | 'completed'
-  startDate: string
+  startDate: string | null
   onComplete: (task: OnboardingTask, choice?: 'approved' | 'feedback' | 'rlm' | 'no-rlm') => Promise<void>
   onUpdateLinks: (taskId: string, links: { label: string; url: string }[]) => Promise<void>
 }
@@ -69,7 +69,9 @@ export function TaskBlock({ task, visibility, startDate, onComplete, onUpdateLin
           <StatusBadge status={task.status} />
           <span className="ml-auto flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Dag {targetDay}</span>
-            {schedule.onTrack ? (
+            {schedule.notStarted ? (
+              <span className="text-muted-foreground text-lg">-</span>
+            ) : schedule.onTrack ? (
               <span className="text-green-600 dark:text-green-400 text-lg font-bold">&#10003;</span>
             ) : (
               <span className="text-red-600 dark:text-red-400 text-lg font-bold">-{schedule.daysOff}</span>

@@ -7,6 +7,7 @@ import {
   initializeOnboarding,
   completeTask,
   updateTaskLinks,
+  getOnboardingStartDate,
 } from '@/lib/onboarding'
 import { OnboardingCompleted } from './onboarding-completed'
 import { TaskBlock } from './task-block'
@@ -102,7 +103,7 @@ export function OnboardingDetail({ company, onBack }: Props) {
 
   const flow = buildTaskFlow()
   const activeIndex = flow.findIndex((t) => t.status === 'active')
-  const startDate = tasks.length > 0 ? tasks[0].created_at : new Date().toISOString()
+  const startDate = getOnboardingStartDate(tasks)
   const completedCount = flow.filter((t) => t.status === 'completed').length
   const totalCount = flow.length
   const progressPct = totalCount > 0 ? (completedCount / totalCount) * 100 : 0
