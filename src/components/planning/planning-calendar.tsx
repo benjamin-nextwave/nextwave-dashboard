@@ -1,10 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import type { Company } from '@/types/database'
 import { cn } from '@/lib/utils'
 import { getCampaignUpdateDates } from './campaign-dates'
+import { CampaignUpdateDialog } from './campaign-update-dialog'
+import { Button } from '@/components/ui/button'
 
 interface PlanningCalendarProps {
   companies: Company[]
@@ -18,7 +20,6 @@ function getDaysInMonth(year: number, month: number): number {
 }
 
 function getFirstDayOfMonth(year: number, month: number): number {
-  // 0 = Sunday, convert to Monday-based (0 = Monday)
   const day = new Date(year, month, 1).getDay()
   return day === 0 ? 6 : day - 1
 }
@@ -34,6 +35,28 @@ const MONTH_NAMES = [
 
 const DAY_NAMES = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo']
 
+const NOTIFICATIONS_KEY = 'planning-update-notifications'
+
+interface UpdateNotification {
+  id: string
+  companyId: string
+  companyName: string
+  date: string
+}
+
+function loadNotifications(): UpdateNotification[] {
+  try {
+    const raw = localStorage.getItem(NOTIFICATIONS_KEY)
+    return raw ? JSON.parse(raw) : []
+  } catch {
+    return []
+  }
+}
+
+function saveNotifications(notifications: UpdateNotification[]) {
+  localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(notifications))
+}
+
 export function PlanningCalendar({
   companies,
   selectedDate,
@@ -43,8 +66,16 @@ export function PlanningCalendar({
   const now = new Date()
   const [viewYear, setViewYear] = useState(now.getFullYear())
   const [viewMonth, setViewMonth] = useState(now.getMonth())
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
+  const [sentCompanies, setSentCompanies] = useState<Set<string>>(new Set())
+  const [notifications, setNotifications] = useState<UpdateNotification[]>([])
 
-  // Build set of all campaign update dates (4 per company, every 2 weeks)
+  useEffect(() => {
+    setNotifications(loadNotifications())
+  }, [])
+
+  // Build set of all campaign update dates
   const livegangDates = new Set<string>()
   for (const c of companies) {
     if (c.campagne_livegang) {
@@ -77,9 +108,70 @@ export function PlanningCalendar({
 
   const todayISO = formatDateISO(now.getFullYear(), now.getMonth(), now.getDate())
 
+  const handleCompanyClick = (company: Company) => {
+    setSelectedCompany(company)
+    setDialogOpen(true)
+  }
+
+  const handleSent = (companyId: string, hadMessage: boolean) => {
+    setSentCompanies((prev) => new Set(prev).add(companyId))
+
+    if (hadMessage && selectedDate) {
+      const company = companies.find((c) => c.id === companyId)
+      if (company) {
+        const notification: UpdateNotification = {
+          id: `${companyId}-${selectedDate}-${Date.now()}`,
+          companyId,
+          companyName: company.name,
+          date: new Date(selectedDate + 'T00:00:00').toLocaleDateString('nl-NL', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          }),
+        }
+        const updated = [...notifications, notification]
+        setNotifications(updated)
+        saveNotifications(updated)
+      }
+    }
+  }
+
+  const dismissNotification = (id: string) => {
+    const updated = notifications.filter((n) => n.id !== id)
+    setNotifications(updated)
+    saveNotifications(updated)
+  }
+
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-semibold">Kalender</h2>
+
+      {/* Persistent notifications for proposed changes */}
+      {notifications.length > 0 && (
+        <div className="space-y-2">
+          {notifications.map((n) => (
+            <div
+              key={n.id}
+              className="flex items-center justify-between gap-3 rounded-lg border border-yellow-500/30 bg-yellow-500/10 p-3"
+            >
+              <p className="text-sm">
+                Er zijn aanpassingen voorgesteld aan{' '}
+                <span className="font-semibold">{n.companyName}</span> op{' '}
+                <span className="font-semibold">{n.date}</span>, is hier al op
+                gereageerd?
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => dismissNotification(n.id)}
+                className="shrink-0"
+              >
+                Goedkeuren
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Calendar */}
       <div className="rounded-xl border border-border bg-card p-5">
@@ -173,14 +265,16 @@ export function PlanningCalendar({
               {companiesForDate.map((company) => {
                 const updateDates = getCampaignUpdateDates(company.campagne_livegang!)
                 const updateNr = updateDates.indexOf(selectedDate) + 1
+                const wasSent = sentCompanies.has(company.id)
 
                 return (
-                  <div
+                  <button
                     key={company.id}
-                    className="flex items-center gap-4 rounded-lg border border-border bg-background p-4"
+                    onClick={() => handleCompanyClick(company)}
+                    className="w-full text-left flex items-center gap-4 rounded-lg border border-border bg-background p-4 hover:bg-accent transition-colors cursor-pointer"
                   >
                     <div className="w-3 h-3 rounded-full bg-red-500 shrink-0" />
-                    <div>
+                    <div className="flex-1">
                       <div className="text-base font-semibold">
                         {company.name}
                       </div>
@@ -195,7 +289,12 @@ export function PlanningCalendar({
                         })}
                       </div>
                     </div>
-                  </div>
+                    {wasSent && (
+                      <span className="text-sm text-green-500 font-medium shrink-0">
+                        Mail verzonden
+                      </span>
+                    )}
+                  </button>
                 )
               })}
             </div>
@@ -206,6 +305,18 @@ export function PlanningCalendar({
           )}
         </div>
       )}
+
+      {/* Campaign update dialog */}
+      <CampaignUpdateDialog
+        open={dialogOpen}
+        company={selectedCompany}
+        selectedDate={selectedDate ?? ''}
+        onClose={() => {
+          setDialogOpen(false)
+          setSelectedCompany(null)
+        }}
+        onSent={handleSent}
+      />
     </div>
   )
 }
