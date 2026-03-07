@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import type { Company } from '@/types/database'
 import { fetchCompaniesForOnboarding } from '@/lib/onboarding'
+import { supabase } from '@/lib/supabase'
 import { OnboardingDetail } from './onboarding-detail'
 
 export function OnboardingOverview() {
@@ -74,16 +75,26 @@ export function OnboardingOverview() {
       ) : (
         <div className="grid grid-cols-3 gap-4">
           {activeCompanies.map((company) => (
-            <button
-              key={company.id}
-              onClick={() => setSelectedCompany(company)}
-              className="w-full text-left rounded-xl border-2 border-red-300 bg-red-50 p-6 transition-all hover:shadow-lg hover:border-red-400 dark:bg-red-950/30 dark:border-red-800 dark:hover:border-red-600"
-            >
-              <span className="text-2xl font-semibold">{company.name}</span>
-              <span className="ml-4 inline-block rounded-full bg-red-200 px-3 py-1 text-sm font-medium text-red-800 dark:bg-red-900 dark:text-red-200">
-                Bezig
-              </span>
-            </button>
+            <div key={company.id} className="flex gap-2">
+              <button
+                onClick={() => setSelectedCompany(company)}
+                className="flex-1 text-left rounded-xl border-2 border-red-300 bg-red-50 p-6 transition-all hover:shadow-lg hover:border-red-400 dark:bg-red-950/30 dark:border-red-800 dark:hover:border-red-600"
+              >
+                <span className="text-2xl font-semibold">{company.name}</span>
+                <span className="ml-4 inline-block rounded-full bg-red-200 px-3 py-1 text-sm font-medium text-red-800 dark:bg-red-900 dark:text-red-200">
+                  Bezig
+                </span>
+              </button>
+              <button
+                onClick={async () => {
+                  await supabase.from('companies').update({ onboarding_completed: true } as any).eq('id', company.id)
+                  loadCompanies()
+                }}
+                className="rounded-xl border-2 border-orange-300 bg-orange-50 px-4 py-6 text-sm font-medium text-orange-700 hover:bg-orange-100 dark:bg-orange-950/30 dark:border-orange-800 dark:text-orange-300"
+              >
+                Afgerond
+              </button>
+            </div>
           ))}
 
           {!hideCompleted && completedCompanies.map((company) => (
