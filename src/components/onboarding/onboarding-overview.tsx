@@ -61,7 +61,7 @@ export function OnboardingOverview() {
       {loading ? (
         <p className="text-muted-foreground text-lg">Laden...</p>
       ) : (
-        <div className="space-y-4">
+        <div className="grid grid-cols-3 gap-4">
           {activeCompanies.map((company) => (
             <button
               key={company.id}
@@ -89,7 +89,7 @@ export function OnboardingOverview() {
           ))}
 
           {companies.length === 0 && (
-            <p className="text-muted-foreground text-lg">Geen bedrijven gevonden.</p>
+            <p className="text-muted-foreground text-lg col-span-3">Geen bedrijven gevonden.</p>
           )}
         </div>
       )}
