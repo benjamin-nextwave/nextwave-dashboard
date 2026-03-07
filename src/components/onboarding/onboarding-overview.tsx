@@ -4,12 +4,12 @@ import { useState, useEffect, useCallback } from 'react'
 import type { Company } from '@/types/database'
 import { fetchCompaniesForOnboarding } from '@/lib/onboarding'
 import { OnboardingDetail } from './onboarding-detail'
-import { OnboardingErrorBoundary } from './error-boundary'
 
 export function OnboardingOverview() {
   const [companies, setCompanies] = useState<Company[]>([])
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
   const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
 
   const loadCompanies = useCallback(async () => {
     try {
@@ -33,16 +33,12 @@ export function OnboardingOverview() {
 
   if (selectedCompany) {
     return (
-      <OnboardingErrorBoundary>
-        <OnboardingDetail
-          company={selectedCompany}
-          onBack={handleBack}
-        />
-      </OnboardingErrorBoundary>
+      <OnboardingDetail
+        company={selectedCompany}
+        onBack={handleBack}
+      />
     )
   }
-
-  const [search, setSearch] = useState('')
 
   const filtered = companies.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase())
