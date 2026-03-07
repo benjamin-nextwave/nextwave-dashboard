@@ -1,6 +1,6 @@
 'use client'
 
-import { CircleCheck, ArrowDownCircle } from 'lucide-react'
+import { ArrowDownCircle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
@@ -30,38 +30,60 @@ export function TodayTaskRow({
   return (
     <div
       className={cn(
-        'flex w-full items-center justify-between gap-3 rounded-lg border px-4 py-3 transition-colors',
-        isNotImportant
-          ? 'border-purple-200 bg-purple-50/50 dark:border-purple-800 dark:bg-purple-950/30'
-          : 'border-border'
+        'flex w-full items-center justify-between gap-3 rounded-lg px-5 py-4 transition-all duration-200',
+        isCompleted && 'opacity-60',
       )}
+      style={{
+        background: isNotImportant
+          ? 'linear-gradient(135deg, #f0e2c0, #ecdaaf)'
+          : 'linear-gradient(135deg, #f5ebd4, #efe0be)',
+        border: '1px solid rgba(139,109,56,0.35)',
+        boxShadow: '0 2px 8px rgba(100,70,20,0.12), inset 0 1px 0 rgba(255,250,235,0.5)',
+      }}
     >
       <button
         type="button"
         onClick={onClick}
         className="flex min-w-0 items-center gap-3 text-left flex-1 hover:opacity-80 transition-opacity"
       >
-        {isCompleted && (
-          <CircleCheck className="size-5 shrink-0 text-green-500" />
-        )}
+        {/* Wax seal status */}
+        <span className="text-xl shrink-0">
+          {isCompleted ? '💀' : '🔴'}
+        </span>
+
         <div className="min-w-0">
-          <p className="text-xs text-muted-foreground">{companyName}</p>
+          <p
+            className="text-xs tracking-wide uppercase"
+            style={{ color: '#6b5a3e', fontFamily: 'var(--font-medieval)' }}
+          >
+            {companyName}
+          </p>
           <div className="flex items-center gap-2">
             <p
               className={cn(
-                'text-sm text-foreground',
-                isCompleted && 'text-muted-foreground line-through'
+                'text-sm',
+                isCompleted && 'line-through'
               )}
+              style={{
+                color: isCompleted ? '#8b7d60' : '#2a1f0e',
+                fontFamily: 'var(--font-medieval)',
+              }}
             >
               {title}
             </p>
             {isUrgent && !isCompleted && (
-              <Badge className="bg-orange-500 text-white hover:bg-orange-500 text-xs px-1.5 py-0">
-                Urgent
+              <Badge
+                className="text-xs px-1.5 py-0 border-0"
+                style={{ background: '#8b2020', color: '#f4e4c1' }}
+              >
+                ⚠ Urgent
               </Badge>
             )}
             {isNotImportant && (
-              <Badge className="bg-purple-500 text-white hover:bg-purple-500 text-xs px-1.5 py-0">
+              <Badge
+                className="text-xs px-1.5 py-0 border-0"
+                style={{ background: 'rgba(139,109,56,0.2)', color: '#6b5a3e' }}
+              >
                 Niet belangrijk
               </Badge>
             )}
@@ -70,7 +92,12 @@ export function TodayTaskRow({
       </button>
       <div className="flex items-center gap-2 shrink-0">
         {isOverdue && (
-          <Badge variant="destructive">-{daysOverdue}</Badge>
+          <Badge
+            className="border-0"
+            style={{ background: '#8b2020', color: '#f4e4c1' }}
+          >
+            -{daysOverdue}
+          </Badge>
         )}
         {!isCompleted && !isNotImportant && onMarkNotImportant && (
           <button
@@ -79,7 +106,8 @@ export function TodayTaskRow({
               e.stopPropagation()
               onMarkNotImportant()
             }}
-            className="text-xs text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400 transition-colors flex items-center gap-1"
+            className="text-xs transition-colors flex items-center gap-1"
+            style={{ color: '#8b6d38' }}
             title="Markeer als niet belangrijk"
           >
             <ArrowDownCircle className="size-4" />

@@ -35,9 +35,9 @@ import { getCompaniesForSelect } from '@/lib/meetings'
 import type { MailTaskWithCompany } from '@/types/database'
 
 const urgencyConfig = {
-  3: { label: 'Hoog', class: 'bg-red-500 text-white hover:bg-red-500' },
-  2: { label: 'Medium', class: 'bg-orange-500 text-white hover:bg-orange-500' },
-  1: { label: 'Laag', class: 'bg-blue-400 text-white hover:bg-blue-400' },
+  3: { label: 'Hoog', class: 'text-white hover:opacity-90', style: { background: '#8b2020' } },
+  2: { label: 'Medium', class: 'text-white hover:opacity-90', style: { background: '#8b6d38' } },
+  1: { label: 'Laag', class: 'hover:opacity-90', style: { background: 'rgba(139,109,56,0.3)', color: '#4a3a20' } },
 } as const
 
 interface MailTaskBoxProps {
@@ -140,26 +140,46 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
 
   if (loading) {
     return (
-      <div className="rounded-lg border border-blue-200 bg-blue-50/50 p-4 dark:border-blue-800 dark:bg-blue-950/30">
-        <p className="text-sm text-blue-600 dark:text-blue-400">Mailing taken laden...</p>
+      <div
+        className="rounded-lg p-4"
+        style={{
+          background: 'linear-gradient(135deg, #f5ebd4, #efe0be)',
+          border: '1px solid rgba(139,109,56,0.35)',
+          boxShadow: '0 2px 8px rgba(100,70,20,0.1)',
+        }}
+      >
+        <p className="text-sm" style={{ color: '#6b5a3e', fontFamily: 'var(--font-medieval)' }}>
+          Mailing taken laden...
+        </p>
       </div>
     )
   }
 
   return (
     <>
-      <div className="rounded-lg border border-blue-200 bg-blue-50/50 p-4 dark:border-blue-800 dark:bg-blue-950/30">
+      <div
+        className="rounded-lg p-4"
+        style={{
+          background: 'linear-gradient(135deg, #f5ebd4, #efe0be)',
+          border: '1px solid rgba(139,109,56,0.35)',
+          boxShadow: '0 2px 8px rgba(100,70,20,0.1)',
+        }}
+      >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Mail className="size-4 text-blue-600 dark:text-blue-400" />
-            <h3 className="text-sm font-medium text-blue-700 dark:text-blue-300">
-              Mailing taken ({tasks.length})
+            <span className="text-base">📨</span>
+            <h3
+              className="text-sm font-medium"
+              style={{ color: '#4a3a20', fontFamily: 'var(--font-medieval)' }}
+            >
+              Mailing Bevelen ({tasks.length})
             </h3>
           </div>
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 text-blue-600 hover:text-blue-800 dark:text-blue-400"
+            className="h-7"
+            style={{ color: '#8b6d38', fontFamily: 'var(--font-medieval)' }}
             onClick={() => setShowCreate(true)}
           >
             <Plus className="size-3.5 mr-1" />
@@ -168,8 +188,8 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
         </div>
 
         {tasks.length === 0 ? (
-          <p className="text-xs text-blue-500 dark:text-blue-400">
-            Geen mailing taken voor vandaag
+          <p className="text-xs" style={{ color: '#8b7d60', fontFamily: 'var(--font-medieval)' }}>
+            Geen mailing bevelen voor vandaag
           </p>
         ) : (
           <div className="space-y-2">
@@ -177,32 +197,41 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
               <button
                 key={task.id}
                 type="button"
-                className="w-full text-left flex items-center justify-between gap-2 rounded-md border border-blue-200 bg-white p-3 dark:border-blue-700 dark:bg-blue-950/50 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
+                className="w-full text-left flex items-center justify-between gap-2 rounded-md p-3 transition-all hover:translate-y-[-1px]"
+                style={{
+                  background: 'linear-gradient(135deg, #f8f0dc, #f2e6c8)',
+                  border: '1px solid rgba(139,109,56,0.25)',
+                  boxShadow: '0 1px 4px rgba(100,70,20,0.08)',
+                }}
                 onClick={() => setEditingTask(task)}
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium truncate">
+                    <p
+                      className="text-sm font-medium truncate"
+                      style={{ color: '#2a1f0e', fontFamily: 'var(--font-medieval)' }}
+                    >
                       {task.company_name}
                     </p>
                     <Badge
                       className={cn(
-                        'text-[10px] px-1.5 py-0 shrink-0',
+                        'text-[10px] px-1.5 py-0 shrink-0 border-0',
                         urgencyConfig[task.urgency].class
                       )}
+                      style={urgencyConfig[task.urgency].style}
                     >
                       {urgencyConfig[task.urgency].label}
                     </Badge>
                     <Badge
-                      variant="outline"
-                      className="text-[10px] px-1.5 py-0 shrink-0"
+                      className="text-[10px] px-1.5 py-0 shrink-0 border-0"
+                      style={{ background: 'rgba(139,109,56,0.15)', color: '#6b5a3e' }}
                     >
                       {task.is_auto_generated ? 'Auto' : 'Handmatig'}
                     </Badge>
                     {!task.reason && (
                       <Badge
-                        variant="outline"
-                        className="text-[10px] px-1 py-0 shrink-0 border-amber-400 text-amber-600 dark:text-amber-400"
+                        className="text-[10px] px-1 py-0 shrink-0 border-0"
+                        style={{ background: 'rgba(180,140,40,0.15)', color: '#8b6d20' }}
                         title="Geen reden opgegeven"
                       >
                         <HelpCircle className="size-3" />
@@ -210,11 +239,11 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
                     )}
                   </div>
                   <div className="flex items-center gap-3 mt-0.5">
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs" style={{ color: '#8b7d60' }}>
                       Laatste contact: {formatLastContact(task.last_completed_at)}
                     </span>
                     {task.reason && (
-                      <span className="text-xs text-blue-600 dark:text-blue-400 truncate">
+                      <span className="text-xs truncate" style={{ color: '#6b5a3e' }}>
                         {task.reason}
                       </span>
                     )}
@@ -232,8 +261,13 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
                           'size-5 rounded-full text-[9px] font-bold transition-all inline-flex items-center justify-center',
                           task.urgency === u
                             ? urgencyConfig[u].class
-                            : 'bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400 hover:opacity-80'
+                            : 'hover:opacity-80'
                         )}
+                        style={
+                          task.urgency === u
+                            ? urgencyConfig[u].style
+                            : { background: 'rgba(139,109,56,0.12)', color: '#8b7d60' }
+                        }
                         onClick={(e) => handleUrgencyChange(e, task.id, u)}
                         title={urgencyConfig[u].label}
                       >
@@ -246,7 +280,8 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
+                      className="h-7 w-7 p-0 hover:opacity-80"
+                      style={{ color: '#8b6d38' }}
                       onClick={(e) => handleSnooze(e, task.id, task.deadline)}
                       title="1 dag uitstellen"
                     >
@@ -257,7 +292,8 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-7 w-7 p-0 text-green-600 hover:text-green-800 hover:bg-green-100"
+                    className="h-7 w-7 p-0 hover:opacity-80"
+                    style={{ color: '#4a7a2a' }}
                     onClick={(e) => handleComplete(e, task.id)}
                     title="Afgerond"
                   >
@@ -267,7 +303,8 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-7 w-7 p-0 text-muted-foreground hover:text-red-600"
+                    className="h-7 w-7 p-0 hover:opacity-80"
+                    style={{ color: '#8b4020' }}
                     onClick={(e) => handleDelete(e, task.id)}
                     title="Verwijderen"
                   >

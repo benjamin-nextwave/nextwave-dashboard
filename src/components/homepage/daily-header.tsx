@@ -18,15 +18,31 @@ export function DailyHeader({ totalMinutesRemaining }: DailyHeaderProps) {
   return (
     <div>
       <div className="flex items-center gap-3">
-        <h1 className="text-2xl font-bold text-foreground">Vandaag</h1>
+        <h1
+          className="text-2xl font-bold"
+          style={{ color: '#2a1f0e', fontFamily: 'var(--font-fraktur)' }}
+        >
+          ⚔️ Dagorders
+        </h1>
         {totalMinutesRemaining != null && totalMinutesRemaining > 0 && (
-          <span className="inline-flex items-center gap-1.5 rounded-md bg-blue-100 px-2.5 py-1 text-sm font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+          <span
+            className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm font-medium"
+            style={{
+              background: 'linear-gradient(135deg, rgba(139,109,56,0.2), rgba(139,109,56,0.1))',
+              color: '#4a3a20',
+              border: '1px solid rgba(139,109,56,0.25)',
+              fontFamily: 'var(--font-medieval)',
+            }}
+          >
             <Clock className="size-3.5" />
             {timeString}
           </span>
         )}
       </div>
-      <p className="text-sm text-muted-foreground">
+      <p
+        className="text-sm mt-0.5"
+        style={{ color: '#6b5a3e', fontFamily: 'var(--font-medieval)' }}
+      >
         {formatDutchDateCapitalized(today)}
       </p>
     </div>

@@ -122,10 +122,15 @@ export function Homepage() {
           {allCompleted ? (
             <Link
               href="/ontspanning"
-              className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 px-4 py-2.5 text-sm font-medium text-white shadow-lg animate-pulse hover:shadow-xl hover:scale-105 transition-all"
+              className="inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg animate-pulse hover:shadow-xl hover:scale-105 transition-all"
+              style={{
+                background: 'linear-gradient(135deg, #8b6d38, #d4af37, #8b6d38)',
+                color: '#2a1f0e',
+                border: '1px solid rgba(212,175,55,0.5)',
+                fontFamily: 'var(--font-medieval)',
+              }}
             >
-              <PartyPopper className="size-4" />
-              Het tikken kan elders genoten worden
+              👑 De veldslag is gewonnen!
             </Link>
           ) : (
             <ProgressDonut completed={completedCount} total={importantTasks.length} />
@@ -135,9 +140,13 @@ export function Homepage() {
 
       <MailTaskBox today={today} />
 
+      <div className="medieval-divider"><span className="text-sm select-none">⚔️</span></div>
+
       <PriorityAlerts />
 
       <TodayMeetings meetings={meetings} loading={meetingsLoading} />
+
+      <div className="medieval-divider"><span className="text-sm select-none">🛡️</span></div>
 
       {!loading && tasks.length > 0 && (
         <TaskFilters

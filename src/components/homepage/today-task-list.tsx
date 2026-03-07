@@ -44,8 +44,18 @@ export function TodayTaskList({ tasks, onTaskClick, onMarkNotImportant }: TodayT
       )}
 
       {notImportantTasks.length > 0 && (
-        <div className="rounded-lg border border-purple-200 bg-purple-50/30 p-4 dark:border-purple-800 dark:bg-purple-950/20">
-          <p className="text-xs font-medium text-purple-600 dark:text-purple-400 mb-3">
+        <div
+          className="rounded-lg p-4"
+          style={{
+            background: 'linear-gradient(135deg, #efe2c4, #e8d8b0)',
+            border: '1px dashed rgba(139,109,56,0.35)',
+            boxShadow: '0 2px 6px rgba(100,70,20,0.08)',
+          }}
+        >
+          <p
+            className="text-xs font-medium mb-3"
+            style={{ color: '#8b6d38', fontFamily: 'var(--font-medieval)' }}
+          >
             Niet belangrijk
           </p>
           <div className="space-y-2">
