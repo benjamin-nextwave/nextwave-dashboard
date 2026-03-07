@@ -54,6 +54,7 @@ export function CampaignUpdateDialog({
           body: JSON.stringify({
             voornaam: voornaam.trim(),
             mededeling: mededeling.trim(),
+            email: company.email ?? '',
           }),
         })
         onSent(company.id, true)
@@ -63,6 +64,7 @@ export function CampaignUpdateDialog({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             voornaam: voornaam.trim(),
+            email: company.email ?? '',
           }),
         })
         onSent(company.id, false)
