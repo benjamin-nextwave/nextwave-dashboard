@@ -19,6 +19,7 @@ export type Company = {
   toekomstige_wensen: string | null
   extra_notes: string | null
   google_drive_url: string | null
+  campagne_livegang: string | null
   rapport_date: number | null
   scrape_date_1: number | null
   scrape_date_2: number | null
@@ -120,6 +121,7 @@ type CompanyInsert = {
   toekomstige_wensen?: string | null
   extra_notes?: string | null
   google_drive_url?: string | null
+  campagne_livegang?: string | null
   onboarding_completed?: boolean
   rapport_date?: number | null
   scrape_date_1?: number | null

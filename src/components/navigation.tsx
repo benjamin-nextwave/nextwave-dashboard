@@ -11,6 +11,7 @@ const navItems = [
   { href: '/onboarding', label: 'Onboarding' },
   { href: '/bedrijven', label: 'Bedrijven' },
   { href: '/kalender', label: 'Kalender' },
+  { href: '/planning', label: 'Planning' },
 ]
 
 export function Navigation() {
