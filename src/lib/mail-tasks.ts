@@ -110,18 +110,26 @@ export async function completeMailTask(
 
   if (updateErr) throw updateErr
 
-  // Create auto-generated follow-up task 2 days from today
-  const nextDeadline = format(addDays(new Date(today + 'T00:00:00'), 2), 'yyyy-MM-dd')
+  // Check if company has completed onboarding (3 days) or not (2 days)
+  const castTask = task as { company_id: string; urgency: number; reason: string | null }
+  const { data: company } = await supabase
+    .from('companies')
+    .select('onboarding_completed')
+    .eq('id', castTask.company_id)
+    .single()
+
+  const pauseDays = (company as { onboarding_completed: boolean } | null)?.onboarding_completed ? 3 : 2
+  const nextDeadline = format(addDays(new Date(today + 'T00:00:00'), pauseDays), 'yyyy-MM-dd')
 
   const { error: insertErr } = await supabase
     .from('mail_tasks')
     .insert({
-      company_id: (task as { company_id: string; urgency: number; reason: string | null }).company_id,
+      company_id: castTask.company_id,
       deadline: nextDeadline,
       is_completed: false,
       completed_at: null,
       is_auto_generated: true,
-      urgency: (task as { company_id: string; urgency: number; reason: string | null }).urgency as 1 | 2 | 3,
+      urgency: castTask.urgency as 1 | 2 | 3,
       reason: null,
       has_been_snoozed: false,
     })
