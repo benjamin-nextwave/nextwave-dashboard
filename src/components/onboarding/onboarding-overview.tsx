@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import type { Company } from '@/types/database'
 import { fetchCompaniesForOnboarding } from '@/lib/onboarding'
 import { OnboardingDetail } from './onboarding-detail'
+import { OnboardingErrorBoundary } from './error-boundary'
 
 export function OnboardingOverview() {
   const [companies, setCompanies] = useState<Company[]>([])
@@ -32,10 +33,12 @@ export function OnboardingOverview() {
 
   if (selectedCompany) {
     return (
-      <OnboardingDetail
-        company={selectedCompany}
-        onBack={handleBack}
-      />
+      <OnboardingErrorBoundary>
+        <OnboardingDetail
+          company={selectedCompany}
+          onBack={handleBack}
+        />
+      </OnboardingErrorBoundary>
     )
   }
 
