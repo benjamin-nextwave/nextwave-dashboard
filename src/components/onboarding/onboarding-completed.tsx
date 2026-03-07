@@ -41,17 +41,17 @@ export function OnboardingCompleted({ company, tasks, onBack }: Props) {
               <h3 className="text-xl font-semibold">{getTaskLabel(task)}</h3>
             </div>
 
-            {task.links && task.links.length > 0 && (
+            {Array.isArray(task.links) && task.links.length > 0 && (
               <div className="mt-3 space-y-1">
                 {task.links.map((link, i) => (
                   <a
                     key={i}
-                    href={link.url}
+                    href={String(link.url || '')}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
                   >
-                    {link.label}
+                    {String(link.label || '')}
                   </a>
                 ))}
               </div>

@@ -127,7 +127,7 @@ export function OnboardingDetail({ company, onBack }: Props) {
         <div className="h-3 rounded-full bg-muted overflow-hidden">
           <div
             className="h-full rounded-full bg-green-500 transition-all duration-500"
-            style={{ width: `${(flow.filter((t) => t.status === 'completed').length / flow.length) * 100}%` }}
+            style={{ width: `${flow.length > 0 ? (flow.filter((t) => t.status === 'completed').length / flow.length) * 100 : 0}%` }}
           />
         </div>
       </div>

@@ -74,7 +74,7 @@ export async function initializeOnboarding(clientId: string): Promise<Onboarding
     .select()
 
   if (error) throw error
-  return (data || []) as OnboardingTask[]
+  return ((data || []) as OnboardingTask[]).map(parseTask)
 }
 
 export async function completeTask(

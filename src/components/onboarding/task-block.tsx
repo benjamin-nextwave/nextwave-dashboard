@@ -72,15 +72,15 @@ export function TaskBlock({ task, visibility, onComplete, onUpdateLinks }: Props
 
       {/* Links */}
       <div className="space-y-2 mb-4">
-        {(task.links || []).map((link, i) => (
+        {(Array.isArray(task.links) ? task.links : []).map((link, i) => (
           <div key={i} className="flex items-center gap-2">
             <a
-              href={link.url}
+              href={String(link.url || '')}
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 dark:text-blue-400 hover:underline text-lg truncate"
             >
-              {link.label}
+              {String(link.label || '')}
             </a>
             {isActive && (
               <button
