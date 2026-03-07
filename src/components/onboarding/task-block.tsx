@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import type { OnboardingTask } from '@/types/database'
-import { getTaskLabel, getTargetDay, getScheduleStatus } from '@/lib/onboarding'
+import { getTaskLabel, getTargetDay, getTargetDate, getScheduleStatus } from '@/lib/onboarding'
 import { cn } from '@/lib/utils'
 
 type Props = {
@@ -23,6 +23,7 @@ export function TaskBlock({ task, visibility, startDate, onComplete, onUpdateLin
 
   const isActive = task.status === 'active'
   const targetDay = getTargetDay(task.task_number)
+  const targetDate = getTargetDate(task.task_number, startDate)
   const schedule = getScheduleStatus(task, startDate)
   const isChoiceTask = CHOICE_TASKS.includes(task.task_number)
   const isRlmChoice = task.task_number === RLM_CHOICE_TASK
@@ -67,14 +68,19 @@ export function TaskBlock({ task, visibility, startDate, onComplete, onUpdateLin
             {task.task_number}
           </span>
           <StatusBadge status={task.status} />
-          <span className="ml-auto flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Dag {targetDay}</span>
-            {schedule.notStarted ? (
-              <span className="text-muted-foreground text-lg">-</span>
-            ) : schedule.onTrack ? (
-              <span className="text-green-600 dark:text-green-400 text-lg font-bold">&#10003;</span>
-            ) : (
-              <span className="text-red-600 dark:text-red-400 text-lg font-bold">-{schedule.daysOff}</span>
+          <span className="ml-auto flex flex-col items-end">
+            <span className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Dag {targetDay}</span>
+              {schedule.notStarted ? (
+                <span className="text-muted-foreground text-lg">-</span>
+              ) : schedule.onTrack ? (
+                <span className="text-green-600 dark:text-green-400 text-lg font-bold">&#10003;</span>
+              ) : (
+                <span className="text-red-600 dark:text-red-400 text-lg font-bold">-{schedule.daysOff}</span>
+              )}
+            </span>
+            {targetDate && (
+              <span className="text-xs text-muted-foreground">{targetDate}</span>
             )}
           </span>
         </div>

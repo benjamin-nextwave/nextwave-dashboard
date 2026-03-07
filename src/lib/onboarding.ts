@@ -18,6 +18,15 @@ export function getTargetDay(taskNumber: number): number {
   return TASK_DEFINITIONS.find((d) => d.number === taskNumber)?.targetDay ?? 0
 }
 
+export function getTargetDate(taskNumber: number, startDate: string | null): string | null {
+  if (!startDate || taskNumber === 1) return null
+  const start = new Date(startDate)
+  const daysToAdd = getTargetDay(taskNumber) - 1
+  const target = new Date(start)
+  target.setDate(target.getDate() + daysToAdd)
+  return target.toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })
+}
+
 export function getOnboardingStartDate(tasks: OnboardingTask[]): string | null {
   const task1 = tasks.find((t) => t.task_number === 1 && t.iteration === 1)
   if (!task1 || task1.status !== 'completed') return null
