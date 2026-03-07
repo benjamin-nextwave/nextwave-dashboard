@@ -102,6 +102,7 @@ export function OnboardingDetail({ company, onBack }: Props) {
 
   const flow = buildTaskFlow()
   const activeIndex = flow.findIndex((t) => t.status === 'active')
+  const startDate = tasks.length > 0 ? tasks[0].created_at : new Date().toISOString()
   const completedCount = flow.filter((t) => t.status === 'completed').length
   const totalCount = flow.length
   const progressPct = totalCount > 0 ? (completedCount / totalCount) * 100 : 0
@@ -149,6 +150,7 @@ export function OnboardingDetail({ company, onBack }: Props) {
               key={task.id}
               task={task}
               visibility={visibility}
+              startDate={startDate}
               onComplete={handleComplete}
               onUpdateLinks={handleUpdateLinks}
             />

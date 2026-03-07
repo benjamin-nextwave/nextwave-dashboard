@@ -2,17 +2,35 @@ import { supabase } from './supabase'
 import type { OnboardingTask, Company } from '@/types/database'
 
 export const TASK_DEFINITIONS = [
-  { number: 1, type: 'Invulformulier verzenden', isOptional: false },
-  { number: 2, type: 'Bevestigingsmail sturen', isOptional: false },
-  { number: 3, type: 'Mailvarianten maken en opsturen', isOptional: false },
-  { number: 4, type: 'Beoordeling mailvarianten', isOptional: false },
-  { number: 5, type: 'Contactenlijst samenstellen en delen', isOptional: false },
-  { number: 6, type: 'Beoordeling contactenlijst', isOptional: false },
-  { number: 7, type: 'RLM keuze', isOptional: true },
-  { number: 8, type: 'RLM maken en delen', isOptional: true },
-  { number: 9, type: 'Beoordeling RLM', isOptional: true },
-  { number: 10, type: 'Campagne live zetten', isOptional: false },
+  { number: 1, type: 'Invulformulier verzenden', isOptional: false, targetDay: 1 },
+  { number: 2, type: 'Bevestigingsmail sturen', isOptional: false, targetDay: 2 },
+  { number: 3, type: 'Mailvarianten maken en opsturen', isOptional: false, targetDay: 4 },
+  { number: 4, type: 'Beoordeling mailvarianten', isOptional: false, targetDay: 5 },
+  { number: 5, type: 'Contactenlijst samenstellen en delen', isOptional: false, targetDay: 7 },
+  { number: 6, type: 'Beoordeling contactenlijst', isOptional: false, targetDay: 9 },
+  { number: 7, type: 'RLM keuze', isOptional: true, targetDay: 10 },
+  { number: 8, type: 'RLM maken en delen', isOptional: true, targetDay: 11 },
+  { number: 9, type: 'Beoordeling RLM', isOptional: true, targetDay: 13 },
+  { number: 10, type: 'Campagne live zetten', isOptional: false, targetDay: 14 },
 ]
+
+export function getTargetDay(taskNumber: number): number {
+  return TASK_DEFINITIONS.find((d) => d.number === taskNumber)?.targetDay ?? 0
+}
+
+export function getScheduleStatus(task: OnboardingTask, startDate: string): { onTrack: boolean; daysOff: number } {
+  const start = new Date(startDate)
+  const now = new Date()
+  const daysPassed = Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1
+  const target = getTargetDay(task.task_number)
+
+  if (task.status === 'completed') {
+    return { onTrack: true, daysOff: 0 }
+  }
+
+  const diff = daysPassed - target
+  return { onTrack: diff <= 0, daysOff: diff }
+}
 
 export function getTaskLabel(task: OnboardingTask): string {
   const base = task.task_type

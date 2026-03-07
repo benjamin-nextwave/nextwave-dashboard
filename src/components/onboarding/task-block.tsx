@@ -2,12 +2,13 @@
 
 import { useState } from 'react'
 import type { OnboardingTask } from '@/types/database'
-import { getTaskLabel } from '@/lib/onboarding'
+import { getTaskLabel, getTargetDay, getScheduleStatus } from '@/lib/onboarding'
 import { cn } from '@/lib/utils'
 
 type Props = {
   task: OnboardingTask
   visibility: 'full' | 'dimmed' | 'faded' | 'completed'
+  startDate: string
   onComplete: (task: OnboardingTask, choice?: 'approved' | 'feedback' | 'rlm' | 'no-rlm') => Promise<void>
   onUpdateLinks: (taskId: string, links: { label: string; url: string }[]) => Promise<void>
 }
@@ -15,12 +16,14 @@ type Props = {
 const CHOICE_TASKS = [4, 6, 9] // Goedgekeurd / Feedback
 const RLM_CHOICE_TASK = 7 // RLM / Geen RLM
 
-export function TaskBlock({ task, visibility, onComplete, onUpdateLinks }: Props) {
+export function TaskBlock({ task, visibility, startDate, onComplete, onUpdateLinks }: Props) {
   const [newLabel, setNewLabel] = useState('')
   const [newUrl, setNewUrl] = useState('')
   const [saving, setSaving] = useState(false)
 
   const isActive = task.status === 'active'
+  const targetDay = getTargetDay(task.task_number)
+  const schedule = getScheduleStatus(task, startDate)
   const isChoiceTask = CHOICE_TASKS.includes(task.task_number)
   const isRlmChoice = task.task_number === RLM_CHOICE_TASK
 
@@ -64,6 +67,14 @@ export function TaskBlock({ task, visibility, onComplete, onUpdateLinks }: Props
             {task.task_number}
           </span>
           <StatusBadge status={task.status} />
+          <span className="ml-auto flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Dag {targetDay}</span>
+            {schedule.onTrack ? (
+              <span className="text-green-600 dark:text-green-400 text-lg font-bold">&#10003;</span>
+            ) : (
+              <span className="text-red-600 dark:text-red-400 text-lg font-bold">-{schedule.daysOff}</span>
+            )}
+          </span>
         </div>
         <h3 className="text-xl font-semibold leading-tight">
           {getTaskLabel(task)}
