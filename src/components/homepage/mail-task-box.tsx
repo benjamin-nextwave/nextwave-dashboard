@@ -8,6 +8,7 @@ import {
   Trash2,
   Plus,
   HelpCircle,
+  AlertTriangle,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -27,6 +28,7 @@ import {
   completeMailTask,
   snoozeMailTask,
   updateMailTaskUrgency,
+  updateMailTaskUrgent,
   updateMailTaskReason,
   createMailTask,
   deleteMailTask,
@@ -55,6 +57,7 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
     try {
       const data = await getMailTasksDue(today)
       data.sort((a, b) => {
+        if (a.is_urgent !== b.is_urgent) return a.is_urgent ? -1 : 1
         if (a.urgency !== b.urgency) return b.urgency - a.urgency
         return a.deadline.localeCompare(b.deadline)
       })
@@ -99,12 +102,31 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
         [...prev.map((t) =>
           t.id === taskId ? { ...t, urgency } : t
         )].sort((a, b) => {
+          if (a.is_urgent !== b.is_urgent) return a.is_urgent ? -1 : 1
           if (a.urgency !== b.urgency) return b.urgency - a.urgency
           return a.deadline.localeCompare(b.deadline)
         })
       )
     } catch (error) {
       console.error('Failed to update urgency:', error)
+    }
+  }
+
+  async function handleToggleUrgent(e: React.MouseEvent, taskId: string, currentUrgent: boolean) {
+    e.stopPropagation()
+    try {
+      await updateMailTaskUrgent(taskId, !currentUrgent)
+      setTasks((prev) =>
+        [...prev.map((t) =>
+          t.id === taskId ? { ...t, is_urgent: !currentUrgent } : t
+        )].sort((a, b) => {
+          if (a.is_urgent !== b.is_urgent) return a.is_urgent ? -1 : 1
+          if (a.urgency !== b.urgency) return b.urgency - a.urgency
+          return a.deadline.localeCompare(b.deadline)
+        })
+      )
+    } catch (error) {
+      console.error('Failed to toggle urgent:', error)
     }
   }
 
@@ -199,9 +221,15 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
                 type="button"
                 className="w-full text-left flex items-center justify-between gap-2 rounded-md p-3 transition-all hover:translate-y-[-1px]"
                 style={{
-                  background: 'linear-gradient(135deg, #f8f0dc, #f2e6c8)',
-                  border: '1px solid rgba(139,109,56,0.25)',
-                  boxShadow: '0 1px 4px rgba(100,70,20,0.08)',
+                  background: task.is_urgent
+                    ? 'linear-gradient(135deg, #fce4e4, #f8d4d4)'
+                    : 'linear-gradient(135deg, #f8f0dc, #f2e6c8)',
+                  border: task.is_urgent
+                    ? '1px solid rgba(180,40,40,0.35)'
+                    : '1px solid rgba(139,109,56,0.25)',
+                  boxShadow: task.is_urgent
+                    ? '0 1px 6px rgba(180,40,40,0.15)'
+                    : '0 1px 4px rgba(100,70,20,0.08)',
                 }}
                 onClick={() => setEditingTask(task)}
               >
@@ -213,6 +241,14 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
                     >
                       {task.company_name}
                     </p>
+                    {task.is_urgent && (
+                      <Badge
+                        className="text-[10px] px-1.5 py-0 shrink-0 border-0 text-white"
+                        style={{ background: '#b42828' }}
+                      >
+                        Urgent
+                      </Badge>
+                    )}
                     <Badge
                       className={cn(
                         'text-[10px] px-1.5 py-0 shrink-0 border-0',
@@ -251,6 +287,16 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
                 </div>
 
                 <div className="flex items-center gap-1 shrink-0">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 w-7 p-0 hover:opacity-80"
+                    style={{ color: task.is_urgent ? '#b42828' : '#8b7d60' }}
+                    onClick={(e) => handleToggleUrgent(e, task.id, task.is_urgent)}
+                    title={task.is_urgent ? 'Urgent uitzetten' : 'Markeer als urgent'}
+                  >
+                    <AlertTriangle className="size-4" style={task.is_urgent ? { fill: '#b42828', color: '#fff' } : {}} />
+                  </Button>
                   <div className="flex gap-0.5 mr-1">
                     {([1, 2, 3] as const).map((u) => (
                       <span

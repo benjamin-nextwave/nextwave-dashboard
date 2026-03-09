@@ -74,6 +74,7 @@ export async function createMailTask(
       completed_at: null,
       is_auto_generated: false,
       urgency,
+      is_urgent: false,
       reason,
       has_been_snoozed: false,
     })
@@ -118,7 +119,7 @@ export async function completeMailTask(
     .eq('id', castTask.company_id)
     .single()
 
-  const pauseDays = (company as { onboarding_completed: boolean } | null)?.onboarding_completed ? 3 : 2
+  const pauseDays = (company as { onboarding_completed: boolean } | null)?.onboarding_completed ? 4 : 2
   const nextDeadline = format(addDays(new Date(today + 'T00:00:00'), pauseDays), 'yyyy-MM-dd')
 
   const { error: insertErr } = await supabase
@@ -130,6 +131,7 @@ export async function completeMailTask(
       completed_at: null,
       is_auto_generated: true,
       urgency: castTask.urgency as 1 | 2 | 3,
+      is_urgent: false,
       reason: null,
       has_been_snoozed: false,
     })
@@ -156,6 +158,21 @@ export async function snoozeMailTask(
 
   if (error) throw error
   return newDeadline
+}
+
+/**
+ * Toggle is_urgent flag on a mail task.
+ */
+export async function updateMailTaskUrgent(
+  id: string,
+  is_urgent: boolean
+): Promise<void> {
+  const { error } = await supabase
+    .from('mail_tasks')
+    .update({ is_urgent })
+    .eq('id', id)
+
+  if (error) throw error
 }
 
 /**
