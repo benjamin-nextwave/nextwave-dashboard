@@ -338,12 +338,12 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-7 w-7 p-0 hover:opacity-80"
-                    style={{ color: '#4a7a2a' }}
+                    className="h-9 w-9 p-0 hover:opacity-80 rounded-full"
+                    style={{ color: '#4a7a2a', background: 'rgba(74,122,42,0.12)' }}
                     onClick={(e) => handleComplete(e, task.id)}
                     title="Afgerond"
                   >
-                    <Check className="size-4" />
+                    <Check className="size-5" />
                   </Button>
 
                   <Button

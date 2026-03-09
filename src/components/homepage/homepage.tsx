@@ -79,6 +79,21 @@ export function Homepage() {
     setOverlay({ type: 'none' })
   }, [])
 
+  const onComplete = useCallback(async (taskId: string) => {
+    try {
+      await updateTask(taskId, { is_completed: true })
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.task.id === taskId
+            ? { ...t, task: { ...t.task, is_completed: true } }
+            : t
+        )
+      )
+    } catch (error) {
+      console.error('Failed to complete task:', error)
+    }
+  }, [])
+
   const onMarkNotImportant = useCallback(async (taskId: string) => {
     try {
       await updateTask(taskId, { is_not_important: true })
@@ -165,6 +180,7 @@ export function Homepage() {
         <TodayTaskList
           tasks={hasActiveFilter ? filteredTasks : tasks}
           onTaskClick={onTaskClick}
+          onComplete={onComplete}
           onMarkNotImportant={onMarkNotImportant}
         />
       )}

@@ -1,7 +1,8 @@
 'use client'
 
-import { ArrowDownCircle } from 'lucide-react'
+import { ArrowDownCircle, Check } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 interface TodayTaskRowProps {
@@ -13,6 +14,7 @@ interface TodayTaskRowProps {
   isNotImportant: boolean
   daysOverdue: number
   onClick: () => void
+  onComplete?: () => void
   onMarkNotImportant?: () => void
 }
 
@@ -25,6 +27,7 @@ export function TodayTaskRow({
   isNotImportant,
   daysOverdue,
   onClick,
+  onComplete,
   onMarkNotImportant,
 }: TodayTaskRowProps) {
   return (
@@ -91,6 +94,21 @@ export function TodayTaskRow({
         </div>
       </button>
       <div className="flex items-center gap-2 shrink-0">
+        {!isCompleted && onComplete && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-9 w-9 p-0 hover:opacity-80 rounded-full"
+            style={{ color: '#4a7a2a', background: 'rgba(74,122,42,0.12)' }}
+            onClick={(e) => {
+              e.stopPropagation()
+              onComplete()
+            }}
+            title="Afgerond"
+          >
+            <Check className="size-5" />
+          </Button>
+        )}
         {isOverdue && (
           <Badge
             className="border-0"

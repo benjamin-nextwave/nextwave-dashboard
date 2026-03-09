@@ -7,10 +7,11 @@ import type { Task } from '@/types/database'
 interface TodayTaskListProps {
   tasks: TodayTask[]
   onTaskClick: (task: Task) => void
+  onComplete: (taskId: string) => void
   onMarkNotImportant: (taskId: string) => void
 }
 
-export function TodayTaskList({ tasks, onTaskClick, onMarkNotImportant }: TodayTaskListProps) {
+export function TodayTaskList({ tasks, onTaskClick, onComplete, onMarkNotImportant }: TodayTaskListProps) {
   if (tasks.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
@@ -37,6 +38,7 @@ export function TodayTaskList({ tasks, onTaskClick, onMarkNotImportant }: TodayT
               isNotImportant={false}
               daysOverdue={todayTask.overdue.daysOverdue}
               onClick={() => onTaskClick(todayTask.task)}
+              onComplete={() => onComplete(todayTask.task.id)}
               onMarkNotImportant={() => onMarkNotImportant(todayTask.task.id)}
             />
           ))}
@@ -70,6 +72,7 @@ export function TodayTaskList({ tasks, onTaskClick, onMarkNotImportant }: TodayT
                 isNotImportant={true}
                 daysOverdue={todayTask.overdue.daysOverdue}
                 onClick={() => onTaskClick(todayTask.task)}
+                onComplete={() => onComplete(todayTask.task.id)}
               />
             ))}
           </div>
