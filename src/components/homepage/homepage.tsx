@@ -1,8 +1,8 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { Plus, PartyPopper } from 'lucide-react'
+import { Plus, Sword } from 'lucide-react'
 import { useToday } from '@/lib/today-provider'
 import {
   getTodayTasksWithCompany,
@@ -23,6 +23,8 @@ import { HomepageTaskCreateDialog } from '@/components/homepage/task-create-dial
 import { TaskEditDialog } from '@/components/gantt/task-edit-dialog'
 import { useRecurringTasks } from '@/hooks/use-recurring-tasks'
 import { updateTask } from '@/lib/tasks'
+import { completeMailTask } from '@/lib/mail-tasks'
+import { NuNuOverlay, type NuNuItem } from '@/components/homepage/nu-nu-overlay'
 import type { Task, MeetingWithCompany } from '@/types/database'
 
 type OverlayState =
@@ -39,6 +41,9 @@ export function Homepage() {
   const [overlay, setOverlay] = useState<OverlayState>({ type: 'none' })
   const [companyFilter, setCompanyFilter] = useState('')
   const [warmupOnly, setWarmupOnly] = useState(false)
+  const [nuNuItems, setNuNuItems] = useState<NuNuItem[]>([])
+  const [nuNuOpen, setNuNuOpen] = useState(false)
+  const [mailRefreshTrigger, setMailRefreshTrigger] = useState(0)
 
   const loadData = useCallback(async () => {
     const raw = await getTodayTasksWithCompany(today)
@@ -109,6 +114,47 @@ export function Homepage() {
     }
   }, [])
 
+  const onAddTaskToNuNu = useCallback((taskId: string) => {
+    const todayTask = tasks.find((t) => t.task.id === taskId)
+    if (!todayTask) return
+    setNuNuItems((prev) => {
+      if (prev.some((item) => item.type === 'task' && item.id === taskId)) return prev
+      return [...prev, { type: 'task', id: taskId, companyName: todayTask.companyName, title: todayTask.task.title }]
+    })
+  }, [tasks])
+
+  const onAddMailToNuNu = useCallback((taskId: string, companyName: string) => {
+    setNuNuItems((prev) => {
+      if (prev.some((item) => item.type === 'mail' && item.id === taskId)) return prev
+      return [...prev, { type: 'mail', id: taskId, companyName }]
+    })
+  }, [])
+
+  const onNuNuComplete = useCallback(async (item: NuNuItem) => {
+    if (item.type === 'task') {
+      await onComplete(item.id)
+    } else {
+      try {
+        await completeMailTask(item.id, today)
+        setMailRefreshTrigger((n) => n + 1)
+      } catch (error) {
+        console.error('Failed to complete mail task:', error)
+      }
+    }
+    setNuNuItems((prev) => prev.filter((i) => !(i.type === item.type && i.id === item.id)))
+  }, [onComplete, today])
+
+  const onNuNuRemove = useCallback((item: NuNuItem) => {
+    setNuNuItems((prev) => prev.filter((i) => !(i.type === item.type && i.id === item.id)))
+  }, [])
+
+  const onNuNuClearAll = useCallback(() => {
+    setNuNuItems([])
+  }, [])
+
+  const nuNuTaskIds = useMemo(() => new Set(nuNuItems.filter((i) => i.type === 'task').map((i) => i.id)), [nuNuItems])
+  const nuNuMailIds = useMemo(() => new Set(nuNuItems.filter((i) => i.type === 'mail').map((i) => i.id)), [nuNuItems])
+
   const importantTasks = tasks.filter((t) => !t.task.is_not_important)
   const completedCount = importantTasks.filter((t) => t.task.is_completed).length
   const allCompleted = importantTasks.length > 0 && completedCount === importantTasks.length
@@ -130,6 +176,27 @@ export function Homepage() {
       <div className="flex items-start justify-between">
         <DailyHeader totalMinutesRemaining={totalMinutesRemaining} />
         <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            onClick={() => setNuNuOpen(true)}
+            className="relative"
+            style={{
+              borderColor: 'rgba(139,109,56,0.4)',
+              color: '#8b6d38',
+              fontFamily: 'var(--font-medieval)',
+            }}
+          >
+            <Sword className="size-4" />
+            Nu Nu
+            {nuNuItems.length > 0 && (
+              <span
+                className="absolute -top-1.5 -right-1.5 size-5 rounded-full text-[10px] font-bold flex items-center justify-center text-white"
+                style={{ background: '#8b2020' }}
+              >
+                {nuNuItems.length}
+              </span>
+            )}
+          </Button>
           <Button onClick={() => setOverlay({ type: 'createTask' })}>
             <Plus className="size-4" />
             Nieuwe taak
@@ -153,7 +220,12 @@ export function Homepage() {
         </div>
       </div>
 
-      <MailTaskBox today={today} />
+      <MailTaskBox
+        today={today}
+        onAddToNuNu={onAddMailToNuNu}
+        nuNuMailIds={nuNuMailIds}
+        refreshTrigger={mailRefreshTrigger}
+      />
 
       <div className="medieval-divider"><span className="text-sm select-none">⚔️</span></div>
 
@@ -182,6 +254,8 @@ export function Homepage() {
           onTaskClick={onTaskClick}
           onComplete={onComplete}
           onMarkNotImportant={onMarkNotImportant}
+          onAddToNuNu={onAddTaskToNuNu}
+          nuNuTaskIds={nuNuTaskIds}
         />
       )}
 
@@ -195,6 +269,15 @@ export function Homepage() {
         open={overlay.type === 'createTask'}
         onClose={onCloseOverlay}
         onCreated={refreshData}
+      />
+
+      <NuNuOverlay
+        open={nuNuOpen}
+        onClose={() => setNuNuOpen(false)}
+        items={nuNuItems}
+        onComplete={onNuNuComplete}
+        onRemove={onNuNuRemove}
+        onClearAll={onNuNuClearAll}
       />
     </div>
   )

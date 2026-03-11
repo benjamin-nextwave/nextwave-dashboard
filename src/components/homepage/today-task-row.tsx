@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowDownCircle, Check } from 'lucide-react'
+import { ArrowDownCircle, Check, Sword } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -16,6 +16,8 @@ interface TodayTaskRowProps {
   onClick: () => void
   onComplete?: () => void
   onMarkNotImportant?: () => void
+  onAddToNuNu?: () => void
+  isInNuNu?: boolean
 }
 
 export function TodayTaskRow({
@@ -29,6 +31,8 @@ export function TodayTaskRow({
   onClick,
   onComplete,
   onMarkNotImportant,
+  onAddToNuNu,
+  isInNuNu,
 }: TodayTaskRowProps) {
   return (
     <div
@@ -94,6 +98,29 @@ export function TodayTaskRow({
         </div>
       </button>
       <div className="flex items-center gap-2 shrink-0">
+        {!isCompleted && onAddToNuNu && !isInNuNu && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-9 w-9 p-0 hover:opacity-80 rounded-full"
+            style={{ color: '#8b6d38', background: 'rgba(139,109,56,0.1)' }}
+            onClick={(e) => {
+              e.stopPropagation()
+              onAddToNuNu()
+            }}
+            title="Toevoegen aan Nu Nu lijst"
+          >
+            <Sword className="size-5" />
+          </Button>
+        )}
+        {isInNuNu && (
+          <Badge
+            className="text-[10px] px-1.5 py-0 border-0"
+            style={{ background: 'rgba(139,109,56,0.2)', color: '#6b5a3e' }}
+          >
+            Nu Nu
+          </Badge>
+        )}
         {!isCompleted && onComplete && (
           <Button
             variant="ghost"

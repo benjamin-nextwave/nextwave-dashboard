@@ -9,6 +9,7 @@ import {
   Plus,
   HelpCircle,
   AlertTriangle,
+  Sword,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -45,9 +46,12 @@ const urgencyConfig = {
 interface MailTaskBoxProps {
   today: string
   onRefresh?: () => void
+  onAddToNuNu?: (taskId: string, companyName: string) => void
+  nuNuMailIds?: Set<string>
+  refreshTrigger?: number
 }
 
-export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
+export function MailTaskBox({ today, onRefresh, onAddToNuNu, nuNuMailIds, refreshTrigger }: MailTaskBoxProps) {
   const [tasks, setTasks] = useState<MailTaskWithCompany[]>([])
   const [loading, setLoading] = useState(true)
   const [showCreate, setShowCreate] = useState(false)
@@ -72,6 +76,12 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
   useEffect(() => {
     loadTasks()
   }, [loadTasks])
+
+  useEffect(() => {
+    if (refreshTrigger && refreshTrigger > 0) {
+      loadTasks()
+    }
+  }, [refreshTrigger, loadTasks])
 
   async function handleComplete(e: React.MouseEvent, taskId: string) {
     e.stopPropagation()
@@ -287,6 +297,29 @@ export function MailTaskBox({ today, onRefresh }: MailTaskBoxProps) {
                 </div>
 
                 <div className="flex items-center gap-1 shrink-0">
+                  {onAddToNuNu && !nuNuMailIds?.has(task.id) && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 w-7 p-0 hover:opacity-80"
+                      style={{ color: '#8b6d38' }}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onAddToNuNu(task.id, task.company_name)
+                      }}
+                      title="Toevoegen aan Nu Nu lijst"
+                    >
+                      <Sword className="size-4" />
+                    </Button>
+                  )}
+                  {nuNuMailIds?.has(task.id) && (
+                    <Badge
+                      className="text-[10px] px-1.5 py-0 border-0 mr-1"
+                      style={{ background: 'rgba(139,109,56,0.2)', color: '#6b5a3e' }}
+                    >
+                      Nu Nu
+                    </Badge>
+                  )}
                   <Button
                     variant="ghost"
                     size="sm"

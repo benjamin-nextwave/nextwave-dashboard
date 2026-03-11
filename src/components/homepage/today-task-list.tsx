@@ -9,9 +9,11 @@ interface TodayTaskListProps {
   onTaskClick: (task: Task) => void
   onComplete: (taskId: string) => void
   onMarkNotImportant: (taskId: string) => void
+  onAddToNuNu?: (taskId: string) => void
+  nuNuTaskIds?: Set<string>
 }
 
-export function TodayTaskList({ tasks, onTaskClick, onComplete, onMarkNotImportant }: TodayTaskListProps) {
+export function TodayTaskList({ tasks, onTaskClick, onComplete, onMarkNotImportant, onAddToNuNu, nuNuTaskIds }: TodayTaskListProps) {
   if (tasks.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
@@ -40,6 +42,8 @@ export function TodayTaskList({ tasks, onTaskClick, onComplete, onMarkNotImporta
               onClick={() => onTaskClick(todayTask.task)}
               onComplete={() => onComplete(todayTask.task.id)}
               onMarkNotImportant={() => onMarkNotImportant(todayTask.task.id)}
+              onAddToNuNu={onAddToNuNu ? () => onAddToNuNu(todayTask.task.id) : undefined}
+              isInNuNu={nuNuTaskIds?.has(todayTask.task.id)}
             />
           ))}
         </div>
@@ -73,6 +77,8 @@ export function TodayTaskList({ tasks, onTaskClick, onComplete, onMarkNotImporta
                 daysOverdue={todayTask.overdue.daysOverdue}
                 onClick={() => onTaskClick(todayTask.task)}
                 onComplete={() => onComplete(todayTask.task.id)}
+                onAddToNuNu={onAddToNuNu ? () => onAddToNuNu(todayTask.task.id) : undefined}
+                isInNuNu={nuNuTaskIds?.has(todayTask.task.id)}
               />
             ))}
           </div>
