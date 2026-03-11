@@ -24,7 +24,7 @@ import { TaskEditDialog } from '@/components/gantt/task-edit-dialog'
 import { useRecurringTasks } from '@/hooks/use-recurring-tasks'
 import { updateTask } from '@/lib/tasks'
 import { completeMailTask } from '@/lib/mail-tasks'
-import { NuNuOverlay, type NuNuItem } from '@/components/homepage/nu-nu-overlay'
+import { NuNuOverlay, type NuNuItem, type NuNuNote } from '@/components/homepage/nu-nu-overlay'
 import type { Task, MeetingWithCompany } from '@/types/database'
 
 type OverlayState =
@@ -42,6 +42,7 @@ export function Homepage() {
   const [companyFilter, setCompanyFilter] = useState('')
   const [warmupOnly, setWarmupOnly] = useState(false)
   const [nuNuItems, setNuNuItems] = useState<NuNuItem[]>([])
+  const [nuNuNotes, setNuNuNotes] = useState<NuNuNote[]>([])
   const [nuNuOpen, setNuNuOpen] = useState(false)
   const [mailRefreshTrigger, setMailRefreshTrigger] = useState(0)
 
@@ -148,8 +149,30 @@ export function Homepage() {
     setNuNuItems((prev) => prev.filter((i) => !(i.type === item.type && i.id === item.id)))
   }, [])
 
+  const onToggleQuickTask = useCallback((id: string) => {
+    setNuNuItems((prev) => prev.map((i) =>
+      i.type === 'quick' && i.id === id ? { ...i, done: !i.done } : i
+    ))
+  }, [])
+
   const onNuNuClearAll = useCallback(() => {
     setNuNuItems([])
+  }, [])
+
+  const onAddQuickTask = useCallback((title: string) => {
+    setNuNuItems((prev) => [...prev, { type: 'quick', id: crypto.randomUUID(), title, done: false }])
+  }, [])
+
+  const onAddNote = useCallback((text: string) => {
+    setNuNuNotes((prev) => [{ id: crypto.randomUUID(), text, createdAt: Date.now() }, ...prev])
+  }, [])
+
+  const onRemoveNote = useCallback((id: string) => {
+    setNuNuNotes((prev) => prev.filter((n) => n.id !== id))
+  }, [])
+
+  const onClearNotes = useCallback(() => {
+    setNuNuNotes([])
   }, [])
 
   const nuNuTaskIds = useMemo(() => new Set(nuNuItems.filter((i) => i.type === 'task').map((i) => i.id)), [nuNuItems])
@@ -188,12 +211,12 @@ export function Homepage() {
           >
             <Sword className="size-4" />
             Nu Nu
-            {nuNuItems.length > 0 && (
+            {(nuNuItems.length + nuNuNotes.length) > 0 && (
               <span
                 className="absolute -top-1.5 -right-1.5 size-5 rounded-full text-[10px] font-bold flex items-center justify-center text-white"
                 style={{ background: '#8b2020' }}
               >
-                {nuNuItems.length}
+                {nuNuItems.length + nuNuNotes.length}
               </span>
             )}
           </Button>
@@ -275,9 +298,15 @@ export function Homepage() {
         open={nuNuOpen}
         onClose={() => setNuNuOpen(false)}
         items={nuNuItems}
+        notes={nuNuNotes}
         onComplete={onNuNuComplete}
         onRemove={onNuNuRemove}
+        onToggleQuickTask={onToggleQuickTask}
         onClearAll={onNuNuClearAll}
+        onAddQuickTask={onAddQuickTask}
+        onAddNote={onAddNote}
+        onRemoveNote={onRemoveNote}
+        onClearNotes={onClearNotes}
       />
     </div>
   )
