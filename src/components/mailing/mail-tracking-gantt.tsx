@@ -36,21 +36,22 @@ export function MailTrackingGantt() {
 
   const loadData = useCallback(async () => {
     try {
-      const [companiesRaw, trackingData] = await Promise.all([
-        getCompaniesWithOpenTaskCounts(),
-        getMailTracking(startDate, endDate),
-      ])
+      const companiesRaw = await getCompaniesWithOpenTaskCounts()
       setCompanies(companiesRaw.map((c) => ({ id: c.id, name: c.name })))
+    } catch (error) {
+      console.error('Failed to load companies:', error)
+    }
+    try {
+      const trackingData = await getMailTracking(startDate, endDate)
       const set = new Set<string>()
       for (const entry of trackingData) {
         set.add(trackingKey(entry.company_id, entry.contact_date))
       }
       setTracking(set)
     } catch (error) {
-      console.error('Failed to load mail tracking data:', error)
-    } finally {
-      setLoading(false)
+      console.error('Failed to load mail tracking:', error)
     }
+    setLoading(false)
   }, [startDate, endDate])
 
   useEffect(() => {
