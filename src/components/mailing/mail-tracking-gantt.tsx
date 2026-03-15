@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { format, subDays } from 'date-fns'
 import { nl } from 'date-fns/locale'
 import { useToday } from '@/lib/today-provider'
-import { getCompaniesForSelect } from '@/lib/meetings'
+import { getCompaniesWithOpenTaskCounts } from '@/lib/companies'
 import { getMailTracking, toggleMailTracking } from '@/lib/mail-tracking'
 
 type Company = { id: string; name: string }
@@ -36,11 +36,11 @@ export function MailTrackingGantt() {
 
   const loadData = useCallback(async () => {
     try {
-      const [companiesData, trackingData] = await Promise.all([
-        getCompaniesForSelect(),
+      const [companiesRaw, trackingData] = await Promise.all([
+        getCompaniesWithOpenTaskCounts(),
         getMailTracking(startDate, endDate),
       ])
-      setCompanies(companiesData)
+      setCompanies(companiesRaw.map((c) => ({ id: c.id, name: c.name })))
       const set = new Set<string>()
       for (const entry of trackingData) {
         set.add(trackingKey(entry.company_id, entry.contact_date))
