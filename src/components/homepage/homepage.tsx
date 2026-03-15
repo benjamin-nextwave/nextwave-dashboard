@@ -18,12 +18,10 @@ import { PriorityAlerts } from '@/components/homepage/priority-alerts'
 import { TaskFilters, isWarmupTask } from '@/components/homepage/task-filters'
 import { TodayTaskList } from '@/components/homepage/today-task-list'
 import { TodayMeetings } from '@/components/homepage/today-meetings'
-import { MailTaskBox } from '@/components/homepage/mail-task-box'
 import { HomepageTaskCreateDialog } from '@/components/homepage/task-create-dialog'
 import { TaskEditDialog } from '@/components/gantt/task-edit-dialog'
 import { useRecurringTasks } from '@/hooks/use-recurring-tasks'
 import { updateTask } from '@/lib/tasks'
-import { completeMailTask } from '@/lib/mail-tasks'
 import { NuNuOverlay, type NuNuItem, type NuNuNote } from '@/components/homepage/nu-nu-overlay'
 import type { Task, MeetingWithCompany } from '@/types/database'
 
@@ -44,7 +42,6 @@ export function Homepage() {
   const [nuNuItems, setNuNuItems] = useState<NuNuItem[]>([])
   const [nuNuNotes, setNuNuNotes] = useState<NuNuNote[]>([])
   const [nuNuOpen, setNuNuOpen] = useState(false)
-  const [mailRefreshTrigger, setMailRefreshTrigger] = useState(0)
 
   const loadData = useCallback(async () => {
     const raw = await getTodayTasksWithCompany(today)
@@ -124,26 +121,12 @@ export function Homepage() {
     })
   }, [tasks])
 
-  const onAddMailToNuNu = useCallback((taskId: string, companyName: string) => {
-    setNuNuItems((prev) => {
-      if (prev.some((item) => item.type === 'mail' && item.id === taskId)) return prev
-      return [...prev, { type: 'mail', id: taskId, companyName }]
-    })
-  }, [])
-
   const onNuNuComplete = useCallback(async (item: NuNuItem) => {
     if (item.type === 'task') {
       await onComplete(item.id)
-    } else {
-      try {
-        await completeMailTask(item.id, today)
-        setMailRefreshTrigger((n) => n + 1)
-      } catch (error) {
-        console.error('Failed to complete mail task:', error)
-      }
     }
     setNuNuItems((prev) => prev.filter((i) => !(i.type === item.type && i.id === item.id)))
-  }, [onComplete, today])
+  }, [onComplete])
 
   const onNuNuRemove = useCallback((item: NuNuItem) => {
     setNuNuItems((prev) => prev.filter((i) => !(i.type === item.type && i.id === item.id)))
@@ -176,7 +159,6 @@ export function Homepage() {
   }, [])
 
   const nuNuTaskIds = useMemo(() => new Set(nuNuItems.filter((i) => i.type === 'task').map((i) => i.id)), [nuNuItems])
-  const nuNuMailIds = useMemo(() => new Set(nuNuItems.filter((i) => i.type === 'mail').map((i) => i.id)), [nuNuItems])
 
   const importantTasks = tasks.filter((t) => !t.task.is_not_important)
   const completedCount = importantTasks.filter((t) => t.task.is_completed).length
@@ -242,15 +224,6 @@ export function Homepage() {
           )}
         </div>
       </div>
-
-      <MailTaskBox
-        today={today}
-        onAddToNuNu={onAddMailToNuNu}
-        nuNuMailIds={nuNuMailIds}
-        refreshTrigger={mailRefreshTrigger}
-      />
-
-      <div className="medieval-divider"><span className="text-sm select-none">⚔️</span></div>
 
       <PriorityAlerts />
 

@@ -96,6 +96,13 @@ export type MailTaskWithCompany = MailTask & {
   last_completed_at: string | null
 }
 
+export type MailTracking = {
+  id: string
+  company_id: string
+  contact_date: string
+  created_at: string
+}
+
 export type MeetingWithCompany = Meeting & {
   company_name: string
 }
@@ -198,6 +205,20 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: 'company_notes_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      mail_tracking: {
+        Row: MailTracking
+        Insert: Omit<MailTracking, 'id' | 'created_at'>
+        Update: Partial<Omit<MailTracking, 'id' | 'created_at'>>
+        Relationships: [
+          {
+            foreignKeyName: 'mail_tracking_company_id_fkey'
             columns: ['company_id']
             isOneToOne: false
             referencedRelation: 'companies'

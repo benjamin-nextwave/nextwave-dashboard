@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Check, X, Trash2, Mail, Plus, StickyNote, Swords, Clock } from 'lucide-react'
+import { Check, X, Trash2, Plus, StickyNote, Swords, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -13,7 +13,6 @@ import { cn } from '@/lib/utils'
 
 export type NuNuItem =
   | { type: 'task'; id: string; companyName: string; title: string }
-  | { type: 'mail'; id: string; companyName: string }
   | { type: 'quick'; id: string; title: string; done: boolean }
 
 export type NuNuNote = {
@@ -93,7 +92,7 @@ export function NuNuOverlay({
     return `${hrs}u geleden`
   }
 
-  const linkedItems = items.filter((i) => i.type === 'task' || i.type === 'mail')
+  const linkedItems = items.filter((i) => i.type === 'task')
   const quickItems = items.filter((i) => i.type === 'quick') as Extract<NuNuItem, { type: 'quick' }>[]
   const undoneQuickCount = quickItems.filter((i) => !i.done).length
   const totalTaskCount = linkedItems.length + undoneQuickCount
@@ -262,9 +261,7 @@ export function NuNuOverlay({
                       key={`${item.type}-${item.id}`}
                       className="flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 transition-all"
                       style={{
-                        background: item.type === 'mail'
-                          ? 'linear-gradient(135deg, #f8f0dc, #f2e6c8)'
-                          : 'rgba(255,250,235,0.5)',
+                        background: 'rgba(255,250,235,0.5)',
                         border: '1px solid rgba(139,109,56,0.25)',
                       }}
                     >
@@ -273,16 +270,13 @@ export function NuNuOverlay({
                           className="text-[10px] tracking-wide uppercase"
                           style={{ color: '#6b5a3e', fontFamily: 'var(--font-medieval)' }}
                         >
-                          {item.type === 'mail' && (
-                            <Mail className="size-3 inline mr-1 -mt-0.5" />
-                          )}
                           {item.companyName}
                         </p>
                         <p
                           className="text-sm"
                           style={{ color: '#2a1f0e', fontFamily: 'var(--font-medieval)' }}
                         >
-                          {item.type === 'task' ? item.title : 'Mail sturen'}
+                          {item.title}
                         </p>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
