@@ -39,9 +39,29 @@ export function Homepage() {
   const [overlay, setOverlay] = useState<OverlayState>({ type: 'none' })
   const [companyFilter, setCompanyFilter] = useState('')
   const [warmupOnly, setWarmupOnly] = useState(false)
-  const [nuNuItems, setNuNuItems] = useState<NuNuItem[]>([])
-  const [nuNuNotes, setNuNuNotes] = useState<NuNuNote[]>([])
+  const [nuNuItems, setNuNuItems] = useState<NuNuItem[]>(() => {
+    if (typeof window === 'undefined') return []
+    try {
+      const saved = localStorage.getItem('nunu-items')
+      return saved ? JSON.parse(saved) : []
+    } catch { return [] }
+  })
+  const [nuNuNotes, setNuNuNotes] = useState<NuNuNote[]>(() => {
+    if (typeof window === 'undefined') return []
+    try {
+      const saved = localStorage.getItem('nunu-notes')
+      return saved ? JSON.parse(saved) : []
+    } catch { return [] }
+  })
   const [nuNuOpen, setNuNuOpen] = useState(false)
+
+  // Persist Nu Nu items and notes to localStorage
+  useEffect(() => {
+    localStorage.setItem('nunu-items', JSON.stringify(nuNuItems))
+  }, [nuNuItems])
+  useEffect(() => {
+    localStorage.setItem('nunu-notes', JSON.stringify(nuNuNotes))
+  }, [nuNuNotes])
 
   const loadData = useCallback(async () => {
     const raw = await getTodayTasksWithCompany(today)
