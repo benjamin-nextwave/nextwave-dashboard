@@ -125,7 +125,6 @@ export function Homepage() {
     if (item.type === 'task') {
       await onComplete(item.id)
     }
-    setNuNuItems((prev) => prev.filter((i) => !(i.type === item.type && i.id === item.id)))
   }, [onComplete])
 
   const onNuNuRemove = useCallback((item: NuNuItem) => {
