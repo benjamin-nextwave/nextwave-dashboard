@@ -43,6 +43,13 @@ const BEVELEN: Bevel[] = [
     taak: 'Check de lijst van Kix',
     quote: '"Succes is niet definitief, falen is niet fataal: het is de moed om door te gaan die telt."',
   },
+  {
+    id: 'genghis',
+    generaal: 'Genghis Khan',
+    avatar: '🏹',
+    taak: 'Mailing tabblad dashboard checken',
+    quote: '"Ik ben de straf van God. Als jullie geen grote zonden hadden begaan, zou God geen straf als mij hebben gestuurd."',
+  },
 ]
 
 const MARGIN_DECORATIONS = ['⚔️', '🛡️', '🦅', '🗺️', '⚜️', '🏰']
@@ -306,7 +313,7 @@ export function MobilisatiePage() {
                       className="flex-shrink-0 text-sm font-bold mt-1"
                       style={{ color: '#8b6d38', fontFamily: 'var(--font-medieval)' }}
                     >
-                      {['I', 'II', 'III', 'IV'][index]}.
+                      {['I', 'II', 'III', 'IV', 'V'][index]}.
                     </div>
 
                     {/* Avatar */}
