@@ -24,6 +24,7 @@ import { SectionMailvarianten } from './section-mailvarianten'
 import { SectionFeedback } from './section-feedback'
 import { SectionRecurringTasks } from './section-recurring-tasks'
 import { SectionWarmupProgress } from './section-warmup-progress'
+import { SectionTimeline } from './section-timeline'
 
 interface CompanyDetailPageProps {
   companyId: string
@@ -151,6 +152,11 @@ export function CompanyDetailPage({ companyId }: CompanyDetailPageProps) {
         onFieldChange={onFieldChange}
         onFieldBlur={onFieldBlur}
       />
+
+      <Separator />
+
+      {/* Section: Timeline */}
+      <SectionTimeline companyId={companyId} companyName={company.name} />
 
       <Separator />
 
