@@ -6,12 +6,28 @@ import { nl } from 'date-fns/locale'
 import { useToday } from '@/lib/today-provider'
 import { getCompaniesWithOpenTaskCounts } from '@/lib/companies'
 import { getMailTracking, toggleMailTracking } from '@/lib/mail-tracking'
+import { fetchOnboardingTasks } from '@/lib/onboarding'
+import { TASK_DEFINITIONS } from '@/lib/onboarding'
+import type { OnboardingTask } from '@/types/database'
 
-type Company = { id: string; name: string }
-type TrackingSet = Set<string> // "companyId:date" keys
+type Company = {
+  id: string
+  name: string
+  onboarding_completed: boolean
+  activeTask: string | null // current onboarding task name
+}
+type TrackingSet = Set<string>
 
 function trackingKey(companyId: string, date: string) {
   return `${companyId}:${date}`
+}
+
+function getActiveTaskLabel(tasks: OnboardingTask[]): string | null {
+  const active = tasks.find((t) => t.status === 'active')
+  if (!active) return null
+  const def = TASK_DEFINITIONS.find((d) => d.number === active.task_number)
+  const label = def?.type ?? active.task_type
+  return active.iteration > 1 ? `${label} (ronde ${active.iteration})` : label
 }
 
 export function MailTrackingGantt() {
@@ -20,9 +36,9 @@ export function MailTrackingGantt() {
   const [tracking, setTracking] = useState<TrackingSet>(new Set())
   const [loading, setLoading] = useState(true)
   const [toggling, setToggling] = useState<Set<string>>(new Set())
+  const [expandedCompany, setExpandedCompany] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
 
-  // Generate 14 days ending with today
   const days = useMemo(() => {
     const result: string[] = []
     for (let i = 13; i >= 0; i--) {
@@ -37,7 +53,35 @@ export function MailTrackingGantt() {
   const loadData = useCallback(async () => {
     try {
       const companiesRaw = await getCompaniesWithOpenTaskCounts()
-      setCompanies(companiesRaw.map((c) => ({ id: c.id, name: c.name })))
+
+      // Fetch onboarding tasks for non-completed companies
+      const onboardingCompanies = companiesRaw.filter((c) => !c.onboarding_completed)
+      const onboardingTasks = await Promise.all(
+        onboardingCompanies.map((c) =>
+          fetchOnboardingTasks(c.id).catch(() => [] as OnboardingTask[])
+        )
+      )
+      const activeTaskMap = new Map<string, string | null>()
+      onboardingCompanies.forEach((c, i) => {
+        activeTaskMap.set(c.id, getActiveTaskLabel(onboardingTasks[i]))
+      })
+
+      const mapped: Company[] = companiesRaw.map((c) => ({
+        id: c.id,
+        name: c.name,
+        onboarding_completed: c.onboarding_completed,
+        activeTask: activeTaskMap.get(c.id) ?? null,
+      }))
+
+      // Sort: onboarding first, then completed
+      mapped.sort((a, b) => {
+        if (a.onboarding_completed !== b.onboarding_completed) {
+          return a.onboarding_completed ? 1 : -1
+        }
+        return a.name.localeCompare(b.name)
+      })
+
+      setCompanies(mapped)
     } catch (error) {
       console.error('Failed to load companies:', error)
     }
@@ -58,7 +102,6 @@ export function MailTrackingGantt() {
     loadData()
   }, [loadData])
 
-  // Scroll to the right on load so today is visible
   useEffect(() => {
     if (!loading && scrollRef.current) {
       scrollRef.current.scrollLeft = scrollRef.current.scrollWidth
@@ -69,7 +112,6 @@ export function MailTrackingGantt() {
     const key = trackingKey(companyId, date)
     if (toggling.has(key)) return
 
-    // Optimistic update
     setTracking((prev) => {
       const next = new Set(prev)
       if (next.has(key)) {
@@ -85,7 +127,6 @@ export function MailTrackingGantt() {
       await toggleMailTracking(companyId, date)
     } catch (error) {
       console.error('Failed to toggle mail tracking:', error)
-      // Revert on error
       setTracking((prev) => {
         const next = new Set(prev)
         if (next.has(key)) {
@@ -129,6 +170,11 @@ export function MailTrackingGantt() {
     return d.getDay() === 0 || d.getDay() === 6
   }
 
+  // Find the boundary index where onboarding ends and completed starts
+  const firstCompletedIdx = companies.findIndex((c) => c.onboarding_completed)
+  const hasOnboarding = firstCompletedIdx !== 0
+  const hasCompleted = firstCompletedIdx !== -1
+
   return (
     <div
       ref={scrollRef}
@@ -140,7 +186,7 @@ export function MailTrackingGantt() {
     >
       <table
         className="w-full border-collapse"
-        style={{ minWidth: `${200 + days.length * 52}px` }}
+        style={{ minWidth: `${280 + days.length * 52}px` }}
       >
         <thead>
           <tr>
@@ -152,7 +198,7 @@ export function MailTrackingGantt() {
                 fontFamily: 'var(--font-medieval)',
                 borderBottom: '2px solid rgba(139,109,56,0.3)',
                 borderRight: '2px solid rgba(139,109,56,0.3)',
-                minWidth: 200,
+                minWidth: 280,
               }}
             >
               Bedrijf
@@ -201,63 +247,161 @@ export function MailTrackingGantt() {
           </tr>
         </thead>
         <tbody>
-          {companies.map((company, idx) => (
-            <tr key={company.id}>
+          {/* Section header: Onboarding */}
+          {hasOnboarding && (
+            <tr>
               <td
-                className="sticky left-0 z-10 px-4 py-2.5 text-sm font-medium truncate"
+                colSpan={days.length + 1}
+                className="sticky left-0 z-10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider"
                 style={{
-                  background: idx % 2 === 0
-                    ? 'linear-gradient(135deg, #f5ebd4, #f0e4c8)'
-                    : 'linear-gradient(135deg, #efe0be, #e8d8b0)',
-                  color: '#2a1f0e',
+                  background: 'linear-gradient(135deg, #e0c890, #d8be80)',
+                  color: '#5a4520',
                   fontFamily: 'var(--font-medieval)',
-                  borderBottom: '1px solid rgba(139,109,56,0.15)',
-                  borderRight: '2px solid rgba(139,109,56,0.3)',
-                  maxWidth: 200,
+                  borderBottom: '1px solid rgba(139,109,56,0.3)',
                 }}
-                title={company.name}
               >
-                {company.name}
+                🛡️ Onboarding
               </td>
-              {days.map((day) => {
-                const key = trackingKey(company.id, day)
-                const hasContact = tracking.has(key)
-                const isToday = day === today
-                const weekend = isWeekend(day)
+            </tr>
+          )}
+          {companies.map((company, idx) => {
+            // Insert section header before first completed company
+            const showCompletedHeader = hasCompleted && idx === firstCompletedIdx
 
-                return (
+            const isOnboarding = !company.onboarding_completed
+            const isExpanded = expandedCompany === company.id
+
+            return [
+              showCompletedHeader && (
+                <tr key="completed-header">
                   <td
-                    key={day}
-                    className="relative p-0"
+                    colSpan={days.length + 1}
+                    className="sticky left-0 z-10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider"
                     style={{
-                      background: isToday
-                        ? idx % 2 === 0
-                          ? 'rgba(212,175,55,0.12)'
-                          : 'rgba(212,175,55,0.18)'
-                        : weekend
-                          ? idx % 2 === 0
-                            ? 'rgba(139,109,56,0.06)'
-                            : 'rgba(139,109,56,0.1)'
-                          : idx % 2 === 0
-                            ? '#f8f2e0'
-                            : '#f2ebd0',
-                      borderBottom: '1px solid rgba(139,109,56,0.15)',
-                      borderRight: '1px solid rgba(139,109,56,0.1)',
+                      background: 'linear-gradient(135deg, #c8d8c0, #b8c8b0)',
+                      color: '#3a5030',
+                      fontFamily: 'var(--font-medieval)',
+                      borderBottom: '1px solid rgba(139,109,56,0.3)',
+                      borderTop: '2px solid rgba(139,109,56,0.2)',
                     }}
                   >
-                    <button
-                      type="button"
-                      className="w-full h-10 flex items-center justify-center transition-transform active:scale-90"
-                      onClick={() => handleToggle(company.id, day)}
-                      title={`${company.name} - ${format(new Date(day + 'T12:00:00'), 'd MMMM', { locale: nl })}`}
-                    >
-                      {hasContact && <BulletHole />}
-                    </button>
+                    ⚔️ Actief
                   </td>
-                )
-              })}
-            </tr>
-          ))}
+                </tr>
+              ),
+              <tr key={company.id}>
+                <td
+                  className="sticky left-0 z-10 px-4 py-2.5 text-sm font-medium"
+                  style={{
+                    background: idx % 2 === 0
+                      ? 'linear-gradient(135deg, #f5ebd4, #f0e4c8)'
+                      : 'linear-gradient(135deg, #efe0be, #e8d8b0)',
+                    color: '#2a1f0e',
+                    fontFamily: 'var(--font-medieval)',
+                    borderBottom: '1px solid rgba(139,109,56,0.15)',
+                    borderRight: '2px solid rgba(139,109,56,0.3)',
+                    minWidth: 280,
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="truncate max-w-[150px]" title={company.name}>
+                      {company.name}
+                    </span>
+                    {isOnboarding ? (
+                      <button
+                        type="button"
+                        className="shrink-0 text-[10px] px-1.5 py-0.5 rounded font-medium transition-colors"
+                        style={{
+                          background: 'rgba(180,120,20,0.15)',
+                          color: '#8b6d20',
+                          border: '1px solid rgba(180,120,20,0.25)',
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setExpandedCompany(isExpanded ? null : company.id)
+                        }}
+                        title="Klik voor huidige onboarding stap"
+                      >
+                        Onboarding
+                      </button>
+                    ) : (
+                      <span
+                        className="shrink-0 text-[10px] px-1.5 py-0.5 rounded font-medium"
+                        style={{
+                          background: 'rgba(74,122,42,0.12)',
+                          color: '#4a7a2a',
+                        }}
+                      >
+                        Actief
+                      </span>
+                    )}
+                  </div>
+                  {isExpanded && isOnboarding && company.activeTask && (
+                    <div
+                      className="mt-1 text-xs px-2 py-1 rounded"
+                      style={{
+                        background: 'rgba(180,120,20,0.08)',
+                        color: '#6b5a20',
+                        border: '1px solid rgba(180,120,20,0.15)',
+                        fontFamily: 'var(--font-medieval)',
+                      }}
+                    >
+                      📋 {company.activeTask}
+                    </div>
+                  )}
+                  {isExpanded && isOnboarding && !company.activeTask && (
+                    <div
+                      className="mt-1 text-xs px-2 py-1 rounded"
+                      style={{
+                        background: 'rgba(139,109,56,0.06)',
+                        color: '#8b7d60',
+                        fontFamily: 'var(--font-medieval)',
+                      }}
+                    >
+                      Geen actieve taak
+                    </div>
+                  )}
+                </td>
+                {days.map((day) => {
+                  const key = trackingKey(company.id, day)
+                  const hasContact = tracking.has(key)
+                  const isToday = day === today
+                  const weekend = isWeekend(day)
+
+                  return (
+                    <td
+                      key={day}
+                      className="relative p-0"
+                      style={{
+                        background: isToday
+                          ? idx % 2 === 0
+                            ? 'rgba(212,175,55,0.12)'
+                            : 'rgba(212,175,55,0.18)'
+                          : weekend
+                            ? idx % 2 === 0
+                              ? 'rgba(139,109,56,0.06)'
+                              : 'rgba(139,109,56,0.1)'
+                            : idx % 2 === 0
+                              ? '#f8f2e0'
+                              : '#f2ebd0',
+                        borderBottom: '1px solid rgba(139,109,56,0.15)',
+                        borderRight: '1px solid rgba(139,109,56,0.1)',
+                      }}
+                    >
+                      <button
+                        type="button"
+                        className="w-full h-10 flex items-center justify-center transition-transform active:scale-90"
+                        onClick={() => handleToggle(company.id, day)}
+                        title={`${company.name} - ${format(new Date(day + 'T12:00:00'), 'd MMMM', { locale: nl })}`}
+                      >
+                        {hasContact && <BulletHole />}
+                      </button>
+                    </td>
+                  )
+                })}
+              </tr>,
+            ]
+          })}
         </tbody>
       </table>
     </div>
@@ -267,14 +411,12 @@ export function MailTrackingGantt() {
 function BulletHole() {
   return (
     <div className="relative size-7 flex items-center justify-center">
-      {/* Outer ring - cracked edge */}
       <div
         className="absolute inset-0 rounded-full"
         style={{
           background: 'radial-gradient(circle, transparent 35%, rgba(60,40,10,0.3) 40%, rgba(80,55,15,0.15) 55%, transparent 65%)',
         }}
       />
-      {/* Inner dark hole */}
       <div
         className="size-3.5 rounded-full relative"
         style={{
@@ -282,7 +424,6 @@ function BulletHole() {
           boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.8), 0 0 4px rgba(40,25,5,0.4)',
         }}
       />
-      {/* Subtle cracks */}
       <div
         className="absolute inset-0"
         style={{
