@@ -16,9 +16,15 @@ import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Switch } from '@/components/ui/switch'
 import { updateTask, deleteTask } from '@/lib/tasks'
-import { formatShortDate } from '@/lib/dates'
-import { CompanyNotesSection } from '@/components/gantt/company-notes-section'
+import { CompanyNotesSection } from '@/components/shared/company-notes-section'
 import type { Task } from '@/types/database'
+
+const sourceOptions = [
+  { value: '', label: 'Geen', color: '' },
+  { value: 'benjamin', label: 'Benjamin', color: '#3b82f6' },
+  { value: 'merlijn', label: 'Merlijn', color: '#22c55e' },
+  { value: 'kix', label: 'Kix', color: '#ef4444' },
+] as const
 
 interface TaskEditDialogProps {
   task: Task | null
@@ -28,6 +34,10 @@ interface TaskEditDialogProps {
 
 export function TaskEditDialog({ task, onClose, onSaved }: TaskEditDialogProps) {
   const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [deadline, setDeadline] = useState('')
+  const [scheduledDate, setScheduledDate] = useState('')
+  const [source, setSource] = useState('')
   const [isCompleted, setIsCompleted] = useState(false)
   const [isUrgent, setIsUrgent] = useState(false)
   const [notes, setNotes] = useState('')
@@ -35,10 +45,13 @@ export function TaskEditDialog({ task, onClose, onSaved }: TaskEditDialogProps) 
   const [saving, setSaving] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
-  // Sync local state when task changes
   useEffect(() => {
     if (task) {
       setTitle(task.title)
+      setDescription(task.description ?? '')
+      setDeadline(task.deadline)
+      setScheduledDate(task.scheduled_date ?? '')
+      setSource(task.source ?? '')
       setIsCompleted(task.is_completed)
       setIsUrgent(task.is_urgent)
       setNotes(task.notes ?? '')
@@ -53,6 +66,10 @@ export function TaskEditDialog({ task, onClose, onSaved }: TaskEditDialogProps) 
     try {
       await updateTask(task.id, {
         title,
+        description: description || null,
+        deadline,
+        scheduled_date: scheduledDate || null,
+        source: (source as Task['source']) || null,
         is_completed: isCompleted,
         is_urgent: isUrgent,
         notes: notes || null,
@@ -110,34 +127,84 @@ export function TaskEditDialog({ task, onClose, onSaved }: TaskEditDialogProps) 
                 />
               </div>
 
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id="task-completed"
-                  checked={isCompleted}
-                  onCheckedChange={(checked) => setIsCompleted(checked === true)}
-                />
-                <Label htmlFor="task-completed">Afgerond</Label>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Switch
-                  id="task-urgent"
-                  checked={isUrgent}
-                  onCheckedChange={setIsUrgent}
-                />
-                <Label htmlFor="task-urgent">Urgent</Label>
-              </div>
-
               <div className="space-y-2">
-                <Label htmlFor="task-duration">Duur (minuten)</Label>
-                <Input
-                  id="task-duration"
-                  type="number"
-                  min="0"
-                  placeholder="bijv. 30"
-                  value={durationMinutes}
-                  onChange={(e) => setDurationMinutes(e.target.value)}
+                <Label htmlFor="task-description">Omschrijving</Label>
+                <Textarea
+                  id="task-description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={2}
+                  placeholder="Optionele omschrijving..."
                 />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="task-deadline">Deadline</Label>
+                  <Input
+                    id="task-deadline"
+                    type="date"
+                    value={deadline}
+                    onChange={(e) => setDeadline(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="task-scheduled">Ingepland op</Label>
+                  <Input
+                    id="task-scheduled"
+                    type="date"
+                    value={scheduledDate}
+                    onChange={(e) => setScheduledDate(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="task-duration">Duur (minuten)</Label>
+                  <Input
+                    id="task-duration"
+                    type="number"
+                    min="0"
+                    placeholder="bijv. 30"
+                    value={durationMinutes}
+                    onChange={(e) => setDurationMinutes(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="task-source">Afkomstig van</Label>
+                  <select
+                    id="task-source"
+                    value={source}
+                    onChange={(e) => setSource(e.target.value)}
+                    className="flex h-9 w-full rounded-md border border-input bg-background text-foreground px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  >
+                    {sourceOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="task-completed"
+                    checked={isCompleted}
+                    onCheckedChange={(checked) => setIsCompleted(checked === true)}
+                  />
+                  <Label htmlFor="task-completed">Afgerond</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Switch
+                    id="task-urgent"
+                    checked={isUrgent}
+                    onCheckedChange={setIsUrgent}
+                  />
+                  <Label htmlFor="task-urgent">Urgent</Label>
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -149,12 +216,6 @@ export function TaskEditDialog({ task, onClose, onSaved }: TaskEditDialogProps) 
                   rows={3}
                 />
               </div>
-
-              {task && (
-                <p className="text-sm text-muted-foreground">
-                  Deadline: {formatShortDate(task.deadline)}
-                </p>
-              )}
             </div>
 
             <DialogFooter className="sm:justify-between mt-4">

@@ -22,6 +22,9 @@ function makeTask(overrides: Partial<Task> & { title: string; deadline: string }
     is_not_important: overrides.is_not_important ?? false,
     company_id: overrides.company_id ?? 'company-1',
     duration_minutes: overrides.duration_minutes ?? null,
+    description: overrides.description ?? null,
+    scheduled_date: overrides.scheduled_date ?? null,
+    source: overrides.source ?? null,
     notes: overrides.notes ?? null,
     created_at: overrides.created_at ?? '2025-01-01T00:00:00Z',
     company_name: 'Test BV',
@@ -168,10 +171,11 @@ describe('filterTodayTasks', () => {
     expect(result[0].task.title).toBe('Today task')
   })
 
-  it('excludes incomplete task with deadline in the future', () => {
+  it('maps all provided tasks (filtering is done by DB query on scheduled_date)', () => {
     const futureTask = makeTask({ title: 'Future task', deadline: '2025-02-15' })
     const result = filterTodayTasks([futureTask], TODAY)
-    expect(result).toHaveLength(0)
+    expect(result).toHaveLength(1)
+    expect(result[0].task.title).toBe('Future task')
   })
 
   it('includes completed task with deadline = today', () => {
@@ -185,14 +189,14 @@ describe('filterTodayTasks', () => {
     expect(result[0].task.title).toBe('Completed today')
   })
 
-  it('excludes completed task with deadline in the past', () => {
+  it('includes completed task with deadline in the past (no client-side filtering)', () => {
     const completedPast = makeTask({
       title: 'Completed past',
       deadline: '2025-02-05',
       is_completed: true,
     })
     const result = filterTodayTasks([completedPast], TODAY)
-    expect(result).toHaveLength(0)
+    expect(result).toHaveLength(1)
   })
 
   it('returns correct TodayTask shape with companyName and overdue info', () => {
@@ -210,7 +214,7 @@ describe('filterTodayTasks', () => {
     })
   })
 
-  it('handles mixed batch correctly', () => {
+  it('maps all tasks in mixed batch (DB handles scheduled_date filtering)', () => {
     const tasks = [
       makeTask({ title: 'Overdue', deadline: '2025-02-01' }),
       makeTask({ title: 'Today', deadline: TODAY }),
@@ -219,11 +223,6 @@ describe('filterTodayTasks', () => {
       makeTask({ title: 'Completed past', deadline: '2025-01-15', is_completed: true }),
     ]
     const result = filterTodayTasks(tasks, TODAY)
-    expect(result).toHaveLength(3)
-    expect(result.map((t) => t.task.title).sort()).toEqual([
-      'Completed today',
-      'Overdue',
-      'Today',
-    ])
+    expect(result).toHaveLength(5)
   })
 })

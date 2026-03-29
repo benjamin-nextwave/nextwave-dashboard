@@ -13,8 +13,8 @@ export interface TodayTask {
 }
 
 /**
- * Fetches tasks with deadline <= today, joined with company names.
- * Returns TaskWithCompany[] with null-safe company name handling.
+ * Fetches tasks scheduled for today (scheduled_date = today),
+ * joined with company names.
  */
 export async function getTodayTasksWithCompany(
   today: string
@@ -22,7 +22,7 @@ export async function getTodayTasksWithCompany(
   const { data, error } = await supabase
     .from('tasks')
     .select('*, companies(name)')
-    .lte('deadline', today)
+    .eq('scheduled_date', today)
 
   if (error) throw error
 
@@ -38,33 +38,18 @@ export async function getTodayTasksWithCompany(
 }
 
 /**
- * Filters tasks to those whose effective deadline equals today.
- *
- * This single condition handles all cases:
- * - Overdue incomplete: effectiveDeadline rolled forward to today
- * - Due today incomplete: effectiveDeadline = deadline = today
- * - Completed due today: effectiveDeadline = deadline = today (no rollover)
- * - Completed past: effectiveDeadline = past deadline (excluded)
- * - Future: effectiveDeadline = future deadline (excluded)
+ * Maps tasks scheduled for today into TodayTask format with overdue info.
+ * Tasks are already filtered by scheduled_date in the query.
  */
 export function filterTodayTasks(
   tasks: TaskWithCompany[],
   today: string
 ): TodayTask[] {
-  const result: TodayTask[] = []
-
-  for (const task of tasks) {
-    const overdue = computeOverdue(task.deadline, today, task.is_completed)
-    if (overdue.effectiveDeadline === today) {
-      result.push({
-        task,
-        companyName: task.company_name,
-        overdue,
-      })
-    }
-  }
-
-  return result
+  return tasks.map((task) => ({
+    task,
+    companyName: task.company_name,
+    overdue: computeOverdue(task.deadline, today, task.is_completed),
+  }))
 }
 
 /**

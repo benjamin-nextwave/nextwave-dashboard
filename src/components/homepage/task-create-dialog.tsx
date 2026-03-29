@@ -30,6 +30,8 @@ export function HomepageTaskCreateDialog({
   const [title, setTitle] = useState('')
   const [deadline, setDeadline] = useState('')
   const [durationMinutes, setDurationMinutes] = useState('')
+  const [description, setDescription] = useState('')
+  const [source, setSource] = useState('')
   const [saving, setSaving] = useState(false)
   const [loadingCompanies, setLoadingCompanies] = useState(false)
 
@@ -39,6 +41,8 @@ export function HomepageTaskCreateDialog({
       setTitle('')
       setDeadline('')
       setDurationMinutes('')
+      setDescription('')
+      setSource('')
       setLoadingCompanies(true)
       getCompaniesForSelect()
         .then(setCompanies)
@@ -54,12 +58,15 @@ export function HomepageTaskCreateDialog({
       await createTask({
         company_id: selectedCompanyId,
         title: title.trim(),
+        description: description.trim() || null,
         deadline,
+        scheduled_date: null,
         is_completed: false,
         is_urgent: false,
         is_date_editable: true,
         is_not_important: false,
         duration_minutes: durationMinutes ? parseInt(durationMinutes, 10) : null,
+        source: (source as 'benjamin' | 'merlijn' | 'kix') || null,
         notes: null,
       })
       onCreated()
@@ -121,15 +128,41 @@ export function HomepageTaskCreateDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="homepage-task-duration">Duur (minuten)</Label>
+            <Label htmlFor="homepage-task-description">Omschrijving</Label>
             <Input
-              id="homepage-task-duration"
-              type="number"
-              min="0"
-              placeholder="bijv. 30"
-              value={durationMinutes}
-              onChange={(e) => setDurationMinutes(e.target.value)}
+              id="homepage-task-description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Optionele omschrijving..."
             />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label htmlFor="homepage-task-duration">Duur (minuten)</Label>
+              <Input
+                id="homepage-task-duration"
+                type="number"
+                min="0"
+                placeholder="bijv. 30"
+                value={durationMinutes}
+                onChange={(e) => setDurationMinutes(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="homepage-task-source">Afkomstig van</Label>
+              <select
+                id="homepage-task-source"
+                value={source}
+                onChange={(e) => setSource(e.target.value)}
+                className="flex h-9 w-full rounded-md border border-input bg-background text-foreground px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              >
+                <option value="">Geen</option>
+                <option value="benjamin">Benjamin</option>
+                <option value="merlijn">Merlijn</option>
+                <option value="kix">Kix</option>
+              </select>
+            </div>
           </div>
         </div>
 

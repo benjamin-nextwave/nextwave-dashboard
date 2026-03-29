@@ -33,12 +33,15 @@ export type Task = {
   id: string
   company_id: string
   title: string
+  description: string | null
   deadline: string
+  scheduled_date: string | null
   is_completed: boolean
   is_urgent: boolean
   is_date_editable: boolean
   is_not_important: boolean
   duration_minutes: number | null
+  source: 'benjamin' | 'merlijn' | 'kix' | null
   notes: string | null
   created_at: string
 }

@@ -44,6 +44,9 @@ export function generateDefaultTasks(
     is_date_editable: definition.is_date_editable,
     is_not_important: false,
     duration_minutes: null,
+    source: null,
+    description: null,
+    scheduled_date: null,
     notes: null,
   }))
 }
