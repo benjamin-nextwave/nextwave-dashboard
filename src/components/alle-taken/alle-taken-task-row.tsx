@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowDownCircle, CalendarArrowUp, Check, Pencil } from 'lucide-react'
+import { ArrowDownCircle, CalendarArrowUp, Check, Pencil, Trash2 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -33,7 +33,8 @@ interface AlleTakenTaskRowProps {
   onEdit: () => void
   onComplete: () => void
   onMarkNotImportant?: () => void
-  onScheduleTomorrow: () => void
+  onScheduleToday: () => void
+  onDelete: () => void
 }
 
 export function AlleTakenTaskRow({
@@ -41,7 +42,8 @@ export function AlleTakenTaskRow({
   onEdit,
   onComplete,
   onMarkNotImportant,
-  onScheduleTomorrow,
+  onScheduleToday,
+  onDelete,
 }: AlleTakenTaskRowProps) {
   const source = task.source && sourceConfig[task.source]
 
@@ -115,8 +117,8 @@ export function AlleTakenTaskRow({
           size="sm"
           className="h-8 w-8 p-0 hover:opacity-80 rounded-full"
           style={{ color: '#8b6d38', background: 'rgba(139,109,56,0.1)' }}
-          onClick={onScheduleTomorrow}
-          title="Verzet naar morgen"
+          onClick={onScheduleToday}
+          title="Verzet naar taken vandaag"
         >
           <CalendarArrowUp className="size-4" />
         </Button>
@@ -151,6 +153,16 @@ export function AlleTakenTaskRow({
             <ArrowDownCircle className="size-4" />
           </button>
         )}
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-8 w-8 p-0 hover:opacity-80 rounded-full"
+          style={{ color: '#8b2020', background: 'rgba(139,32,32,0.08)' }}
+          onClick={onDelete}
+          title="Verwijderen"
+        >
+          <Trash2 className="size-4" />
+        </Button>
       </div>
     </div>
   )

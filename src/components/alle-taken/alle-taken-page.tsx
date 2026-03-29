@@ -2,11 +2,9 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { Plus } from 'lucide-react'
-import { addDays, format } from 'date-fns'
 import { useToday } from '@/lib/today-provider'
-import { getToday } from '@/lib/dates'
 import { getAllTasksWithCompany } from '@/lib/alle-taken'
-import { updateTask } from '@/lib/tasks'
+import { updateTask, deleteTask } from '@/lib/tasks'
 import { Button } from '@/components/ui/button'
 import { HomepageTaskCreateDialog } from '@/components/homepage/task-create-dialog'
 import { TaskEditDialog } from '@/components/shared/task-edit-dialog'
@@ -66,17 +64,25 @@ export function AlleTakenPage() {
     }
   }, [])
 
-  const onScheduleTomorrow = useCallback(async (taskId: string) => {
+  const onScheduleToday = useCallback(async (taskId: string) => {
     try {
-      const tomorrow = format(addDays(getToday(), 1), 'yyyy-MM-dd')
-      await updateTask(taskId, { scheduled_date: tomorrow })
+      await updateTask(taskId, { scheduled_date: today })
       setTasks((prev) =>
         prev.map((t) =>
-          t.id === taskId ? { ...t, scheduled_date: tomorrow } : t
+          t.id === taskId ? { ...t, scheduled_date: today } : t
         )
       )
     } catch (error) {
       console.error('Failed to schedule task:', error)
+    }
+  }, [today])
+
+  const onDelete = useCallback(async (taskId: string) => {
+    try {
+      await deleteTask(taskId)
+      setTasks((prev) => prev.filter((t) => t.id !== taskId))
+    } catch (error) {
+      console.error('Failed to delete task:', error)
     }
   }, [])
 
@@ -117,7 +123,8 @@ export function AlleTakenPage() {
                 onEdit={() => setOverlay({ type: 'editTask', task })}
                 onComplete={() => onComplete(task.id)}
                 onMarkNotImportant={() => onMarkNotImportant(task.id)}
-                onScheduleTomorrow={() => onScheduleTomorrow(task.id)}
+                onScheduleToday={() => onScheduleToday(task.id)}
+                onDelete={() => onDelete(task.id)}
               />
             ))}
           </div>
@@ -147,7 +154,8 @@ export function AlleTakenPage() {
                       task={task}
                       onEdit={() => setOverlay({ type: 'editTask', task })}
                       onComplete={() => onComplete(task.id)}
-                      onScheduleTomorrow={() => onScheduleTomorrow(task.id)}
+                      onScheduleToday={() => onScheduleToday(task.id)}
+                onDelete={() => onDelete(task.id)}
                     />
                   ))}
                 </div>
