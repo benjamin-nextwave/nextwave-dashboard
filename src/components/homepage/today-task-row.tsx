@@ -4,6 +4,25 @@ import { ArrowDownCircle, Check, Sword } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import type { Task } from '@/types/database'
+
+const sourceStyles = {
+  benjamin: {
+    gradient: 'linear-gradient(135deg, #dbeafe, #bfdbfe)',
+    border: 'rgba(59,130,246,0.45)',
+    shadow: 'rgba(59,130,246,0.15)',
+  },
+  merlijn: {
+    gradient: 'linear-gradient(135deg, #dcfce7, #bbf7d0)',
+    border: 'rgba(34,197,94,0.45)',
+    shadow: 'rgba(34,197,94,0.15)',
+  },
+  kix: {
+    gradient: 'linear-gradient(135deg, #fee2e2, #fecaca)',
+    border: 'rgba(239,68,68,0.45)',
+    shadow: 'rgba(239,68,68,0.15)',
+  },
+} as const
 
 interface TodayTaskRowProps {
   companyName: string
@@ -13,6 +32,7 @@ interface TodayTaskRowProps {
   isOverdue: boolean
   isNotImportant: boolean
   daysOverdue: number
+  source?: Task['source']
   onClick: () => void
   onComplete?: () => void
   onMarkNotImportant?: () => void
@@ -33,7 +53,10 @@ export function TodayTaskRow({
   onMarkNotImportant,
   onAddToNuNu,
   isInNuNu,
+  source,
 }: TodayTaskRowProps) {
+  const srcStyle = source && sourceStyles[source]
+
   return (
     <div
       className={cn(
@@ -41,11 +64,13 @@ export function TodayTaskRow({
         isCompleted && 'opacity-60',
       )}
       style={{
-        background: isNotImportant
-          ? 'linear-gradient(135deg, #f0e2c0, #ecdaaf)'
-          : 'linear-gradient(135deg, #f5ebd4, #efe0be)',
-        border: '1px solid rgba(139,109,56,0.35)',
-        boxShadow: '0 2px 8px rgba(100,70,20,0.12), inset 0 1px 0 rgba(255,250,235,0.5)',
+        background: srcStyle
+          ? srcStyle.gradient
+          : isNotImportant
+            ? 'linear-gradient(135deg, #f0e2c0, #ecdaaf)'
+            : 'linear-gradient(135deg, #f5ebd4, #efe0be)',
+        border: `1px solid ${srcStyle ? srcStyle.border : 'rgba(139,109,56,0.35)'}`,
+        boxShadow: `0 2px 8px ${srcStyle ? srcStyle.shadow : 'rgba(100,70,20,0.12)'}, inset 0 1px 0 rgba(255,250,235,0.5)`,
       }}
     >
       <button

@@ -39,6 +39,7 @@ export function TodayTaskList({ tasks, onTaskClick, onComplete, onMarkNotImporta
               isOverdue={todayTask.overdue.isOverdue}
               isNotImportant={false}
               daysOverdue={todayTask.overdue.daysOverdue}
+              source={todayTask.task.source}
               onClick={() => onTaskClick(todayTask.task)}
               onComplete={() => onComplete(todayTask.task.id)}
               onMarkNotImportant={() => onMarkNotImportant(todayTask.task.id)}
@@ -75,6 +76,7 @@ export function TodayTaskList({ tasks, onTaskClick, onComplete, onMarkNotImporta
                 isOverdue={todayTask.overdue.isOverdue}
                 isNotImportant={true}
                 daysOverdue={todayTask.overdue.daysOverdue}
+                source={todayTask.task.source}
                 onClick={() => onTaskClick(todayTask.task)}
                 onComplete={() => onComplete(todayTask.task.id)}
                 onAddToNuNu={onAddToNuNu ? () => onAddToNuNu(todayTask.task.id) : undefined}

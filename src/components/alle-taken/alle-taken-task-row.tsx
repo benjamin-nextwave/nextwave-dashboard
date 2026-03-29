@@ -8,9 +8,24 @@ import { formatShortDate } from '@/lib/dates'
 import type { TaskWithCompany } from '@/lib/homepage'
 
 const sourceConfig = {
-  benjamin: { label: 'Benjamin', color: '#3b82f6', bg: 'rgba(59,130,246,0.15)' },
-  merlijn: { label: 'Merlijn', color: '#22c55e', bg: 'rgba(34,197,94,0.15)' },
-  kix: { label: 'Kix', color: '#ef4444', bg: 'rgba(239,68,68,0.15)' },
+  benjamin: {
+    label: 'Benjamin',
+    gradient: 'linear-gradient(135deg, #dbeafe, #bfdbfe)',
+    border: 'rgba(59,130,246,0.45)',
+    shadow: 'rgba(59,130,246,0.15)',
+  },
+  merlijn: {
+    label: 'Merlijn',
+    gradient: 'linear-gradient(135deg, #dcfce7, #bbf7d0)',
+    border: 'rgba(34,197,94,0.45)',
+    shadow: 'rgba(34,197,94,0.15)',
+  },
+  kix: {
+    label: 'Kix',
+    gradient: 'linear-gradient(135deg, #fee2e2, #fecaca)',
+    border: 'rgba(239,68,68,0.45)',
+    shadow: 'rgba(239,68,68,0.15)',
+  },
 } as const
 
 interface AlleTakenTaskRowProps {
@@ -34,9 +49,9 @@ export function AlleTakenTaskRow({
     <div
       className="flex w-full items-center justify-between gap-3 rounded-lg px-5 py-4 transition-all duration-200"
       style={{
-        background: 'linear-gradient(135deg, #f5ebd4, #efe0be)',
-        border: '1px solid rgba(139,109,56,0.35)',
-        boxShadow: '0 2px 8px rgba(100,70,20,0.12), inset 0 1px 0 rgba(255,250,235,0.5)',
+        background: source ? source.gradient : 'linear-gradient(135deg, #f5ebd4, #efe0be)',
+        border: `1px solid ${source ? source.border : 'rgba(139,109,56,0.35)'}`,
+        boxShadow: `0 2px 8px ${source ? source.shadow : 'rgba(100,70,20,0.12)'}, inset 0 1px 0 rgba(255,250,235,0.5)`,
       }}
     >
       <div className="flex min-w-0 items-center gap-3 flex-1">
@@ -51,12 +66,12 @@ export function AlleTakenTaskRow({
               {task.company_name}
             </p>
             {source && (
-              <Badge
-                className="text-[10px] px-1.5 py-0 border-0"
-                style={{ background: source.bg, color: source.color }}
+              <span
+                className="text-xs font-medium"
+                style={{ color: '#6b5a3e', fontFamily: 'var(--font-medieval)' }}
               >
-                {source.label}
-              </Badge>
+                · {source.label}
+              </span>
             )}
           </div>
           <p
