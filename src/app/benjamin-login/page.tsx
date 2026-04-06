@@ -1,11 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 export default function BenjaminLoginPage() {
-  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -27,29 +25,8 @@ export default function BenjaminLoginPage() {
       return
     }
 
-    // Check role
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      setError('Kon gebruiker niet ophalen')
-      setLoading(false)
-      return
-    }
-
-    const { data: roleData } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', user.id)
-      .single()
-
-    if (roleData?.role !== 'merlijn') {
-      setError('Je hebt geen toegang tot dit portaal')
-      await supabase.auth.signOut()
-      setLoading(false)
-      return
-    }
-
-    router.push('/benjamin/vragen')
-    router.refresh()
+    // Hard redirect so cookies are sent fresh — middleware handles role routing
+    window.location.href = '/benjamin/vragen'
   }
 
   return (
