@@ -41,7 +41,7 @@ export default function LoginPage() {
       .eq('user_id', user.id)
       .single()
 
-    if (roleData?.role !== 'merlijn') {
+    if (roleData?.role !== 'benjamin') {
       setError('Je hebt geen toegang tot dit dashboard')
       await supabase.auth.signOut()
       setLoading(false)

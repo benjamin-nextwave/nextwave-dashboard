@@ -41,7 +41,7 @@ export default function BenjaminLoginPage() {
       .eq('user_id', user.id)
       .single()
 
-    if (roleData?.role !== 'benjamin') {
+    if (roleData?.role !== 'merlijn') {
       setError('Je hebt geen toegang tot dit portaal')
       await supabase.auth.signOut()
       setLoading(false)

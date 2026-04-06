@@ -40,13 +40,13 @@ export async function middleware(request: NextRequest) {
 
   const role = roleData?.role
 
-  // Benjamin trying to access dashboard routes
-  if (role === 'benjamin' && !pathname.startsWith('/benjamin')) {
+  // Merlijn trying to access main dashboard routes
+  if (role === 'merlijn' && !pathname.startsWith('/benjamin')) {
     return NextResponse.redirect(new URL('/benjamin/vragen', request.url))
   }
 
-  // Merlijn trying to access Benjamin routes
-  if (role === 'merlijn' && pathname.startsWith('/benjamin')) {
+  // Benjamin trying to access limited portal routes
+  if (role === 'benjamin' && pathname.startsWith('/benjamin')) {
     return NextResponse.redirect(new URL('/', request.url))
   }
 
