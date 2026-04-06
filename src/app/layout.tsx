@@ -3,9 +3,7 @@ import { Geist, Geist_Mono, MedievalSharp, UnifrakturMaguntia } from "next/font/
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TodayProvider } from "@/lib/today-provider";
-import { Navigation } from "@/components/navigation";
-import { MedievalEffects } from "@/components/medieval-effects";
-import { ParchmentOverlay } from "@/components/parchment-overlay";
+import { DashboardChrome } from "@/components/dashboard-chrome";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,9 +50,7 @@ export default function RootLayout({
         >
           <TodayProvider>
             <div className="min-h-screen text-foreground">
-              <Navigation />
-              <MedievalEffects />
-              <ParchmentOverlay />
+              <DashboardChrome />
               <div className="relative z-10">
                 {children}
               </div>

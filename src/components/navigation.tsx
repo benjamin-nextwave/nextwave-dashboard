@@ -12,6 +12,7 @@ const navItems = [
   { href: '/bedrijven', label: 'Bedrijven', icon: '⚔️' },
   { href: '/kalender', label: 'Kalender', icon: '📅' },
   { href: '/planning', label: 'Planning', icon: '🗺️' },
+  { href: '/vragen', label: 'Vragen', icon: '❓' },
 ]
 
 export function Navigation() {

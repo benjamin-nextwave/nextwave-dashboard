@@ -1,7 +1,6 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import Link from 'next/link'
 import { Plus, Sword } from 'lucide-react'
 import { useToday } from '@/lib/today-provider'
 import {
@@ -20,7 +19,6 @@ import { TodayTaskList } from '@/components/homepage/today-task-list'
 import { TodayMeetings } from '@/components/homepage/today-meetings'
 import { HomepageTaskCreateDialog } from '@/components/homepage/task-create-dialog'
 import { TaskEditDialog } from '@/components/shared/task-edit-dialog'
-import { useRecurringTasks } from '@/hooks/use-recurring-tasks'
 import { updateTask } from '@/lib/tasks'
 import { NuNuOverlay, type NuNuItem, type NuNuNote } from '@/components/homepage/nu-nu-overlay'
 import type { Task, MeetingWithCompany } from '@/types/database'
@@ -71,8 +69,6 @@ export function Homepage() {
     setLoading(false)
   }, [today])
 
-  // Auto-generate recurring tasks for current month, then refresh
-  useRecurringTasks(loadData)
 
   const loadMeetings = useCallback(async () => {
     try {
@@ -181,7 +177,6 @@ export function Homepage() {
 
   const importantTasks = tasks.filter((t) => !t.task.is_not_important)
   const completedCount = importantTasks.filter((t) => t.task.is_completed).length
-  const allCompleted = importantTasks.length > 0 && completedCount === importantTasks.length
 
   const filteredTasks = tasks.filter((t) => {
     if (companyFilter && t.task.company_id !== companyFilter) return false
@@ -225,22 +220,7 @@ export function Homepage() {
             <Plus className="size-4" />
             Nieuwe taak
           </Button>
-          {allCompleted ? (
-            <Link
-              href="/ontspanning"
-              className="inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg animate-pulse hover:shadow-xl hover:scale-105 transition-all"
-              style={{
-                background: 'linear-gradient(135deg, #8b6d38, #d4af37, #8b6d38)',
-                color: '#2a1f0e',
-                border: '1px solid rgba(212,175,55,0.5)',
-                fontFamily: 'var(--font-medieval)',
-              }}
-            >
-              👑 De veldslag is gewonnen!
-            </Link>
-          ) : (
-            <ProgressDonut completed={completedCount} total={importantTasks.length} />
-          )}
+          <ProgressDonut completed={completedCount} total={importantTasks.length} />
         </div>
       </div>
 

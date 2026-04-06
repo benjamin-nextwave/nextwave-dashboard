@@ -42,6 +42,7 @@ export type Task = {
   is_not_important: boolean
   duration_minutes: number | null
   source: 'benjamin' | 'merlijn' | 'kix' | null
+  assigned_to?: string | null
   notes: string | null
   created_at: string
 }
@@ -97,6 +98,26 @@ export type OnboardingTask = {
 export type MailTaskWithCompany = MailTask & {
   company_name: string
   last_completed_at: string | null
+}
+
+export type Question = {
+  id: string
+  company_id: string
+  title: string
+  body: string | null
+  answer: string | null
+  status: 'open' | 'answered'
+  created_at: string
+  answered_at: string | null
+}
+
+export type QuestionWithCompany = Question & {
+  company_name: string
+}
+
+export type UserRole = {
+  user_id: string
+  role: 'merlijn' | 'benjamin'
 }
 
 export type MailTracking = {
@@ -242,6 +263,29 @@ export type Database = {
             referencedColumns: ['id']
           },
         ]
+      }
+      questions: {
+        Row: Question
+        Insert: Omit<Question, 'id' | 'created_at' | 'answer' | 'answered_at'> & {
+          answer?: string | null
+          answered_at?: string | null
+        }
+        Update: Partial<Omit<Question, 'id' | 'created_at'>>
+        Relationships: [
+          {
+            foreignKeyName: 'questions_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      user_roles: {
+        Row: UserRole
+        Insert: UserRole
+        Update: Partial<UserRole>
+        Relationships: []
       }
     }
     Views: Record<string, never>
