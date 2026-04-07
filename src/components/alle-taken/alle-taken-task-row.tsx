@@ -1,10 +1,12 @@
 'use client'
 
-import { ArrowDownCircle, CalendarArrowUp, Check, Pencil, Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import { ArrowDownCircle, CalendarArrowUp, Check, MessageSquare, Pencil, Trash2 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { formatShortDate } from '@/lib/dates'
+import { updateTask } from '@/lib/tasks'
 import type { TaskWithCompany } from '@/lib/homepage'
 
 const sourceConfig = {
@@ -35,6 +37,7 @@ interface AlleTakenTaskRowProps {
   onMarkNotImportant?: () => void
   onScheduleToday: () => void
   onDelete: () => void
+  onTaskUpdated?: () => void
 }
 
 export function AlleTakenTaskRow({
@@ -44,126 +47,189 @@ export function AlleTakenTaskRow({
   onMarkNotImportant,
   onScheduleToday,
   onDelete,
+  onTaskUpdated,
 }: AlleTakenTaskRowProps) {
   const source = task.source && sourceConfig[task.source]
+  const [showReply, setShowReply] = useState(false)
+  const [replyText, setReplyText] = useState('')
+  const [sending, setSending] = useState(false)
+  const isMerlijnTask = task.source === 'merlijn'
+
+  async function handleSendReply() {
+    if (!replyText.trim()) return
+    setSending(true)
+    try {
+      await updateTask(task.id, { notes: replyText.trim() })
+      setShowReply(false)
+      setReplyText('')
+      onTaskUpdated?.()
+    } catch (error) {
+      console.error('Failed to send reply:', error)
+    } finally {
+      setSending(false)
+    }
+  }
 
   return (
     <div
-      className="flex w-full items-center justify-between gap-3 rounded-lg px-5 py-4 transition-all duration-200"
+      className="rounded-lg transition-all duration-200"
       style={{
         background: source ? source.gradient : 'linear-gradient(135deg, #f5ebd4, #efe0be)',
         border: `1px solid ${source ? source.border : 'rgba(139,109,56,0.35)'}`,
         boxShadow: `0 2px 8px ${source ? source.shadow : 'rgba(100,70,20,0.12)'}, inset 0 1px 0 rgba(255,250,235,0.5)`,
       }}
     >
-      <div className="flex min-w-0 items-center gap-3 flex-1">
-        <span className="text-xl shrink-0">🔴</span>
+      <div className="flex w-full items-center justify-between gap-3 px-5 py-4">
+        <div className="flex min-w-0 items-center gap-3 flex-1">
+          <span className="text-xl shrink-0">🔴</span>
 
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 flex-wrap">
-            <p
-              className="text-xs tracking-wide uppercase"
-              style={{ color: '#6b5a3e', fontFamily: 'var(--font-medieval)' }}
-            >
-              {task.company_name}
-            </p>
-            {source && (
-              <span
-                className="text-xs font-medium"
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <p
+                className="text-xs tracking-wide uppercase"
                 style={{ color: '#6b5a3e', fontFamily: 'var(--font-medieval)' }}
               >
-                · {source.label}
-              </span>
-            )}
-          </div>
-          <p
-            className="text-sm"
-            style={{ color: '#2a1f0e', fontFamily: 'var(--font-medieval)' }}
-          >
-            {task.title}
-          </p>
-          {task.description && (
+                {task.company_name}
+              </p>
+              {source && (
+                <span
+                  className="text-xs font-medium"
+                  style={{ color: '#6b5a3e', fontFamily: 'var(--font-medieval)' }}
+                >
+                  · {source.label}
+                </span>
+              )}
+            </div>
             <p
-              className="text-xs mt-0.5 line-clamp-1"
-              style={{ color: '#8b7d60' }}
+              className="text-sm"
+              style={{ color: '#2a1f0e', fontFamily: 'var(--font-medieval)' }}
             >
-              {task.description}
+              {task.title}
             </p>
-          )}
-          <div className="flex items-center gap-3 mt-1">
-            <span className="text-xs" style={{ color: '#6b5a3e' }}>
-              📅 {formatShortDate(task.deadline)}
-            </span>
-            {task.duration_minutes != null && (
-              <span className="text-xs" style={{ color: '#6b5a3e' }}>
-                ⏱ {task.duration_minutes}min
-              </span>
-            )}
-            {task.scheduled_date && (
-              <Badge
-                className="text-[10px] px-1.5 py-0 border-0"
-                style={{ background: 'rgba(139,109,56,0.2)', color: '#6b5a3e' }}
+            {task.description && (
+              <p
+                className="text-xs mt-0.5 line-clamp-1"
+                style={{ color: '#8b7d60' }}
               >
-                Ingepland: {formatShortDate(task.scheduled_date)}
-              </Badge>
+                {task.description}
+              </p>
+            )}
+            <div className="flex items-center gap-3 mt-1">
+              <span className="text-xs" style={{ color: '#6b5a3e' }}>
+                📅 {formatShortDate(task.deadline)}
+              </span>
+              {task.duration_minutes != null && (
+                <span className="text-xs" style={{ color: '#6b5a3e' }}>
+                  ⏱ {task.duration_minutes}min
+                </span>
+              )}
+              {task.scheduled_date && (
+                <Badge
+                  className="text-[10px] px-1.5 py-0 border-0"
+                  style={{ background: 'rgba(139,109,56,0.2)', color: '#6b5a3e' }}
+                >
+                  Ingepland: {formatShortDate(task.scheduled_date)}
+                </Badge>
+              )}
+            </div>
+            {task.notes && (
+              <div
+                className="mt-2 text-xs px-2 py-1.5 rounded"
+                style={{ background: 'rgba(0,0,0,0.06)', color: '#4a3a20' }}
+              >
+                <span className="font-medium">Reactie:</span> {task.notes}
+              </div>
             )}
           </div>
         </div>
+
+        <div className="flex items-center gap-1.5 shrink-0">
+          {isMerlijnTask && !task.notes && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 hover:opacity-80 rounded-full"
+              style={{ color: '#22c55e', background: 'rgba(34,197,94,0.12)' }}
+              onClick={() => setShowReply(!showReply)}
+              title="Reageer"
+            >
+              <MessageSquare className="size-4" />
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 w-8 p-0 hover:opacity-80 rounded-full"
+            style={{ color: '#8b6d38', background: 'rgba(139,109,56,0.1)' }}
+            onClick={onScheduleToday}
+            title="Verzet naar taken vandaag"
+          >
+            <CalendarArrowUp className="size-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 w-8 p-0 hover:opacity-80 rounded-full"
+            style={{ color: '#8b6d38', background: 'rgba(139,109,56,0.1)' }}
+            onClick={onEdit}
+            title="Bewerken"
+          >
+            <Pencil className="size-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 w-8 p-0 hover:opacity-80 rounded-full"
+            style={{ color: '#4a7a2a', background: 'rgba(74,122,42,0.12)' }}
+            onClick={onComplete}
+            title="Afgerond"
+          >
+            <Check className="size-4" />
+          </Button>
+          {onMarkNotImportant && (
+            <button
+              type="button"
+              onClick={onMarkNotImportant}
+              className="text-xs transition-colors flex items-center gap-1"
+              style={{ color: '#8b6d38' }}
+              title="Markeer als niet belangrijk"
+            >
+              <ArrowDownCircle className="size-4" />
+            </button>
+          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 w-8 p-0 hover:opacity-80 rounded-full"
+            style={{ color: '#8b2020', background: 'rgba(139,32,32,0.08)' }}
+            onClick={onDelete}
+            title="Verwijderen"
+          >
+            <Trash2 className="size-4" />
+          </Button>
+        </div>
       </div>
 
-      <div className="flex items-center gap-1.5 shrink-0">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0 hover:opacity-80 rounded-full"
-          style={{ color: '#8b6d38', background: 'rgba(139,109,56,0.1)' }}
-          onClick={onScheduleToday}
-          title="Verzet naar taken vandaag"
-        >
-          <CalendarArrowUp className="size-4" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0 hover:opacity-80 rounded-full"
-          style={{ color: '#8b6d38', background: 'rgba(139,109,56,0.1)' }}
-          onClick={onEdit}
-          title="Bewerken"
-        >
-          <Pencil className="size-4" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0 hover:opacity-80 rounded-full"
-          style={{ color: '#4a7a2a', background: 'rgba(74,122,42,0.12)' }}
-          onClick={onComplete}
-          title="Afgerond"
-        >
-          <Check className="size-4" />
-        </Button>
-        {onMarkNotImportant && (
-          <button
-            type="button"
-            onClick={onMarkNotImportant}
-            className="text-xs transition-colors flex items-center gap-1"
-            style={{ color: '#8b6d38' }}
-            title="Markeer als niet belangrijk"
+      {showReply && (
+        <div className="px-5 pb-4 flex gap-2">
+          <textarea
+            value={replyText}
+            onChange={(e) => setReplyText(e.target.value)}
+            placeholder="Typ je reactie..."
+            rows={2}
+            className="flex-1 px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+            disabled={sending}
+          />
+          <Button
+            size="sm"
+            onClick={handleSendReply}
+            disabled={sending || !replyText.trim()}
+            className="self-end"
           >
-            <ArrowDownCircle className="size-4" />
-          </button>
-        )}
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0 hover:opacity-80 rounded-full"
-          style={{ color: '#8b2020', background: 'rgba(139,32,32,0.08)' }}
-          onClick={onDelete}
-          title="Verwijderen"
-        >
-          <Trash2 className="size-4" />
-        </Button>
-      </div>
+            {sending ? 'Versturen...' : 'Verstuur'}
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

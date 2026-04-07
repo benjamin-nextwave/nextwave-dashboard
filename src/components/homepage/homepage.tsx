@@ -251,6 +251,7 @@ export function Homepage() {
           onMarkNotImportant={onMarkNotImportant}
           onAddToNuNu={onAddTaskToNuNu}
           nuNuTaskIds={nuNuTaskIds}
+          onTaskUpdated={refreshData}
         />
       )}
 

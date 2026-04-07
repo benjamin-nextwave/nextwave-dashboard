@@ -125,6 +125,7 @@ export function AlleTakenPage() {
                 onMarkNotImportant={() => onMarkNotImportant(task.id)}
                 onScheduleToday={() => onScheduleToday(task.id)}
                 onDelete={() => onDelete(task.id)}
+                onTaskUpdated={refreshData}
               />
             ))}
           </div>
@@ -155,7 +156,8 @@ export function AlleTakenPage() {
                       onEdit={() => setOverlay({ type: 'editTask', task })}
                       onComplete={() => onComplete(task.id)}
                       onScheduleToday={() => onScheduleToday(task.id)}
-                onDelete={() => onDelete(task.id)}
+                      onDelete={() => onDelete(task.id)}
+                      onTaskUpdated={refreshData}
                     />
                   ))}
                 </div>

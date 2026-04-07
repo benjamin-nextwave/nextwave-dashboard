@@ -120,6 +120,15 @@ export type UserRole = {
   role: 'merlijn' | 'benjamin'
 }
 
+export type SentMessage = {
+  id: string
+  type: 'task' | 'question'
+  title: string
+  body: string | null
+  company_name: string | null
+  created_at: string
+}
+
 export type MailTracking = {
   id: string
   company_id: string
@@ -285,6 +294,12 @@ export type Database = {
         Row: UserRole
         Insert: UserRole
         Update: Partial<UserRole>
+        Relationships: []
+      }
+      sent_messages: {
+        Row: SentMessage
+        Insert: Omit<SentMessage, 'id' | 'created_at'>
+        Update: Partial<Omit<SentMessage, 'id' | 'created_at'>>
         Relationships: []
       }
     }

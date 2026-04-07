@@ -13,6 +13,7 @@ const navItems = [
   { href: '/kalender', label: 'Kalender', icon: '📅' },
   { href: '/planning', label: 'Planning', icon: '🗺️' },
   { href: '/vragen', label: 'Vragen', icon: '❓' },
+  { href: '/berichten', label: 'Berichten', icon: '📨' },
 ]
 
 export function Navigation() {

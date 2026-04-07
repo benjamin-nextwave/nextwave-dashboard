@@ -11,9 +11,10 @@ interface TodayTaskListProps {
   onMarkNotImportant: (taskId: string) => void
   onAddToNuNu?: (taskId: string) => void
   nuNuTaskIds?: Set<string>
+  onTaskUpdated?: () => void
 }
 
-export function TodayTaskList({ tasks, onTaskClick, onComplete, onMarkNotImportant, onAddToNuNu, nuNuTaskIds }: TodayTaskListProps) {
+export function TodayTaskList({ tasks, onTaskClick, onComplete, onMarkNotImportant, onAddToNuNu, nuNuTaskIds, onTaskUpdated }: TodayTaskListProps) {
   if (tasks.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
@@ -32,6 +33,7 @@ export function TodayTaskList({ tasks, onTaskClick, onComplete, onMarkNotImporta
           {importantTasks.map((todayTask) => (
             <TodayTaskRow
               key={todayTask.task.id}
+              taskId={todayTask.task.id}
               companyName={todayTask.companyName}
               title={todayTask.task.title}
               isCompleted={todayTask.task.is_completed}
@@ -40,11 +42,13 @@ export function TodayTaskList({ tasks, onTaskClick, onComplete, onMarkNotImporta
               isNotImportant={false}
               daysOverdue={todayTask.overdue.daysOverdue}
               source={todayTask.task.source}
+              notes={todayTask.task.notes}
               onClick={() => onTaskClick(todayTask.task)}
               onComplete={() => onComplete(todayTask.task.id)}
               onMarkNotImportant={() => onMarkNotImportant(todayTask.task.id)}
               onAddToNuNu={onAddToNuNu ? () => onAddToNuNu(todayTask.task.id) : undefined}
               isInNuNu={nuNuTaskIds?.has(todayTask.task.id)}
+              onTaskUpdated={onTaskUpdated}
             />
           ))}
         </div>
@@ -69,6 +73,7 @@ export function TodayTaskList({ tasks, onTaskClick, onComplete, onMarkNotImporta
             {notImportantTasks.map((todayTask) => (
               <TodayTaskRow
                 key={todayTask.task.id}
+                taskId={todayTask.task.id}
                 companyName={todayTask.companyName}
                 title={todayTask.task.title}
                 isCompleted={todayTask.task.is_completed}
@@ -77,10 +82,12 @@ export function TodayTaskList({ tasks, onTaskClick, onComplete, onMarkNotImporta
                 isNotImportant={true}
                 daysOverdue={todayTask.overdue.daysOverdue}
                 source={todayTask.task.source}
+                notes={todayTask.task.notes}
                 onClick={() => onTaskClick(todayTask.task)}
                 onComplete={() => onComplete(todayTask.task.id)}
                 onAddToNuNu={onAddToNuNu ? () => onAddToNuNu(todayTask.task.id) : undefined}
                 isInNuNu={nuNuTaskIds?.has(todayTask.task.id)}
+                onTaskUpdated={onTaskUpdated}
               />
             ))}
           </div>
