@@ -54,23 +54,17 @@ export default function BerichtenPage() {
     const selectedCompany = companies.find((c) => c.id === companyId)
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_MERLIJN_API_URL}/api/incoming`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-benjamin-secret': process.env.NEXT_PUBLIC_BENJAMIN_SECRET || '',
-          },
-          body: JSON.stringify({
-            type: type,
-            title: title.trim(),
-            body: body.trim() || undefined,
-            company_id: companyId || undefined,
-            company_name: selectedCompany?.name || undefined,
-          }),
-        }
-      )
+      const response = await fetch('/api/berichten', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: type,
+          title: title.trim(),
+          body: body.trim() || undefined,
+          company_id: companyId || undefined,
+          company_name: selectedCompany?.name || undefined,
+        }),
+      })
 
       if (!response.ok) throw new Error('Request failed')
 
