@@ -55,7 +55,7 @@ export default function BerichtenPage() {
 
     try {
       const response = await fetch(
-        'https://nextwave-ddashboard-backend-production.up.railway.app/api/incoming',
+        `${process.env.NEXT_PUBLIC_MERLIJN_API_URL}/api/incoming`,
         {
           method: 'POST',
           headers: {
