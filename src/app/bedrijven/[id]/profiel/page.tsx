@@ -1,4 +1,4 @@
-import { CompanyDetailPage } from '@/components/companies/company-detail/company-detail-page'
+import { CompanyProfilePage } from '@/components/companies/company-detail/company-profile-page'
 
 export default async function Page({
   params,
@@ -9,7 +9,7 @@ export default async function Page({
 
   return (
     <main className="p-6">
-      <CompanyDetailPage companyId={id} />
+      <CompanyProfilePage companyId={id} />
     </main>
   )
 }
