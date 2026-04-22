@@ -25,6 +25,8 @@ export type Company = {
   scrape_date_2: number | null
   scrape_date_3: number | null
   onboarding_completed: boolean
+  daily_baseline: 'daily' | 'friday'
+  todo_date: string | null
   created_at: string
   updated_at: string
 }
@@ -64,6 +66,17 @@ export type CompanyNote = {
   company_id: string
   content: string
   priority: 'green' | 'orange' | 'red'
+  ignored_at: string | null
+  created_at: string
+}
+
+export type CompanyMailLog = {
+  id: string
+  company_id: string
+  direction: 'in' | 'out'
+  subject: string
+  body: string | null
+  interaction_date: string
   created_at: string
 }
 
@@ -168,6 +181,8 @@ type CompanyInsert = {
   scrape_date_1?: number | null
   scrape_date_2?: number | null
   scrape_date_3?: number | null
+  daily_baseline?: Company['daily_baseline']
+  todo_date?: string | null
 }
 
 // Supabase Database type for typed client
@@ -301,6 +316,20 @@ export type Database = {
         Insert: Omit<SentMessage, 'id' | 'created_at'>
         Update: Partial<Omit<SentMessage, 'id' | 'created_at'>>
         Relationships: []
+      }
+      company_mail_logs: {
+        Row: CompanyMailLog
+        Insert: Omit<CompanyMailLog, 'id' | 'created_at'>
+        Update: Partial<Omit<CompanyMailLog, 'id' | 'created_at'>>
+        Relationships: [
+          {
+            foreignKeyName: 'company_mail_logs_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
       }
     }
     Views: Record<string, never>

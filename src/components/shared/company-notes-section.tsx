@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { Plus, X } from 'lucide-react'
+import { Plus, X, BellOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
@@ -9,7 +9,9 @@ import {
   getCompanyNotes,
   createCompanyNote,
   deleteCompanyNote,
+  ignoreCompanyNote,
 } from '@/lib/company-notes'
+import { formatShortDate } from '@/lib/dates'
 import type { CompanyNote } from '@/types/database'
 
 const priorityConfig = {
@@ -40,9 +42,23 @@ type Priority = CompanyNote['priority']
 
 interface CompanyNotesSectionProps {
   companyId: string
+  /** Toon alleen actieve (niet-genegeerde) notities. Standaard true. */
+  activeOnly?: boolean
+  /** Show ignore button on each note. Standaard true. */
+  allowIgnore?: boolean
+  /** Externe trigger om notities opnieuw te laden. */
+  refreshToken?: number
+  /** Callback als er iets wijzigt — useful voor het bijwerken van andere UI. */
+  onChange?: () => void
 }
 
-export function CompanyNotesSection({ companyId }: CompanyNotesSectionProps) {
+export function CompanyNotesSection({
+  companyId,
+  activeOnly = true,
+  allowIgnore = true,
+  refreshToken,
+  onChange,
+}: CompanyNotesSectionProps) {
   const [notes, setNotes] = useState<CompanyNote[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
@@ -53,17 +69,18 @@ export function CompanyNotesSection({ companyId }: CompanyNotesSectionProps) {
   const loadNotes = useCallback(async () => {
     try {
       const data = await getCompanyNotes(companyId)
-      setNotes(data)
+      const filtered = activeOnly ? data.filter((n) => n.ignored_at === null) : data
+      setNotes(filtered)
     } catch (error) {
       console.error('Failed to load notes:', error)
     } finally {
       setLoading(false)
     }
-  }, [companyId])
+  }, [companyId, activeOnly])
 
   useEffect(() => {
     loadNotes()
-  }, [loadNotes])
+  }, [loadNotes, refreshToken])
 
   async function handleAdd() {
     if (!newContent.trim()) return
@@ -78,6 +95,7 @@ export function CompanyNotesSection({ companyId }: CompanyNotesSectionProps) {
       setNewPriority('green')
       setShowForm(false)
       await loadNotes()
+      onChange?.()
     } catch (error) {
       console.error('Failed to create note:', error)
     } finally {
@@ -85,10 +103,21 @@ export function CompanyNotesSection({ companyId }: CompanyNotesSectionProps) {
     }
   }
 
+  async function handleIgnore(noteId: string) {
+    try {
+      await ignoreCompanyNote(noteId)
+      setNotes((prev) => prev.filter((n) => n.id !== noteId))
+      onChange?.()
+    } catch (error) {
+      console.error('Failed to ignore note:', error)
+    }
+  }
+
   async function handleDelete(noteId: string) {
     try {
       await deleteCompanyNote(noteId)
       setNotes((prev) => prev.filter((n) => n.id !== noteId))
+      onChange?.()
     } catch (error) {
       console.error('Failed to delete note:', error)
     }
@@ -162,28 +191,46 @@ export function CompanyNotesSection({ companyId }: CompanyNotesSectionProps) {
       {loading ? (
         <p className="text-xs text-muted-foreground">Laden...</p>
       ) : notes.length === 0 && !showForm ? (
-        <p className="text-xs text-muted-foreground">Geen notities</p>
+        <p className="text-xs text-muted-foreground">
+          {activeOnly ? 'Geen actieve notities' : 'Geen notities'}
+        </p>
       ) : (
-        <div className="space-y-2 max-h-48 overflow-y-auto">
+        <div className="space-y-2 max-h-64 overflow-y-auto">
           {notes.map((note) => {
             const config = priorityConfig[note.priority]
             return (
               <div
                 key={note.id}
                 className={cn(
-                  'relative rounded-lg border p-3 pr-8 text-sm',
+                  'relative rounded-lg border p-3 pr-16 text-sm',
                   config.bg,
                   config.border
                 )}
               >
-                <button
-                  type="button"
-                  className="absolute top-2 right-2 text-muted-foreground hover:text-foreground transition-colors"
-                  onClick={() => handleDelete(note.id)}
-                >
-                  <X className="size-3.5" />
-                </button>
+                <div className="absolute top-2 right-2 flex items-center gap-1">
+                  {allowIgnore && note.ignored_at === null && (
+                    <button
+                      type="button"
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                      onClick={() => handleIgnore(note.id)}
+                      title="Notitie negeren"
+                    >
+                      <BellOff className="size-3.5" />
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    onClick={() => handleDelete(note.id)}
+                    title="Verwijderen"
+                  >
+                    <X className="size-3.5" />
+                  </button>
+                </div>
                 <p className="whitespace-pre-wrap break-words">{note.content}</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {formatShortDate(note.created_at)}
+                </p>
               </div>
             )
           })}

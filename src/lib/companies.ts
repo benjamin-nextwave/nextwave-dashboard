@@ -28,6 +28,34 @@ export async function getCompaniesWithOpenTaskCounts(): Promise<
 }
 
 /**
+ * Fetches all companies with open-task count and active-note count,
+ * for the "Bedrijven overzicht" list view.
+ */
+export async function getCompaniesOverview(): Promise<
+  (Company & { open_task_count: number; active_note_count: number })[]
+> {
+  const { data, error } = await supabase
+    .from('companies')
+    .select('*, tasks(id, is_completed), company_notes(id, ignored_at)')
+    .order('name', { ascending: true })
+
+  if (error) throw error
+
+  return (data ?? []).map((company) => {
+    const row = company as unknown as Company & {
+      tasks: { id: string; is_completed: boolean }[]
+      company_notes: { id: string; ignored_at: string | null }[]
+    }
+    const { tasks: taskRows, company_notes: noteRows, ...rest } = row
+    return {
+      ...rest,
+      open_task_count: (taskRows ?? []).filter((t) => !t.is_completed).length,
+      active_note_count: (noteRows ?? []).filter((n) => n.ignored_at === null).length,
+    }
+  })
+}
+
+/**
  * Fetches a single company by ID.
  * Returns null if not found.
  */

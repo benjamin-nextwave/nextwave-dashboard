@@ -19,12 +19,17 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { SaveIndicator } from './save-indicator'
 import { SectionBasisgegevens } from './section-basisgegevens'
+import { SectionBaselineStatus } from './section-baseline-status'
 import { SectionKlantprofiel } from './section-klantprofiel'
 import { SectionMailvarianten } from './section-mailvarianten'
 import { SectionFeedback } from './section-feedback'
 import { SectionRecurringTasks } from './section-recurring-tasks'
 import { SectionWarmupProgress } from './section-warmup-progress'
 import { SectionTimeline } from './section-timeline'
+import { SectionOpenTasks } from './section-open-tasks'
+import { SectionMailLog } from './section-mail-log'
+import { SectionHistory } from './section-history'
+import { CompanyNotesSection } from '@/components/shared/company-notes-section'
 
 interface CompanyDetailPageProps {
   companyId: string
@@ -36,6 +41,8 @@ export function CompanyDetailPage({ companyId }: CompanyDetailPageProps) {
   const [loading, setLoading] = useState(true)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [refreshToken, setRefreshToken] = useState(0)
+  const refreshRelated = useCallback(() => setRefreshToken((t) => t + 1), [])
 
   const saveFn = useCallback(
     async (updates: Record<string, unknown>) => {
@@ -151,6 +158,54 @@ export function CompanyDetailPage({ companyId }: CompanyDetailPageProps) {
         company={company}
         onFieldChange={onFieldChange}
         onFieldBlur={onFieldBlur}
+      />
+
+      <Separator />
+
+      {/* Section: Baseline-status voor Vandaag checken */}
+      <SectionBaselineStatus
+        company={company}
+        onFieldChange={onFieldChange}
+        onFieldBlur={onFieldBlur}
+      />
+
+      <Separator />
+
+      {/* Section: Actieve notities */}
+      <CompanyNotesSection
+        companyId={companyId}
+        activeOnly
+        refreshToken={refreshToken}
+        onChange={refreshRelated}
+      />
+
+      <Separator />
+
+      {/* Section: Open taken */}
+      <SectionOpenTasks
+        companyId={companyId}
+        companyName={company.name}
+        refreshToken={refreshToken}
+        onChange={refreshRelated}
+      />
+
+      <Separator />
+
+      {/* Section: Mailinteracties */}
+      <SectionMailLog
+        companyId={companyId}
+        companyName={company.name}
+        refreshToken={refreshToken}
+        onChange={refreshRelated}
+      />
+
+      <Separator />
+
+      {/* Section: Geschiedenis */}
+      <SectionHistory
+        companyId={companyId}
+        refreshToken={refreshToken}
+        onChange={refreshRelated}
       />
 
       <Separator />

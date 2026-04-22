@@ -6,8 +6,9 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { cn } from '@/lib/utils'
 
 const navItems = [
-  { href: '/', label: 'Taken vandaag', icon: '🏰' },
-  { href: '/alle-taken', label: 'Alle taken', icon: '📋' },
+  { href: '/', label: 'Vandaag checken', icon: '🏰' },
+  { href: '/taken-vandaag', label: 'Taken vandaag', icon: '📋' },
+  { href: '/alle-taken', label: 'Alle taken', icon: '📜' },
   { href: '/onboarding', label: 'Onboarding', icon: '🛡️' },
   { href: '/bedrijven', label: 'Bedrijven', icon: '⚔️' },
   { href: '/kalender', label: 'Kalender', icon: '📅' },
