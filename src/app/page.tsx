@@ -1,11 +1,8 @@
-import { VandaagCheckenPage } from '@/components/vandaag-checken/vandaag-checken-page'
+import { DayView } from '@/components/day-view'
+import { logicalToday } from '@/lib/time'
 
 export const dynamic = 'force-dynamic'
 
-export default function DashboardPage() {
-  return (
-    <main className="p-6">
-      <VandaagCheckenPage />
-    </main>
-  )
+export default function TodayPage() {
+  return <DayView day={logicalToday()} />
 }

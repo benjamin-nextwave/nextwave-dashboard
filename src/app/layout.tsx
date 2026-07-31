@@ -1,63 +1,47 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono, MedievalSharp, UnifrakturMaguntia } from "next/font/google";
-import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import { TodayProvider } from "@/lib/today-provider";
-import { DashboardChrome } from "@/components/dashboard-chrome";
+import type { Metadata, Viewport } from 'next'
+import { Space_Grotesk, JetBrains_Mono } from 'next/font/google'
+import './globals.css'
+import { ServiceWorker } from '@/components/service-worker'
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+const display = Space_Grotesk({
+  variable: '--font-display',
+  subsets: ['latin'],
+  display: 'swap',
+})
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const medievalSharp = MedievalSharp({
-  weight: "400",
-  variable: "--font-medieval",
-  subsets: ["latin"],
-});
-
-const unifraktur = UnifrakturMaguntia({
-  weight: "400",
-  variable: "--font-fraktur",
-  subsets: ["latin"],
-});
+const numeric = JetBrains_Mono({
+  variable: '--font-numeric',
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
-  title: "NextWave Dashboard",
-  description: "Client management dashboard",
-};
+  title: 'Schema',
+  description: 'Persoonlijk indelingsschema',
+  manifest: '/manifest.webmanifest',
+  appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'Schema' },
+  icons: {
+    icon: [{ url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' }],
+    apple: [{ url: '/icons/icon-192.png', sizes: '192x192' }],
+  },
+}
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export const viewport: Viewport = {
+  themeColor: '#080b14',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  // Zorgt dat de app tot achter de statusbalk en gebarenbalk loopt.
+  viewportFit: 'cover',
+}
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="nl" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${medievalSharp.variable} ${unifraktur.variable} font-sans antialiased`}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <TodayProvider>
-            <div className="min-h-screen text-foreground">
-              <DashboardChrome />
-              <div className="relative z-10">
-                {children}
-              </div>
-            </div>
-          </TodayProvider>
-        </ThemeProvider>
+    <html lang="nl">
+      <body className={`${display.variable} ${numeric.variable} antialiased`}>
+        <div className="relative z-10 mx-auto min-h-dvh w-full max-w-lg">{children}</div>
+        <ServiceWorker />
       </body>
     </html>
-  );
+  )
 }
